@@ -10,7 +10,6 @@
     .container {
       display: grid;
       grid-template-columns: min-content 3fr min-content 3fr;
-      grid-template-rows: auto auto auto auto auto;
       gap: 1rem;
       width: min-content;
     }
@@ -28,6 +27,20 @@
     input[type='number'] {
       max-width: 10em;
     }
+
+    .memorize {
+      grid-column: 1 / 3;
+      display: none;
+    }
+
+    .copy {
+      grid-column: 3 / 5;
+    }
+
+    .explanation {
+      grid-column: 1 / 5;
+      font-size: smaller;
+    }
   </style>
 </head>
 
@@ -35,6 +48,10 @@
   <div id="calculator">
     <div class="container">
       <div class="heading">Inflation — US</div>
+      <div></div>
+      <div>Year</div>
+      <div></div>
+      <div>Amount</div>
       <div>
         From:
       </div>
@@ -60,6 +77,13 @@
       </div>
       <div>
         <input name="toAmount" type="number" min="0" />
+      </div>
+      <div class="explanation">For the current amounts:</div>
+      <div class="memorize">
+        <button><label>Memorize</label></button>
+      </div>
+      <div class="copy">
+        <button onclick="copyURL()"><label>Copy URL to Share</label></button>
       </div>
     </div>
   </div>
@@ -192,17 +216,68 @@
       toYearElement.append(optionElement.cloneNode(true));
     }
     //
-    let fromYear = localStorage.getItem("fromYear");
-    if (!cpi[fromYear]) fromYear = mostRecentYear; // if not known
-    fromYearElement.querySelector(`option[value='${fromYear}']`).selected = true;
+    const prefix = "inflation-us-annual.";
+    function localStorageGetItem(keyName) {
+      return localStorage.getItem(prefix + keyName);
+    }
+    function localStorageSetItem(keyName, keyValue) {
+      localStorage.setItem(prefix + keyName, keyValue);
+    }
     //
-    let toYear = localStorage.getItem("toYear") || years[years.length - 1];
-    if (!cpi[toYear]) toYear = mostRecentYear; // if not known
-    toYearElement.querySelector(`option[value='${toYear}']`).selected = true;
+    let fromYear;
+    let toYear;
+    let fromAmount;
+    let toAmount;
+    let moreRecentlyHasEnteredToAmount;
     //
-    let fromAmount = Number(localStorage.getItem("fromAmount")) || 0;
-    let toAmount = Number(localStorage.getItem("toAmount")) || 0;
-    let moreRecentlyHasEnteredToAmount = localStorage.getItem("moreRecentlyHasEnteredToAmount") || false;
+    function selectFromYear() {
+      for (const option of fromYearElement.selectedOptions) option.selected = false;
+      fromYearElement.querySelector(`option[value='${fromYear}']`).selected = true;
+    }
+    function selectToYear() {
+      for (const option of toYearElement.selectedOptions) option.selected = false;
+      toYearElement.querySelector(`option[value='${toYear}']`).selected = true;
+    }
+    //
+    function yearBeforeToYear() {
+      return years[years.indexOf(toYear) - 1 || 0];
+    }
+    function yearAfterFromYear() {
+      return years[years.indexOf(fromYear) + 1 || years.length - 1];
+    }
+    //
+    function setFromURLAndMemoryAndStorage() {
+      // use what is given in the URL's hash, if anything,
+      // reuse from memory if not first invocation,
+      // else use from localStorage, if anything,
+      // else use defaults
+      let hash = document.location.hash; // if any
+      if (hash !== undefined) {
+        history.pushState("", document.title, document.location.pathname); // clear
+        try {
+          hash = Object.fromEntries(hash.replace(/^#/, "").split(",").map(entry => entry.split("=")));
+          ({ fy: fromYear = fromYear, ty: toYear = toYear, fa: fromAmount = fromAmount, ta: toAmount = toAmount } = hash);
+          if (toAmount && !fromAmount) moreRecentlyHasEnteredToAmount = true;
+        } finally {
+          hash = undefined;
+        }
+      }
+      //
+      toYear = toYear ?? (localStorageGetItem("toYear") || years[years.length - 1]);
+      if (!cpi[toYear]) toYear = mostRecentYear; // if not known
+      selectToYear(toYear);
+      //
+      fromYear = fromYear ?? localStorageGetItem("fromYear");
+      if (!cpi[fromYear]) fromYear = yearBeforeToYear(); // if not known
+      selectFromYear(fromYear);
+      //
+      fromAmount = fromAmount ?? (Number(localStorageGetItem("fromAmount")) || 0);
+      toAmount = toAmount ?? (Number(localStorageGetItem("toAmount")) || 0);
+      moreRecentlyHasEnteredToAmount = moreRecentlyHasEnteredToAmount ?? (localStorageGetItem("moreRecentlyHasEnteredToAmount") || false);
+      //
+      fromToOrToFrom();
+    }
+    setFromURLAndMemoryAndStorage(); // first time
     //
     function showAmounts() {
       if (Math.abs(fromAmount) < 10) fromAmount = Math.round(fromAmount * 100) / 100;
@@ -213,9 +288,7 @@
       else toAmount = Math.round(toAmount);
       fromAmountElement.value = fromAmount;
       toAmountElement.value = toAmount;
-      localStorage.setItem("fromAmount", fromAmount);
-      localStorage.setItem("toAmount", toAmount);
-      localStorage.setItem("moreRecentlyHasEnteredToAmount", moreRecentlyHasEnteredToAmount);
+      localStorageSetAll();
     }
     function fromTo() {
       toAmount = fromAmount * cpi[toYear] / cpi[fromYear];
@@ -225,22 +298,40 @@
       fromAmount = toAmount * cpi[fromYear] / cpi[toYear];
       showAmounts();
     }
-    fromTo();
-    //
-    fromYearElement.addEventListener("input", event => {
-      fromYear = fromYearElement.selectedOptions[0].value;
-      localStorage.setItem("fromYear", fromYear);
+    function fromToOrToFrom() {
       if (!moreRecentlyHasEnteredToAmount) {
         fromTo();
       } else {
         toFrom();
       }
+    }
+    //
+    fromYearElement.addEventListener("input", event => {
+      fromYear = fromYearElement.selectedOptions[0].value;
+      if (fromYear > toYear) { // >=
+        fromYear = toYear; // yearBeforeToYear();
+        selectFromYear(fromYear);
+        fromYearElement.blur();
+      }
+      fromToOrToFrom();
     });
     toYearElement.addEventListener("input", event => {
       toYear = toYearElement.selectedOptions[0].value;
-      localStorage.setItem("toYear", toYear);
+      if (toYear < fromYear) { // <=
+        toYear = fromYear; // yearAfterFromYear();
+        selectToYear(toYear);
+        toYearElement.blur();
+      }
       fromTo();
     });
+    //
+    function localStorageSetAll() {
+      localStorageSetItem("fromYear", fromYear);
+      localStorageSetItem("toYear", toYear);
+      localStorageSetItem("fromAmount", fromAmount);
+      localStorageSetItem("toAmount", toAmount);
+      localStorageSetItem("moreRecentlyHasEnteredToAmount", moreRecentlyHasEnteredToAmount);
+    }
     //
     fromAmountElement.addEventListener("input", event => {
       fromAmount = Number(fromAmountElement.value);
@@ -259,6 +350,13 @@
     toAmountElement.addEventListener("click", event => {
       moreRecentlyHasEnteredToAmount = true;
     });
+    //
+    window.addEventListener("hashchange", setFromURLAndMemoryAndStorage);
+    //
+    function copyURL() {
+      const hash = `#fy=${fromYear},ty=${toYear},${moreRecentlyHasEnteredToAmount ? `ta=${toAmount}` : `fa=${fromAmount}`}`;
+      navigator.clipboard.writeText(document.location.origin + document.location.pathname + hash);
+    }
   </script>
 </body>
 
