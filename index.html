@@ -4,20 +4,40 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <!-- Copyright (c) Leo Baschy 2021. All rights reserved. -->
+  <!-- With questions or needs, reach out to me online, or at inflation.us@nrvnr.com . -->
   <!-- author Leo Baschy 2021 initially -->
   <title>Inflation — US — Annual</title>
   <style>
+    body {
+      box-sizing: border-box;
+      width: 100vw;
+      height: 100vh;
+      margin: 0px;
+      padding: 0px;
+      overflow: hidden;
+    }
+
     .container {
+      box-sizing: border-box;
+      height: 100%;
       display: grid;
-      grid-template-columns: min-content 3fr min-content 3fr;
+      grid-template-columns: repeat(4, min-content) 1fr;
+      grid-template-rows: repeat(6, auto) 1fr repeat(3, auto);
       gap: 1rem;
-      width: min-content;
+      margin: 0px;
+      padding: 0.5rem;
+      overflow: hidden;
     }
 
     .heading {
-      grid-column: 1 / 5;
+      grid-column: 1 / 6;
       font-family: sans-serif;
       font-size: larger;
+    }
+
+    .first-column {
+      grid-column: 1 / 2;
     }
 
     .container * {
@@ -25,12 +45,15 @@
     }
 
     input[type='number'] {
-      max-width: 10em;
+      max-width: 8em;
     }
 
     .memorize {
       grid-column: 1 / 3;
-      display: none;
+    }
+
+    .clear {
+      grid-column: 5 / 6;
     }
 
     .copy {
@@ -38,54 +61,78 @@
     }
 
     .explanation {
-      grid-column: 1 / 5;
+      grid-column: 1 / 6;
       font-size: smaller;
+    }
+
+    .memorized {
+      grid-column: 1 / 6;
+      box-sizing: border-box;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .memorized textarea {
+      font-family: monospace;
+      resize: none;
+      box-sizing: border-box;
+      overflow: auto;
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
 
 <body>
-  <div id="calculator">
-    <div class="container">
-      <div class="heading">Inflation — US</div>
-      <div></div>
-      <div>Year</div>
-      <div></div>
-      <div>Amount</div>
-      <div>
-        From:
-      </div>
-      <div>
-        <select name="fromYear">
-        </select>
-      </div>
-      <div>
-        $
-      </div>
-      <div>
-        <input name="fromAmount" type="number" min="0" />
-      </div>
-      <div class="col-md-2">
-        To:
-      </div>
-      <div>
-        <select name="toYear">
-        </select>
-      </div>
-      <div>
-        $
-      </div>
-      <div>
-        <input name="toAmount" type="number" min="0" />
-      </div>
-      <div class="explanation">For the current amounts:</div>
-      <div class="memorize">
-        <button><label>Memorize</label></button>
-      </div>
-      <div class="copy">
-        <button onclick="copyURL()"><label>Copy URL to Share</label></button>
-      </div>
+  <div class="container">
+    <div class="heading">Inflation — US</div>
+    <div class="first-column"></div>
+    <div>Year</div>
+    <div></div>
+    <div>Amount</div>
+    <div class="first-column">
+      From:
     </div>
+    <div>
+      <select name="fromYear">
+      </select>
+    </div>
+    <div>
+      $
+    </div>
+    <div>
+      <input name="fromAmount" type="number" min="0" />
+    </div>
+    <div class="first-column">
+      To:
+    </div>
+    <div>
+      <select name="toYear">
+      </select>
+    </div>
+    <div>
+      $
+    </div>
+    <div>
+      <input name="toAmount" type="number" min="0" />
+    </div>
+    <div class="clear">
+      <button onclick="clearAmounts()"><label>X</label></button>
+    </div>
+    <div class="explanation">For selected years and amounts:</div>
+    <div class="memorize">
+      <button onclick="memorize()"><label>Memorize</label></button>
+    </div>
+    <div class="copy">
+      <button onclick="copyURL()"><label>Copy URL to Share</label></button>
+    </div>
+    <div class="memorized">
+      <textarea style="display: none;"></textarea>
+    </div>
+    <div class="explanation" style="display: none;">You can add notes to this memorized text.</div>
+    <div class="explanation">This calculator can help get a grasp of how much prices have changed.
+      Your numbers are in your browser, nothing gets sent to the server.</div>
+    <div class="explanation">First version authored by Leo Baschy in 2021.</div>
   </div>
   <script>
     // data from https://www.bls.gov/data/inflation_calculator.htm
@@ -203,10 +250,17 @@
     const years = Object.keys(cpi).sort();
     const mostRecentYear = years[years.length - 1];
     //
+    const maxMemorized = 1e5; // 100,000 bytes
+    //
     const fromYearElement = document.querySelector("[name='fromYear']");
     const toYearElement = document.querySelector("[name='toYear']");
     const fromAmountElement = document.querySelector("[name='fromAmount']");
     const toAmountElement = document.querySelector("[name='toAmount']");
+    //
+    const memorizedElement = document.querySelector(".memorized");
+    const memorizedTextarea = memorizedElement.querySelector("textarea");
+    const memorizeButton = document.querySelector(".memorize button");
+    const memorizedExplained = document.querySelector(".memorized ~ .explanation");
     //
     for (const year of years) {
       const optionElement = document.createElement("option");
@@ -229,6 +283,8 @@
     let fromAmount;
     let toAmount;
     let moreRecentlyHasEnteredToAmount;
+    //
+    let memorized;
     //
     function selectFromYear() {
       for (const option of fromYearElement.selectedOptions) option.selected = false;
@@ -306,6 +362,22 @@
       }
     }
     //
+    memorized = localStorageGetItem("memorized") || "";
+    showMemorized(); // first time
+    //
+    function showMemorized() {
+      if (memorized) {
+        memorizedTextarea.value = memorized;
+        memorizedTextarea.style.display = "";
+        memorizedExplained.style.display = "";
+      } else {
+        memorizedExplained.style.display = "none";
+        memorizedTextarea.style.display = "none";
+        memorizedTextarea.value = "";
+      }
+      memorizeButton.disabled = memorized.length >= maxMemorized;
+    }
+    //
     fromYearElement.addEventListener("input", event => {
       fromYear = fromYearElement.selectedOptions[0].value;
       if (fromYear > toYear) { // >=
@@ -351,11 +423,76 @@
       moreRecentlyHasEnteredToAmount = true;
     });
     //
+    function clearAmounts() {
+      fromAmount = 0;
+      moreRecentlyHasEnteredToAmount = false;
+      fromTo();
+    }
+    //
     window.addEventListener("hashchange", setFromURLAndMemoryAndStorage);
     //
+    function hash() {
+      return `fy=${fromYear},ty=${toYear},${moreRecentlyHasEnteredToAmount ? `ta=${toAmount}` : `fa=${fromAmount}`}`;
+    }
     function copyURL() {
-      const hash = `#fy=${fromYear},ty=${toYear},${moreRecentlyHasEnteredToAmount ? `ta=${toAmount}` : `fa=${fromAmount}`}`;
-      navigator.clipboard.writeText(document.location.origin + document.location.pathname + hash);
+      navigator.clipboard.writeText(`${document.location.origin}${document.location.pathname}#${hash()}`);
+    }
+    //
+    function localStorageSetMemorized() {
+      if (memorized.length <= maxMemorized) {
+        localStorageSetItem("memorized", memorized);
+      }
+    }
+    function getUserChangesToMemorized() {
+      const newMemorized = memorizedTextarea.value;
+      if (newMemorized !== memorized) {
+        memorized = newMemorized;
+        localStorageSetMemorized();
+        if (!memorized.length) showMemorized(); // hide
+      }
+    }
+    //
+    memorizedTextarea.addEventListener("blur", getUserChangesToMemorized);
+    window.addEventListener("beforeunload", getUserChangesToMemorized);
+    window.addEventListener("pagehide", getUserChangesToMemorized);
+    document.addEventListener("visibilitychange", getUserChangesToMemorized);
+    //
+    function keyListener(event) {
+      let blur;
+      switch (event.key) {
+        case "Escape": blur = true; break; // Esc key
+        case "Enter": { // Enter key
+          const newMemorized = memorizedTextarea.value;
+          const newLength = newMemorized.length;
+          if (memorizedTextarea.selectionStart === newLength) { // at the end
+            if (!newLength // empty
+              || /\n$/.test(newMemorized)) { // already an \n
+              blur = true;
+              break;
+            }
+          }
+        }
+        default: {
+          if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+              case "s": blur = true; break; // ctrl-S
+            }
+          }
+        }
+      }
+      if (blur) {
+        event.preventDefault();
+        memorizedTextarea.blur();
+      }
+    }
+    memorizedTextarea.addEventListener("keydown", keyListener);
+    memorizedTextarea.addEventListener("keypress", keyListener);
+    //
+    function memorize() {
+      const memo = `${fromYear} → ${toYear} ≈ $ ${fromAmount} → ${toAmount}`;
+      memorized = memorized.replace(/([^\n])$/, "$1\n") + memo;
+      showMemorized();
+      localStorageSetMemorized();
     }
   </script>
 </body>
