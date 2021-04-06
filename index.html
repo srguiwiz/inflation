@@ -23,7 +23,7 @@
       height: 100%;
       display: grid;
       grid-template-columns: repeat(4, min-content) 1fr;
-      grid-template-rows: repeat(6, auto) 1fr repeat(3, auto);
+      grid-template-rows: repeat(8, auto) 1fr repeat(3, auto);
       gap: 1rem;
       margin: 0px;
       padding: 0.5rem;
@@ -48,16 +48,18 @@
       max-width: 8em;
     }
 
-    .memorize {
-      grid-column: 1 / 3;
-    }
-
     .clear {
       grid-column: 5 / 6;
     }
 
+    .memorize {
+      grid-column: 1 / 3;
+      align-self: flex-end;
+    }
+
     .copy {
-      grid-column: 3 / 5;
+      grid-column: 4 / 6;
+      align-self: flex-end;
     }
 
     .explanation {
@@ -65,10 +67,16 @@
       font-size: smaller;
     }
 
+    .explanation-right {
+      grid-column: 4 / 6;
+      font-size: smaller;
+    }
+
     .memorized {
       grid-column: 1 / 6;
       box-sizing: border-box;
       height: 100%;
+      min-height: 4em;
       overflow: hidden;
     }
 
@@ -80,12 +88,24 @@
       width: 100%;
       height: 100%;
     }
+
+    button svg {
+      width: 1.5em;
+      height: 1.5em;
+      padding: 0.25em;
+      padding-right: 0.5em;
+    }
+
+    button label * {
+      vertical-align: middle;
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <div class="heading">Inflation — US</div>
+    <div class="explanation">Based on Consumer Price Index.</div>
     <div class="first-column"></div>
     <div>Year</div>
     <div></div>
@@ -94,7 +114,7 @@
       From:
     </div>
     <div>
-      <select name="fromYear">
+      <select name="fromYear" autofocus>
       </select>
     </div>
     <div>
@@ -103,6 +123,11 @@
     <div>
       <input name="fromAmount" type="number" min="0" />
     </div>
+    <div class="first-column"></div>
+    <div></div>
+    <div></div>
+    <div class="explanation-right">
+      Enter either amount.</div>
     <div class="first-column">
       To:
     </div>
@@ -119,23 +144,36 @@
     <div class="clear">
       <button onclick="clearAmounts()"><label>X</label></button>
     </div>
-    <div class="explanation">For selected years and amounts:</div>
+    <div class="explanation">For this amount:</div>
     <div class="memorize">
-      <button onclick="memorize()"><label>Memorize</label></button>
+      <button onclick="memorize()"><label>Add to List</label></button>
     </div>
     <div class="copy">
-      <button onclick="copyURL()"><label>Copy URL to Share</label></button>
+      <button onclick="copyURL()">
+        <label>
+          <svg viewBox="0 0 24 24">
+            <g>
+              <path d="M8,12 3,12 3,22 21,22 21,12 16,12 M12,16 12,2 M8,6 12,2 16,6" stroke="black" stroke-width="2"
+                fill="none" stroke-linejoin="round" stroke-linecap="round" />
+            </g>
+          </svg>
+          <span>Copy URL</span>
+        </label>
+      </button>
     </div>
     <div class="memorized">
-      <textarea style="display: none;"></textarea>
+      <textarea style="visibility: hidden;"></textarea>
     </div>
-    <div class="explanation" style="display: none;">You can add notes to this memorized text.</div>
-    <div class="explanation">This calculator can help get a grasp of how much prices have changed.
-      Your numbers are in your browser, nothing gets sent to the server.</div>
+    <div class="explanation" style="visibility: hidden;">You can add notes to this memorized text,
+      edit, copy, or delete all.</div>
+    <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to the server.</div>
     <div class="explanation">First version authored by Leo Baschy in 2021.</div>
   </div>
   <script>
     // data from https://www.bls.gov/data/inflation_calculator.htm
+    // took January of each year
+    // that site mentions it got its data from https://data.bls.gov/timeseries/CUUR0000SA0
+    // and the Consumer Price Index (CPI) https://www.bls.gov/cpi/
     const cpi = {
       "1913": 100,
       "1914": 102,
@@ -272,7 +310,7 @@
     //
     const prefix = "inflation-us-annual.";
     function localStorageGetItem(keyName) {
-      return localStorage.getItem(prefix + keyName);
+      return localStorage.getItem(prefix + keyName); // a string or null
     }
     function localStorageSetItem(keyName, keyValue) {
       localStorage.setItem(prefix + keyName, keyValue);
@@ -282,9 +320,11 @@
     let toYear;
     let fromAmount;
     let toAmount;
-    let moreRecentlyHasEnteredToAmount;
+    let moreRecentlyHasEnteredToAmount; // boolean
     //
     let memorized;
+    //
+    let showHashOnce;
     //
     function selectFromYear() {
       for (const option of fromYearElement.selectedOptions) option.selected = false;
@@ -302,20 +342,24 @@
       return years[years.indexOf(fromYear) + 1 || years.length - 1];
     }
     //
+    function clearHash() {
+      if (document.location.hash) {
+        history.replaceState("", document.title, document.location.pathname); // clear
+      }
+      showHashOnce = false;
+    }
     function setFromURLAndMemoryAndStorage() {
       // use what is given in the URL's hash, if anything,
       // reuse from memory if not first invocation,
       // else use from localStorage, if anything,
       // else use defaults
       let hash = document.location.hash; // if any
-      if (hash !== undefined) {
-        history.pushState("", document.title, document.location.pathname); // clear
+      if (hash) {
         try {
           hash = Object.fromEntries(hash.replace(/^#/, "").split(",").map(entry => entry.split("=")));
           ({ fy: fromYear = fromYear, ty: toYear = toYear, fa: fromAmount = fromAmount, ta: toAmount = toAmount } = hash);
-          if (toAmount && !fromAmount) moreRecentlyHasEnteredToAmount = true;
-        } finally {
-          hash = undefined;
+          moreRecentlyHasEnteredToAmount = !!toAmount && !fromAmount;
+        } catch {
         }
       }
       //
@@ -329,11 +373,10 @@
       //
       fromAmount = fromAmount ?? (Number(localStorageGetItem("fromAmount")) || 0);
       toAmount = toAmount ?? (Number(localStorageGetItem("toAmount")) || 0);
-      moreRecentlyHasEnteredToAmount = moreRecentlyHasEnteredToAmount ?? (localStorageGetItem("moreRecentlyHasEnteredToAmount") || false);
+      moreRecentlyHasEnteredToAmount = moreRecentlyHasEnteredToAmount ?? localStorageGetItem("moreRecentlyHasEnteredToAmount") === "true";
       //
       fromToOrToFrom();
     }
-    setFromURLAndMemoryAndStorage(); // first time
     //
     function showAmounts() {
       if (Math.abs(fromAmount) < 10) fromAmount = Math.round(fromAmount * 100) / 100;
@@ -345,6 +388,8 @@
       fromAmountElement.value = fromAmount;
       toAmountElement.value = toAmount;
       localStorageSetAll();
+      updateMemorizedButton();
+      clearHash();
     }
     function fromTo() {
       toAmount = fromAmount * cpi[toYear] / cpi[fromYear];
@@ -363,19 +408,17 @@
     }
     //
     memorized = localStorageGetItem("memorized") || "";
-    showMemorized(); // first time
     //
     function showMemorized() {
       if (memorized) {
         memorizedTextarea.value = memorized;
-        memorizedTextarea.style.display = "";
-        memorizedExplained.style.display = "";
+        memorizedTextarea.style.visibility = "";
+        memorizedExplained.style.visibility = "";
       } else {
-        memorizedExplained.style.display = "none";
-        memorizedTextarea.style.display = "none";
+        memorizedExplained.style.visibility = "hidden";
+        memorizedTextarea.style.visibility = "hidden";
         memorizedTextarea.value = "";
       }
-      memorizeButton.disabled = memorized.length >= maxMemorized;
     }
     //
     fromYearElement.addEventListener("input", event => {
@@ -402,7 +445,7 @@
       localStorageSetItem("toYear", toYear);
       localStorageSetItem("fromAmount", fromAmount);
       localStorageSetItem("toAmount", toAmount);
-      localStorageSetItem("moreRecentlyHasEnteredToAmount", moreRecentlyHasEnteredToAmount);
+      localStorageSetItem("moreRecentlyHasEnteredToAmount", !!moreRecentlyHasEnteredToAmount);
     }
     //
     fromAmountElement.addEventListener("input", event => {
@@ -418,9 +461,11 @@
     //
     fromAmountElement.addEventListener("click", event => {
       moreRecentlyHasEnteredToAmount = false;
+      fromTo();
     });
     toAmountElement.addEventListener("click", event => {
       moreRecentlyHasEnteredToAmount = true;
+      toFrom();
     });
     //
     function clearAmounts() {
@@ -429,13 +474,30 @@
       fromTo();
     }
     //
-    window.addEventListener("hashchange", setFromURLAndMemoryAndStorage);
+    function hashchangeHandler() {
+      let hash = document.location.hash; // if any
+      if (hash) {
+        if (hash !== showHashOnce) {
+          setFromURLAndMemoryAndStorage();
+        } // else not this one time
+      } // else ignore
+      showHashOnce = false;
+    }
+    window.addEventListener("hashchange", hashchangeHandler);
     //
-    function hash() {
-      return `fy=${fromYear},ty=${toYear},${moreRecentlyHasEnteredToAmount ? `ta=${toAmount}` : `fa=${fromAmount}`}`;
+    function equivalentHash() {
+      return `#fy=${fromYear},ty=${toYear},${moreRecentlyHasEnteredToAmount ? `ta=${toAmount}` : `fa=${fromAmount}`}`;
+    }
+    function showHash(newHash) {
+      const url = `${document.location.pathname}${newHash}`;
+      showHashOnce = newHash;
+      history.replaceState("", document.title, url);
     }
     function copyURL() {
-      navigator.clipboard.writeText(`${document.location.origin}${document.location.pathname}#${hash()}`);
+      const newHash = equivalentHash();
+      const url = `${document.location.origin ?? `${document.location.protocol}//`}${document.location.pathname}${newHash}`;
+      navigator.clipboard.writeText(url);
+      showHash(newHash);
     }
     //
     function localStorageSetMemorized() {
@@ -444,11 +506,13 @@
       }
     }
     function getUserChangesToMemorized() {
-      const newMemorized = memorizedTextarea.value;
+      let newMemorized = memorizedTextarea.value;
+      if (!newMemorized.trim().length) newMemorized = ""; // simply empty
       if (newMemorized !== memorized) {
         memorized = newMemorized;
         localStorageSetMemorized();
         if (!memorized.length) showMemorized(); // hide
+        updateMemorizedButton();
       }
     }
     //
@@ -488,12 +552,26 @@
     memorizedTextarea.addEventListener("keydown", keyListener);
     memorizedTextarea.addEventListener("keypress", keyListener);
     //
-    function memorize() {
-      const memo = `${fromYear} → ${toYear} ≈ $ ${fromAmount} → ${toAmount}`;
-      memorized = memorized.replace(/([^\n])$/, "$1\n") + memo;
-      showMemorized();
-      localStorageSetMemorized();
+    function memo() {
+      return `${fromYear} → ${toYear} ≈ $ ${fromAmount} → ${toAmount}`;
     }
+    function memorize() {
+      const newMemo = memo();
+      if (!memorized.includes(newMemo)) {
+        memorized = memorized.replace(/([^\n])$/, "$1\n") + newMemo;
+        showMemorized();
+        localStorageSetMemorized();
+        updateMemorizedButton();
+      }
+    }
+    function updateMemorizedButton() {
+      memorizeButton.disabled =
+        memorized.length >= maxMemorized // prevent excessive length
+        || memorized.includes(memo()); // avoid duplicates
+    }
+    //
+    setFromURLAndMemoryAndStorage(); // first time
+    showMemorized(); // first time
   </script>
 </body>
 
