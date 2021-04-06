@@ -1,12 +1,10 @@
 {
-  "private": true,
-  "name": "inflation-us",
+  "name": "inflation",
   "version": "1.0.0",
-  "description": "Inflation calculator — US",
+  "description": "Inflation calculator",
   "main": "index.html",
   "scripts": {
-    "start": "serve",
-    "build": "echo This is a static template, there is no bundler or bundling involved!"
+    "start": "serve"
   },
   "devDependencies": {
     "serve": "^11.2.0"
