@@ -364,10 +364,19 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     const prefix = "inflation-us-annual.";
     function localStorageGetItem(keyName) {
-      return localStorage.getItem(prefix + keyName); // a string or null
+      try {
+        return localStorage.getItem(prefix + keyName); // a string or null
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
     }
     function localStorageSetItem(keyName, keyValue) {
-      localStorage.setItem(prefix + keyName, keyValue);
+      try {
+        localStorage.setItem(prefix + keyName, keyValue);
+      } catch (e) {
+        console.error(e);
+      }
     }
     //
     let fromYear;
