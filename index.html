@@ -45,11 +45,11 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       box-sizing: border-box;
       height: 100%;
       display: grid;
-      grid-template-columns: repeat(4, min-content) 1fr;
-      grid-template-rows: repeat(8, auto) 1fr repeat(3, auto);
+      grid-template-columns: repeat(4, auto) 1fr;
+      grid-template-rows: repeat(8, auto) 1fr repeat(2, auto);
       gap: 1rem;
       margin: 0px;
-      padding: 0.5rem;
+      padding: 0.75rem;
       overflow: hidden;
     }
 
@@ -65,6 +65,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     .container * {
       align-self: baseline;
+    }
+
+    .amount {
+      min-width: max-content;
     }
 
     input[type='number'] {
@@ -130,39 +134,31 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="heading">Inflation</div>
     <div class="explanation">Based on Consumer Price Index.</div>
     <div class="first-column"></div>
-    <div>Year</div>
+    <div>Years</div>
     <div></div>
     <div>Amount</div>
-    <div class="first-column">
-      From:
-    </div>
+    <div class="first-column"></div>
     <div>
       <select name="fromYear" autofocus>
       </select>
     </div>
-    <div>
-      $
-    </div>
-    <div>
-      <input name="fromAmount" type="number" min="0" />
+    <div></div>
+    <div class="amount">
+      <span>$ </span><input name="fromAmount" type="number" min="0" />
     </div>
     <div class="first-column"></div>
-    <div></div>
+    <div>↓</div>
     <div></div>
     <div class="explanation-right">
       Enter either amount.</div>
-    <div class="first-column">
-      To:
-    </div>
+    <div class="first-column"></div>
     <div>
       <select name="toYear">
       </select>
     </div>
-    <div>
-      $
-    </div>
-    <div>
-      <input name="toAmount" type="number" min="0" />
+    <div></div>
+    <div class="amount">
+      <span>$ </span><input name="toAmount" type="number" min="0" />
     </div>
     <div class="clear">
       <button onclick="clearAmounts()"><label>X</label></button>
@@ -190,7 +186,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="explanation" style="visibility: hidden;">You can add notes to this memorized text,
       edit, copy, or delete all.</div>
     <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to the server.</div>
-    <div class="explanation">First version authored by Leo Baschy in 2021.</div>
+    <div class="explanation personal" style="display:none;">Initial version authored by Leo Baschy in 2021.</div>
   </div>
   <script>
     // data from https://www.bls.gov/data/inflation_calculator.htm
@@ -592,6 +588,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         memorized.length >= maxMemorized // prevent excessive length
         || memorized.includes(memo()); // avoid duplicates
     }
+    //
+    const personal = document.location.hostname === "srguiwiz.github.io";
+    document.querySelectorAll(".personal").forEach(element => {
+      if (personal) element.style.display = "";
+      else element.remove(); // avoid forks advertising an author's personal note
+    });
     //
     setFromURLAndMemoryAndStorage(); // first time
     showMemorized(); // first time
