@@ -4,7 +4,9 @@
 <head>
   <meta charset="utf-8" />
   <!--
-Copyright (c) Leo Baschy 2021.
+MIT License
+
+Copyright (c) 2021 Leo Baschy
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -53,6 +55,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       overflow: hidden;
     }
 
+    @media (max-width: 320px) {
+      .container {
+        gap: 1rem 0.5rem;
+      }
+    }
+
     .heading {
       grid-column: 1 / 6;
       font-family: sans-serif;
@@ -84,8 +92,14 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       align-self: flex-end;
     }
 
-    .copy {
-      grid-column: 4 / 6;
+    .copy-numbers {
+      grid-column: 4 / 5;
+      align-self: flex-end;
+    }
+
+    .copy-url {
+      grid-column: 5 / 6;
+      grid-row: 7 / 9;
       align-self: flex-end;
     }
 
@@ -96,6 +110,11 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     .explanation-right {
       grid-column: 4 / 6;
+      font-size: smaller;
+    }
+
+    .explanation-left {
+      grid-column: 1 / 5;
       font-size: smaller;
     }
 
@@ -120,11 +139,23 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       width: 1.2em;
       height: 1.2em;
       padding: 0.25em;
-      padding-right: 0.5em;
+    }
+
+    @media (min-width: 400px) {
+      button svg {
+        padding-right: 0.5em;
+      }
     }
 
     button label * {
       vertical-align: middle;
+      font-size: smaller;
+    }
+
+    @media (max-width: 400px) {
+      button label span.optional {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -132,7 +163,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 <body>
   <div class="container">
     <div class="heading">Inflation</div>
-    <div class="explanation">Based on Consumer Price Index.</div>
+    <div class="explanation">Based on the US Consumer Price Index.</div>
     <div class="first-column"></div>
     <div>Years</div>
     <div></div>
@@ -145,6 +176,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div></div>
     <div class="amount">
       <span>$ </span><input name="fromAmount" type="number" min="0" />
+    </div>
+    <div class="clear">
+      <button onclick="clearAmounts()"><label>X</label></button>
     </div>
     <div class="first-column"></div>
     <div>↓</div>
@@ -160,14 +194,14 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="amount">
       <span>$ </span><input name="toAmount" type="number" min="0" />
     </div>
-    <div class="clear">
-      <button onclick="clearAmounts()"><label>X</label></button>
-    </div>
-    <div class="explanation">For this amount:</div>
+    <div class="explanation-left">For this amount:</div>
     <div class="memorize">
       <button onclick="memorize()"><label>Add to List</label></button>
     </div>
-    <div class="copy">
+    <div class="copy-numbers">
+      &#x2003;<button onclick="copyNumbers()"><label>Copy</label></button>
+    </div>
+    <div class="copy-url">
       <button onclick="copyURL()">
         <label>
           <svg viewBox="0 0 24 24">
@@ -176,7 +210,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
                 fill="none" stroke-linejoin="round" stroke-linecap="round" />
             </g>
           </svg>
-          <span>Copy URL</span>
+          <span class="optional">Copy</span>
+          <span>URL</span>
         </label>
       </button>
     </div>
@@ -192,7 +227,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     // data from https://www.bls.gov/data/inflation_calculator.htm
     // took January of each year
     // that site mentions it got its data from https://data.bls.gov/timeseries/CUUR0000SA0
-    // and the Consumer Price Index (CPI) https://www.bls.gov/cpi/
+    // and the US Consumer Price Index (CPI) https://www.bls.gov/cpi/
     const cpi = {
       "1913": 100,
       "1914": 102,
@@ -491,6 +526,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       fromAmount = 0;
       moreRecentlyHasEnteredToAmount = false;
       fromTo();
+      fromAmountElement.focus();
     }
     //
     function hashchangeHandler() {
@@ -587,6 +623,11 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       memorizeButton.disabled =
         memorized.length >= maxMemorized // prevent excessive length
         || memorized.includes(memo()); // avoid duplicates
+    }
+    //
+    function copyNumbers() {
+      const numbers = memo();
+      navigator.clipboard.writeText(numbers);
     }
     //
     const personal = document.location.hostname === "srguiwiz.github.io";
