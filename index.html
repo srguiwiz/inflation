@@ -441,15 +441,23 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       fromToOrToFrom();
     }
     //
+    function round(number, whileEditing) {
+      if (whileEditing || Math.abs(number) < 10) number = Math.round(number * 100) / 100; // allow 1/100ths
+      else if (whileEditing || Math.abs(number) < 100) number = Math.round(number * 10) / 10; // allow 1/10ths
+      else number = Math.round(number); // force integer
+      return number;
+    }
     function showAmounts() {
-      if (Math.abs(fromAmount) < 10) fromAmount = Math.round(fromAmount * 100) / 100;
-      else if (fromAmount < 100) fromAmount = Math.round(fromAmount * 10) / 10;
-      else fromAmount = Math.round(fromAmount);
-      if (Math.abs(toAmount) < 10) toAmount = Math.round(toAmount * 100) / 100;
-      else if (toAmount < 100) toAmount = Math.round(toAmount * 10) / 10;
-      else toAmount = Math.round(toAmount);
-      fromAmountElement.value = fromAmount;
-      toAmountElement.value = toAmount;
+      const editingFromAmount = fromAmountElement === document.activeElement
+      const editingToAmount = toAmountElement === document.activeElement
+      fromAmount = round(fromAmount, editingFromAmount);
+      toAmount = round(toAmount, editingToAmount);
+      if (!editingFromAmount
+        || fromAmountElement.value != fromAmount)
+        fromAmountElement.value = fromAmount; // else while editing allow decimal point entry
+      if (!editingToAmount
+        || toAmountElement.value != toAmount)
+        toAmountElement.value = toAmount;
       localStorageSetAll();
       updateMemorizedButton();
       clearHash();
@@ -529,6 +537,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     toAmountElement.addEventListener("click", event => {
       moreRecentlyHasEnteredToAmount = true;
       toFrom();
+    });
+    fromAmountElement.addEventListener("blur", event => {
+      fromToOrToFrom(); // force rounding
+    });
+    toAmountElement.addEventListener("blur", event => {
+      fromToOrToFrom();
     });
     //
     function clearAmounts() {
