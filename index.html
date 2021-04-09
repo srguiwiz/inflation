@@ -53,6 +53,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     .container {
       box-sizing: border-box;
       height: 100%;
+      width: max-content;
+      max-width: 100%;
+      /* */
       display: grid;
       grid-template-columns: repeat(4, auto) 1fr;
       grid-template-rows: repeat(8, auto) 1fr repeat(2, auto);
@@ -65,6 +68,18 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     @media (max-width: 500px) {
       .container {
         column-gap: 0.5rem;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .container {
+        column-gap: 0.25rem;
+      }
+    }
+
+    @media (max-height: 600px) {
+      .container {
+        row-gap: 0.75rem;
       }
     }
 
@@ -90,6 +105,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       grid-column: 1 / 2;
     }
 
+    @media (max-height: 360px) {
+      .label {
+        font-size: smaller;
+      }
+    }
+
     .container * {
       align-self: baseline;
     }
@@ -98,8 +119,16 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       min-width: max-content;
     }
 
-    @media (max-width: 500px),
-    (max-height: 500px) {
+    @media (max-device-width: 500px),
+    (max-device-height: 500px) {
+
+      .year select,
+      .amount input {
+        font-size: 130%;
+      }
+    }
+
+    @media screen and (hover: none) and (pointer: coarse) {
 
       .year select,
       .amount input {
@@ -138,30 +167,35 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       align-self: flex-end;
     }
 
-    .copy-numbers {
-      grid-column: 4 / 5;
-      align-self: flex-end;
-    }
-
-    .copy-url {
-      grid-column: 5 / 6;
+    .copy-either {
+      grid-column: 4 / 6;
       grid-row: 7 / 9;
       align-self: flex-end;
+      /* */
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .copy-numbers {
+      margin-left: 1rem;
     }
 
     .explanation {
       grid-column: 1 / 6;
       font-size: smaller;
+      max-width: 50rem;
     }
 
     .explanation-right {
       grid-column: 4 / 6;
       font-size: smaller;
+      max-width: 30rem;
     }
 
     .explanation-left {
       grid-column: 1 / 4;
       font-size: smaller;
+      max-width: 15rem;
     }
 
     @media (max-height: 360px) {
@@ -194,7 +228,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       padding: 0.25em;
     }
 
-    @media (min-width: 400px) {
+    @media (min-width: 500px) {
       button svg {
         padding-left: 0.5em;
       }
@@ -213,7 +247,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     }
 
     @media (max-width: 400px) {
-      .copy-url button {
+      button.copy-url {
         max-width: 10em;
         font-size: 75%;
       }
@@ -226,9 +260,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="heading">Inflation Calculator</div>
     <div class="explanation">Based on the US Consumer Price Index.</div>
     <div class="first-column"></div>
-    <div>Year</div>
+    <div class="label">Year</div>
     <div></div>
-    <div>Amount</div>
+    <div class="label">Amount</div>
     <div class="first-column"></div>
     <div class="year">
       <select name="fromYear" autofocus>
@@ -242,7 +276,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <button onclick="clearAmounts()"><label>X</label></button>
     </div>
     <div class="first-column"></div>
-    <div>To ↓</div>
+    <div class="label">To ↓</div>
     <div></div>
     <div class="explanation-right">
       Enter either amount.</div>
@@ -256,14 +290,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <span>$ </span><input name="toAmount" type="number" min="0" />
     </div>
     <div class="explanation-left">This amount:</div>
-    <div class="memorize">
-      <button onclick="memorize()"><label>Add to List</label></button>
-    </div>
-    <div class="copy-numbers">
-      &#x2003;<button onclick="copyNumbers()"><label>Copy</label></button>
-    </div>
-    <div class="copy-url">
-      <button onclick="copyURL()">
+    <div class="copy-either">
+      <button class="copy-numbers" onclick="copyNumbers()"><label>Copy</label></button>
+      <button class="copy-url" onclick="copyURL()">
         <label>
           <span class="optional">Copy</span>
           <span>URL</span>
@@ -273,6 +302,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
           </svg>
         </label>
       </button>
+    </div>
+    <div class="memorize">
+      <button onclick="memorize()"><label>Add to List</label></button>
     </div>
     <div class="memorized">
       <textarea style="visibility: hidden;"></textarea>
