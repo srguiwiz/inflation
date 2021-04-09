@@ -62,9 +62,21 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       overflow: hidden;
     }
 
-    @media (max-width: 320px) {
+    @media (max-width: 500px) {
       .container {
-        gap: 1rem 0.5rem;
+        column-gap: 0.5rem;
+      }
+    }
+
+    @media (max-height: 500px) {
+      .container {
+        row-gap: 0.5rem;
+      }
+    }
+
+    @media (max-height: 400px) {
+      .container {
+        row-gap: 0.25rem;
       }
     }
 
@@ -86,8 +98,35 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       min-width: max-content;
     }
 
+    @media (max-width: 500px),
+    (max-height: 500px) {
+
+      .year select,
+      .amount input {
+        font-size: 130%;
+      }
+    }
+
     input[type='number'] {
       max-width: 8em;
+    }
+
+    @media (max-width: 500px) {
+      input[type='number'] {
+        max-width: 7em;
+      }
+    }
+
+    @media (max-width: 400px) {
+      input[type='number'] {
+        max-width: 6em;
+      }
+    }
+
+    @media (max-width: 320px) {
+      input[type='number'] {
+        max-width: 5em;
+      }
     }
 
     .clear {
@@ -121,15 +160,22 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     }
 
     .explanation-left {
-      grid-column: 1 / 5;
+      grid-column: 1 / 4;
       font-size: smaller;
+    }
+
+    @media (max-height: 360px) {
+      .explanation-left {
+        max-height: 0px;
+        visibility: hidden;
+      }
     }
 
     .memorized {
       grid-column: 1 / 6;
       box-sizing: border-box;
       height: 100%;
-      min-height: 4em;
+      min-height: 3em;
       overflow: hidden;
     }
 
@@ -150,18 +196,26 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     @media (min-width: 400px) {
       button svg {
-        padding-right: 0.5em;
+        padding-left: 0.5em;
+      }
+    }
+
+    @media (max-width: 400px) {
+      button svg {
+        display: none;
       }
     }
 
     button label * {
+      text-align: center;
       vertical-align: middle;
       font-size: smaller;
     }
 
     @media (max-width: 400px) {
-      button label span.optional {
-        display: none;
+      .copy-url button {
+        max-width: 10em;
+        font-size: 75%;
       }
     }
   </style>
@@ -176,7 +230,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div></div>
     <div>Amount</div>
     <div class="first-column"></div>
-    <div>
+    <div class="year">
       <select name="fromYear" autofocus>
       </select>
     </div>
@@ -193,7 +247,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="explanation-right">
       Enter either amount.</div>
     <div class="first-column"></div>
-    <div>
+    <div class="year">
       <select name="toYear">
       </select>
     </div>
@@ -201,7 +255,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="amount">
       <span>$ </span><input name="toAmount" type="number" min="0" />
     </div>
-    <div class="explanation-left">For this amount:</div>
+    <div class="explanation-left">This amount:</div>
     <div class="memorize">
       <button onclick="memorize()"><label>Add to List</label></button>
     </div>
@@ -211,12 +265,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="copy-url">
       <button onclick="copyURL()">
         <label>
+          <span class="optional">Copy</span>
+          <span>URL</span>
           <svg viewBox="0 0 24 24">
             <path d="M8,12 3,12 3,22 21,22 21,12 16,12 M12,16 12,2 M8,6 12,2 16,6" stroke="black" stroke-width="2"
               fill="none" stroke-linejoin="round" stroke-linecap="round" />
           </svg>
-          <span class="optional">Copy</span>
-          <span>URL</span>
         </label>
       </button>
     </div>
@@ -225,7 +279,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     </div>
     <div class="explanation" style="visibility: hidden;">You can add notes to this memorized text,
       edit, copy, or delete all.</div>
-    <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to the server.</div>
+    <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to a server.</div>
     <div class="explanation personal" style="display:none;">Initial version authored by Leo Baschy in 2021.</div>
   </div>
   <script>
@@ -452,16 +506,21 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       else number = Math.round(number); // force integer
       return number;
     }
+    const zeroThenDigitRegExp = /^0[0-9]/;
     function showAmounts() {
-      const editingFromAmount = fromAmountElement === document.activeElement
-      const editingToAmount = toAmountElement === document.activeElement
+      const editingFromAmount = fromAmountElement === document.activeElement;
+      const editingToAmount = toAmountElement === document.activeElement;
       fromAmount = round(fromAmount, editingFromAmount);
       toAmount = round(toAmount, editingToAmount);
-      if (!editingFromAmount
-        || fromAmountElement.value != fromAmount)
+      const fromAmountElementValue = fromAmountElement.value;
+      if (!editingFromAmount // not editing
+        || fromAmountElementValue != fromAmount // not just a decimal point or trailing zeros
+        || zeroThenDigitRegExp.test(fromAmountElementValue)) // an extraneous leading zero
         fromAmountElement.value = fromAmount; // else while editing allow decimal point entry
+      const toAmountElementValue = toAmountElement.value;
       if (!editingToAmount
-        || toAmountElement.value != toAmount)
+        || toAmountElementValue != toAmount
+        || zeroThenDigitRegExp.test(toAmountElementValue))
         toAmountElement.value = toAmount;
       localStorageSetAll();
       updateMemorizedButton();
