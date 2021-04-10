@@ -34,6 +34,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="512x512" href="inflation-512x512.png">
   <link rel="apple-touch-icon" sizes="256x256" href="inflation-256x256.png">
   <link rel="apple-touch-icon" sizes="128x128" href="inflation-128x128.png">
   <link rel="apple-touch-icon" sizes="96x96" href="inflation-96x96.png">
@@ -128,7 +129,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
 
-    @media screen and (hover: none) and (pointer: coarse) {
+    @media only screen and (hover: none) and (pointer: coarse) {
 
       .year select,
       .amount input {
@@ -252,6 +253,18 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         font-size: 75%;
       }
     }
+
+    @media (display-mode: standalone) {
+      .installable {
+        display: none;
+      }
+    }
+
+    @media not screen and (hover: none) and (pointer: coarse) {
+      .installable {
+        display: none;
+      }
+    }
   </style>
 </head>
 
@@ -312,6 +325,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="explanation" style="visibility: hidden;">You can add notes to this memorized text,
       edit, copy, or delete all.</div>
     <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to a server.</div>
+    <div class="explanation installable">You should be able to make your browser install or
+      add this to your home screen like an app.</div>
     <div class="explanation personal" style="display:none;">Initial version authored by Leo Baschy in 2021.</div>
   </div>
   <script>
@@ -757,6 +772,21 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     setFromURLAndMemoryAndStorage(); // first time
     showMemorized(); // first time
+    //
+    if ("serviceWorker" in navigator) {
+      (async () => {
+        try {
+          const response = await fetch("sw.js"); // optional
+          if (response.ok) {
+            const responseText = await response.text(); // fetch completely even if not used
+            if (responseText) {
+              const serviceWorkerRegistration = await navigator.serviceWorker.register("./sw.js");
+            }
+          }
+        } catch {
+        }
+      })();
+    }
   </script>
 </body>
 

@@ -7,6 +7,10 @@
   "description": "An inflation calculator for US dollars.",
   "icons": [
     {
+      "src": "./inflation-512x512.png",
+      "sizes": "512x512"
+    },
+    {
       "src": "./inflation-256x256.png",
       "sizes": "256x256"
     },
@@ -28,7 +32,7 @@
     },
     {
       "src": "./inflation.svg",
-      "sizes": "48x48 72x72 96x96 128x128 256x256"
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
     }
   ]
 }
