@@ -25,8 +25,6 @@ self.addEventListener("fetch", (fetchEvent) => {
     const cache = await caches.open(cacheName);
     const cachedResponse = await cache.match(fetchEvent.request);
     if (cachedResponse) {
-      cache.add(fetchEvent.request.url) // update too
-        .catch(reason => { }); // ignore
       return cachedResponse.clone();
     }
     return fetch(fetchEvent.request);
