@@ -773,20 +773,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     setFromURLAndMemoryAndStorage(); // first time
     showMemorized(); // first time
     //
-    if ("serviceWorker" in navigator) {
-      (async () => {
-        try {
-          const response = await fetch("sw.js"); // optional
-          if (response.ok) {
-            const responseText = await response.text(); // fetch completely even if not used
-            if (responseText) {
-              const serviceWorkerRegistration = await navigator.serviceWorker.register("./sw.js");
-            }
-          }
-        } catch {
-        }
-      })();
-    }
+    try {
+      navigator.serviceWorker.register("./sw.js");
+    } catch { } // ignore
   </script>
 </body>
 
