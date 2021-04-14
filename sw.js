@@ -1,4 +1,6 @@
-const cacheName = "inflationCache";
+// forks should have a distinct cacheName, for example including the country code for which it is,
+// see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
+const cacheName = "inflation-us-annual";
 
 self.addEventListener("install", (installEvent) => {
   async function createAndFillCache() {

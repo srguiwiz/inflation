@@ -1,0 +1,14 @@
+{
+  "name": "inflation",
+  "version": "1.0.1",
+  "description": "Inflation calculator",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve",
+    "build": "echo Static content, nothing to build",
+    "postinstall": "node -e 'require(\"fs\").copyFileSync(\"package.json\",\"package.jsonc\")'"
+  },
+  "devDependencies": {
+    "serve": "^11.2.0"
+  }
+}

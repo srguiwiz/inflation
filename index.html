@@ -325,9 +325,11 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="explanation" style="visibility: hidden;">You can add notes to this memorized text,
       edit, copy, or delete all.</div>
     <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to a server.</div>
-    <div class="explanation installable">You should be able to make your browser install or
-      add this to your home screen like an app.</div>
-    <div class="explanation personal" style="display:none;">Initial version authored by Leo Baschy in 2021.</div>
+    <div class="explanation installable">This calculator can be installed from the browser to your home screen.</div>
+    <div class="explanation personal" style="display:none;">
+      <!-- forks automatically should not display this personal note -->
+      App developed by Leo Baschy in 2021-04.
+    </div>
   </div>
   <script>
     // data from https://www.bls.gov/data/inflation_calculator.htm
@@ -468,10 +470,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       toYearElement.append(optionElement.cloneNode(true));
     }
     //
-    const prefix = "inflation-us-annual.";
+    // forks should have a distinct prefix, for example including the country code for which it is,
+    // see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
+    const prefix = "inflation-us-annual";
     function localStorageGetItem(keyName) {
       try {
-        return localStorage.getItem(prefix + keyName); // a string or null
+        return localStorage.getItem(`${prefix}.${keyName}`); // a string or null
       } catch (e) {
         console.error(e);
         return null;
@@ -479,7 +483,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     }
     function localStorageSetItem(keyName, keyValue) {
       try {
-        localStorage.setItem(prefix + keyName, keyValue);
+        localStorage.setItem(`${prefix}.${keyName}`, keyValue);
       } catch (e) {
         console.error(e);
       }
@@ -764,10 +768,13 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       navigator.clipboard.writeText(numbers);
     }
     //
-    const personal = document.location.hostname === "srguiwiz.github.io";
+    const personal =
+      // to show a personal note, a developer of a fork may want to change this to their own domain
+      ({ "srguiwiz.github.io": 1, "inflation.cmprh.com": 1 })
+      [document.location.hostname];
     document.querySelectorAll(".personal").forEach(element => {
       if (personal) element.style.display = "";
-      else element.remove(); // avoid forks advertising an author's personal note
+      else element.remove(); // avoid forks showing another developer's personal note
     });
     //
     setFromURLAndMemoryAndStorage(); // first time

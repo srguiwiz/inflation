@@ -1,3 +1,7 @@
 #
 node_modules/
+# stay lean
 package-lock.json
+# meet a hosting requirement to be recognized as a static site,
+# keep a copy in package.jsonc while not committing package.json
+package.json
