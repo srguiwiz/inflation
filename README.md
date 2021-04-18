@@ -21,3 +21,13 @@ One difficulty level up is to derive a calculator
 
 - between currencies, or
 - for interest.
+
+The `main` branch has been configured with a single currency.
+The same code handling a historical currency switch is in use
+on branch `inflation-at`, as an example.
+The necessary code is in the main branch too.
+
+| Git Branch | Country | Live At | Notes |
+| --- | --- | --- | --- |
+| main | US | https://inflation.cmprh.com/ | |
+| inflation-at | Austria | https://inflation-at.cmprh.com/ | € after ÖS |

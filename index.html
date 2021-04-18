@@ -40,7 +40,6 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   <link rel="apple-touch-icon" sizes="96x96" href="inflation-96x96.png">
   <link rel="apple-touch-icon" sizes="72x72" href="inflation-72x72.png">
   <link rel="apple-touch-icon" sizes="48x48" href="inflation-48x48.png">
-  <title>Inflation Calculator</title>
   <style>
     body {
       box-sizing: border-box;
@@ -66,15 +65,27 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       overflow: hidden;
     }
 
+    .symbol {
+      transform: translateX(0.5em);
+    }
+
     @media (max-width: 500px) {
       .container {
         column-gap: 0.5rem;
+      }
+
+      .symbol {
+        transform: translateX(0.25em);
       }
     }
 
     @media (max-width: 320px) {
       .container {
         column-gap: 0.25rem;
+      }
+
+      .symbol {
+        transform: translateX(0.125em);
       }
     }
 
@@ -159,26 +170,31 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
 
+    .symbol {
+      justify-self: end;
+      text-align: end;
+    }
+
     .clear {
       grid-column: 5 / 6;
     }
 
     .memorize {
       grid-column: 1 / 3;
-      align-self: flex-end;
+      align-self: end;
     }
 
     .copy-either {
       grid-column: 4 / 6;
       grid-row: 7 / 9;
-      align-self: flex-end;
+      align-self: end;
       /* */
       display: flex;
       justify-content: space-between;
     }
 
     .copy-numbers {
-      margin-left: 1rem;
+      margin-inline-start: 1rem;
     }
 
     .explanation {
@@ -231,7 +247,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     @media (min-width: 500px) {
       button svg {
-        padding-left: 0.5em;
+        padding-inline-start: 0.5em;
       }
     }
 
@@ -265,25 +281,48 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         display: none;
       }
     }
+
+    .symbols {
+      visibility: hidden;
+      max-height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      transform: scaleY(0.01);
+      min-width: 1em;
+    }
+
+    * {
+      user-select: none;
+    }
+
+    input[type='number'],
+    input[type='text'],
+    textarea {
+      user-select: text;
+    }
   </style>
+  <!-- forks per country should adjust this title -->
+  <title>Inflation Calculator</title>
 </head>
 
 <body>
   <div class="container">
+    <!-- forks per country should adjust this heading -->
     <div class="heading">Inflation Calculator</div>
+    <!-- forks per country should adjust this explanation -->
     <div class="explanation">Based on the US Consumer Price Index.</div>
     <div class="first-column"></div>
     <div class="label">Year</div>
-    <div></div>
+    <div class="symbols symbol"></div>
     <div class="label">Amount</div>
     <div class="first-column"></div>
     <div class="year">
       <select name="fromYear" autofocus>
       </select>
     </div>
-    <div></div>
+    <div class="from-symbol symbol">$</div>
     <div class="amount">
-      <span>$ </span><input name="fromAmount" type="number" min="0" />
+      <input name="fromAmount" type="number" min="0" />
     </div>
     <div class="clear">
       <button onclick="clearAmounts()"><label>X</label></button>
@@ -298,9 +337,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <select name="toYear">
       </select>
     </div>
-    <div></div>
+    <div class="to-symbol symbol">$</div>
     <div class="amount">
-      <span>$ </span><input name="toAmount" type="number" min="0" />
+      <input name="toAmount" type="number" min="0" />
     </div>
     <div class="explanation-left">This amount:</div>
     <div class="copy-either">
@@ -445,10 +484,40 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       "2018": 2529,
       "2019": 2568,
       "2020": 2632,
-      "2021": 2669
+      "2021": 2669,
     };
+    const currencies = [
+    ];
+    //
     const years = Object.keys(cpi).sort();
     const mostRecentYear = years[years.length - 1];
+    //
+    const currenciesByYear = {};
+    {
+      if (!currencies.length) currencies.push({});
+      currencies.forEach((currency, index, currencies) =>
+        currencies[index] = Object.assign({ symbol: "$", starting: "", conversion: 1 }, currency));
+      const sortedCurrencies = currencies.map(currency => currency.starting).sort()
+        .map(startingYear => currencies.find(currency => currency.starting === startingYear));
+      for (let yi = 0, ci = 0; yi < years.length; yi++) {
+        const year = years[yi];
+        let currency = sortedCurrencies[ci];
+        if (ci + 1 < sortedCurrencies.length) {
+          const nextCurrency = sortedCurrencies[ci + 1];
+          if (year >= nextCurrency.starting) {
+            nextCurrency.conversion *= currency.conversion; // accumulate
+            ci++;
+            currency = nextCurrency;
+          }
+        }
+        currenciesByYear[year] = { symbol: currency.symbol, conversion: currency.conversion };
+      }
+      if (sortedCurrencies.length > 1) {
+        document.querySelectorAll(".symbols").forEach(element => {
+          element.innerHTML = Object.values(sortedCurrencies).map(currency => currency.symbol).join("<br/>");
+        });
+      }
+    }
     //
     const maxMemorized = 1e5; // 100,000 bytes
     //
@@ -456,6 +525,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const toYearElement = document.querySelector("[name='toYear']");
     const fromAmountElement = document.querySelector("[name='fromAmount']");
     const toAmountElement = document.querySelector("[name='toAmount']");
+    const fromSymbolElements = Array.from(document.querySelectorAll(".from-symbol"));
+    const toSymbolElements = Array.from(document.querySelectorAll(".to-symbol"));
     //
     const memorizedElement = document.querySelector(".memorized");
     const memorizedTextarea = memorizedElement.querySelector("textarea");
@@ -573,16 +644,24 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         || toAmountElementValue != toAmount
         || zeroThenDigitRegExp.test(toAmountElementValue))
         toAmountElement.value = toAmount;
+      const fromSymbol = currenciesByYear[fromYear].symbol;
+      for (const element of fromSymbolElements) element.textContent = fromSymbol;
+      const toSymbol = currenciesByYear[toYear].symbol;
+      for (const element of toSymbolElements) element.textContent = toSymbol;
       localStorageSetAll();
       updateMemorizedButton();
       clearHash();
     }
     function fromTo() {
-      toAmount = fromAmount * cpi[toYear] / cpi[fromYear];
+      toAmount = fromAmount
+        * cpi[toYear] * currenciesByYear[fromYear].conversion
+        / cpi[fromYear] / currenciesByYear[toYear].conversion;
       showAmounts();
     }
     function toFrom() {
-      fromAmount = toAmount * cpi[fromYear] / cpi[toYear];
+      fromAmount = toAmount
+        * cpi[fromYear] * currenciesByYear[toYear].conversion
+        / cpi[toYear] / currenciesByYear[fromYear].conversion;
       showAmounts();
     }
     function fromToOrToFrom() {
@@ -746,7 +825,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     memorizedTextarea.addEventListener("keypress", keyListener);
     //
     function memo() {
-      return `${fromYear} → ${toYear} ≈ $ ${fromAmount} → ${toAmount}`;
+      const fromSymbol = currenciesByYear[fromYear].symbol;
+      const toSymbol = currenciesByYear[toYear].symbol;
+      return `${fromYear} → ${toYear}  ≈  ${fromSymbol} ${fromAmount} → ${fromSymbol === toSymbol ? "" : `${toSymbol} `}${toAmount}`;
     }
     function memorize() {
       const newMemo = memo();
