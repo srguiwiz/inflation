@@ -1,15 +1,11 @@
 # Inflation
 
-[//]: # (Forks should have the live link adjusted or removed)
-
-This inflation calculator is live online at
+These inflation calculators are live online at
 https://inflation.cmprh.com/
 .
 
-This calculator works in your browser,
+Each calculator works in your browser,
 or can be installed from the browser to your phone's home screen.
-
-It is optimized for certain uses.
 
 You can fork this repository to derive a calculator
 
@@ -19,15 +15,21 @@ You can fork this repository to derive a calculator
 
 One difficulty level up is to derive a calculator
 
-- between currencies, or
-- for interest.
+- between currencies of countries.
 
-The `main` branch has been configured with a single currency.
-The same code handling a historical currency switch is in use
-on branch `inflation-at`, as an example.
-The necessary code is in the main branch too.
+The US inflation calculator has been configured for a single currency.
+A historical currency switch is handled correctly in the Austria calculator,
+as an example.
+The code for multiple currencies is present in both calculators.
 
-| Git Branch | Country | Live At | Notes |
-| --- | --- | --- | --- |
-| main | US | https://inflation.cmprh.com/ | |
-| inflation-at | Austria | https://inflation-at.cmprh.com/ | € after ÖS |
+| Country | Live At | Notes |
+| --- | --- | --- |
+| US | https://inflation.cmprh.com/us/ | |
+| Austria | https://inflation.cmprh.com/at/ | € after ÖS |
+
+If you submit a pull request, your calculator can be online too.
+
+This calculator is optimized for certain uses.
+
+Numbers and notes taken, if any, stay on a user's device only.
+Nothing gets sent to a server.

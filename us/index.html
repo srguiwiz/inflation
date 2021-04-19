@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <!--
+MIT License
+
+Copyright (c) 2021 Leo Baschy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+  -->
+  <!--
+Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
+  -->
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
+  <link rel="icon" type="image/svg+xml" href="inflation.svg">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="512x512" href="inflation-512x512.png">
+  <link rel="apple-touch-icon" sizes="256x256" href="inflation-256x256.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="inflation-128x128.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="inflation-96x96.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="inflation-72x72.png">
+  <link rel="apple-touch-icon" sizes="48x48" href="inflation-48x48.png">
+  <style>
+    body {
+      box-sizing: border-box;
+      width: 100vw;
+      height: 100vh;
+      margin: 0px;
+      padding: 0px;
+      overflow: hidden;
+    }
+
+    .container {
+      box-sizing: border-box;
+      height: 100%;
+      width: max-content;
+      max-width: 100%;
+      /* */
+      display: grid;
+      grid-template-columns: repeat(4, auto) 1fr;
+      grid-template-rows: repeat(8, auto) 1fr repeat(2, auto);
+      gap: 1rem;
+      margin: 0px;
+      padding: 0.75rem;
+      overflow: hidden;
+    }
+
+    .symbol {
+      transform: translateX(0.5em);
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        column-gap: 0.5rem;
+      }
+
+      .symbol {
+        transform: translateX(0.25em);
+      }
+    }
+
+    @media (max-width: 320px) {
+      .container {
+        column-gap: 0.25rem;
+      }
+
+      .symbol {
+        transform: translateX(0.125em);
+      }
+    }
+
+    @media (max-height: 600px) {
+      .container {
+        row-gap: 0.75rem;
+      }
+    }
+
+    @media (max-height: 500px) {
+      .container {
+        row-gap: 0.5rem;
+      }
+    }
+
+    @media (max-height: 400px) {
+      .container {
+        row-gap: 0.25rem;
+      }
+    }
+
+    .heading {
+      grid-column: 1 / 6;
+      font-family: sans-serif;
+      font-size: larger;
+    }
+
+    .first-column {
+      grid-column: 1 / 2;
+    }
+
+    @media (max-height: 360px) {
+      .label {
+        font-size: smaller;
+      }
+    }
+
+    .container * {
+      align-self: baseline;
+    }
+
+    .amount {
+      min-width: max-content;
+    }
+
+    @media (max-device-width: 500px),
+    (max-device-height: 500px) {
+
+      .year select,
+      .amount input {
+        font-size: 130%;
+      }
+    }
+
+    @media only screen and (hover: none) and (pointer: coarse) {
+
+      .year select,
+      .amount input {
+        font-size: 130%;
+      }
+    }
+
+    input[type='number'] {
+      max-width: 8em;
+    }
+
+    @media (max-width: 500px) {
+      input[type='number'] {
+        max-width: 7em;
+      }
+    }
+
+    @media (max-width: 400px) {
+      input[type='number'] {
+        max-width: 6em;
+      }
+    }
+
+    @media (max-width: 320px) {
+      input[type='number'] {
+        max-width: 5em;
+      }
+    }
+
+    .symbol {
+      justify-self: end;
+      text-align: end;
+    }
+
+    .clear {
+      grid-column: 5 / 6;
+    }
+
+    .memorize {
+      grid-column: 1 / 3;
+      align-self: end;
+    }
+
+    .copy-either {
+      grid-column: 4 / 6;
+      grid-row: 7 / 9;
+      align-self: end;
+      /* */
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .copy-numbers {
+      margin-inline-start: 1rem;
+    }
+
+    .explanation {
+      grid-column: 1 / 6;
+      font-size: smaller;
+      max-width: 50rem;
+    }
+
+    .explanation-right {
+      grid-column: 4 / 6;
+      font-size: smaller;
+      max-width: 30rem;
+    }
+
+    .explanation-left {
+      grid-column: 1 / 4;
+      font-size: smaller;
+      max-width: 15rem;
+    }
+
+    @media (max-height: 360px) {
+      .explanation-left {
+        max-height: 0px;
+        visibility: hidden;
+      }
+    }
+
+    .memorized {
+      grid-column: 1 / 6;
+      box-sizing: border-box;
+      height: 100%;
+      min-height: 3em;
+      overflow: hidden;
+    }
+
+    .memorized textarea {
+      font-family: sans-serif;
+      resize: none;
+      box-sizing: border-box;
+      overflow: auto;
+      width: 100%;
+      height: 100%;
+    }
+
+    button svg {
+      width: 1.2em;
+      height: 1.2em;
+      padding: 0.25em;
+    }
+
+    @media (min-width: 500px) {
+      button svg {
+        padding-inline-start: 0.5em;
+      }
+    }
+
+    @media (max-width: 400px) {
+      button svg {
+        display: none;
+      }
+    }
+
+    button label * {
+      text-align: center;
+      vertical-align: middle;
+      font-size: smaller;
+    }
+
+    @media (max-width: 400px) {
+      button.copy-url {
+        max-width: 10em;
+        font-size: 75%;
+      }
+    }
+
+    @media (display-mode: standalone) {
+      .installable {
+        display: none;
+      }
+    }
+
+    @media not screen and (hover: none) and (pointer: coarse) {
+      .installable {
+        display: none;
+      }
+    }
+
+    .symbols {
+      visibility: hidden;
+      max-height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      transform: scaleY(0.01);
+      min-width: 1em;
+    }
+
+    * {
+      user-select: none;
+    }
+
+    input[type='number'],
+    input[type='text'],
+    textarea {
+      user-select: text;
+    }
+  </style>
+  <!-- forks per country should adjust this title -->
+  <title>Inflation Calculator</title>
+</head>
+
+<body>
+  <div class="container">
+    <!-- forks per country should adjust this heading -->
+    <div class="heading">Inflation Calculator</div>
+    <!-- forks per country should adjust this explanation -->
+    <div class="explanation">Based on the US Consumer Price Index.</div>
+    <div class="first-column"></div>
+    <div class="label">Year</div>
+    <div class="symbols symbol"></div>
+    <div class="label">Amount</div>
+    <div class="first-column"></div>
+    <div class="year">
+      <select name="fromYear" autofocus>
+      </select>
+    </div>
+    <div class="from-symbol symbol">$</div>
+    <div class="amount">
+      <input name="fromAmount" type="number" min="0" />
+    </div>
+    <div class="clear">
+      <button onclick="clearAmounts()"><label>X</label></button>
+    </div>
+    <div class="first-column"></div>
+    <div class="label">To ↓</div>
+    <div></div>
+    <div class="explanation-right">
+      Enter either amount.</div>
+    <div class="first-column"></div>
+    <div class="year">
+      <select name="toYear">
+      </select>
+    </div>
+    <div class="to-symbol symbol">$</div>
+    <div class="amount">
+      <input name="toAmount" type="number" min="0" />
+    </div>
+    <div class="explanation-left">This amount:</div>
+    <div class="copy-either">
+      <button class="copy-numbers" onclick="copyNumbers()"><label>Copy</label></button>
+      <button class="copy-url" onclick="copyURL()">
+        <label>
+          <span class="optional">Copy</span>
+          <span>URL</span>
+          <svg viewBox="0 0 24 24">
+            <path d="M8,12 3,12 3,22 21,22 21,12 16,12 M12,16 12,2 M8,6 12,2 16,6" stroke="black" stroke-width="2"
+              fill="none" stroke-linejoin="round" stroke-linecap="round" />
+          </svg>
+        </label>
+      </button>
+    </div>
+    <div class="memorize">
+      <button onclick="memorize()"><label>Add to List</label></button>
+    </div>
+    <div class="memorized">
+      <textarea style="visibility: hidden;"></textarea>
+    </div>
+    <div class="explanation" style="visibility: hidden;">You can add notes to this memorized text,
+      edit, copy, or delete all.</div>
+    <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to a server.</div>
+    <div class="explanation installable">This calculator can be installed from the browser to your home screen.</div>
+    <div class="explanation personal" style="display:none;">
+      <!-- forks automatically should not display this personal note -->
+      App developed by Leo Baschy in 2021-04.
+    </div>
+  </div>
+  <script>
+    // data from https://www.bls.gov/data/inflation_calculator.htm
+    // took January of each year
+    // that site mentions it got its data from https://data.bls.gov/timeseries/CUUR0000SA0
+    // and the US Consumer Price Index (CPI) https://www.bls.gov/cpi/
+    const cpi = {
+      "1913": 100,
+      "1914": 102,
+      "1915": 103,
+      "1916": 106,
+      "1917": 119,
+      "1918": 143,
+      "1919": 168,
+      "1920": 200,
+      "1921": 194,
+      "1922": 172,
+      "1923": 171,
+      "1924": 177,
+      "1925": 177,
+      "1926": 183,
+      "1927": 179,
+      "1928": 177,
+      "1929": 174,
+      "1930": 174,
+      "1931": 162,
+      "1932": 146,
+      "1933": 132,
+      "1934": 135,
+      "1935": 139,
+      "1936": 141,
+      "1937": 144,
+      "1938": 145,
+      "1939": 143,
+      "1940": 142,
+      "1941": 144,
+      "1942": 160,
+      "1943": 172,
+      "1944": 178,
+      "1945": 182,
+      "1946": 186,
+      "1947": 219,
+      "1948": 242,
+      "1949": 245,
+      "1950": 240,
+      "1951": 259,
+      "1952": 270,
+      "1953": 271,
+      "1954": 274,
+      "1955": 272,
+      "1956": 273,
+      "1957": 282,
+      "1958": 292,
+      "1959": 296,
+      "1960": 299,
+      "1961": 304,
+      "1962": 306,
+      "1963": 310,
+      "1964": 315,
+      "1965": 318,
+      "1966": 324,
+      "1967": 336,
+      "1968": 348,
+      "1969": 363,
+      "1970": 386,
+      "1971": 406,
+      "1972": 419,
+      "1973": 435,
+      "1974": 476,
+      "1975": 532,
+      "1976": 567,
+      "1977": 597,
+      "1978": 638,
+      "1979": 697,
+      "1980": 794,
+      "1981": 888,
+      "1982": 962,
+      "1983": 998,
+      "1984": 1040,
+      "1985": 1077,
+      "1986": 1118,
+      "1987": 1135,
+      "1988": 1181,
+      "1989": 1236,
+      "1990": 1300,
+      "1991": 1373,
+      "1992": 1409,
+      "1993": 1455,
+      "1994": 1492,
+      "1995": 1534,
+      "1996": 1576,
+      "1997": 1624,
+      "1998": 1650,
+      "1999": 1677,
+      "2000": 1722,
+      "2001": 1787,
+      "2002": 1807,
+      "2003": 1854,
+      "2004": 1890,
+      "2005": 1946,
+      "2006": 2023,
+      "2007": 2065,
+      "2008": 2154,
+      "2009": 2155,
+      "2010": 2211,
+      "2011": 2247,
+      "2012": 2313,
+      "2013": 2350,
+      "2014": 2387,
+      "2015": 2385,
+      "2016": 2418,
+      "2017": 2478,
+      "2018": 2529,
+      "2019": 2568,
+      "2020": 2632,
+      "2021": 2669,
+    };
+    const currencies = [
+    ];
+    //
+    const years = Object.keys(cpi).sort();
+    const mostRecentYear = years[years.length - 1];
+    //
+    const currenciesByYear = {};
+    {
+      if (!currencies.length) currencies.push({});
+      currencies.forEach((currency, index, currencies) =>
+        currencies[index] = Object.assign({ symbol: "$", starting: "", conversion: 1 }, currency));
+      const sortedCurrencies = currencies.map(currency => currency.starting).sort()
+        .map(startingYear => currencies.find(currency => currency.starting === startingYear));
+      for (let yi = 0, ci = 0; yi < years.length; yi++) {
+        const year = years[yi];
+        let currency = sortedCurrencies[ci];
+        if (ci + 1 < sortedCurrencies.length) {
+          const nextCurrency = sortedCurrencies[ci + 1];
+          if (year >= nextCurrency.starting) {
+            nextCurrency.conversion *= currency.conversion; // accumulate
+            ci++;
+            currency = nextCurrency;
+          }
+        }
+        currenciesByYear[year] = { symbol: currency.symbol, conversion: currency.conversion };
+      }
+      if (sortedCurrencies.length > 1) {
+        document.querySelectorAll(".symbols").forEach(element => {
+          element.innerHTML = Object.values(sortedCurrencies).map(currency => currency.symbol).join("<br/>");
+        });
+      }
+    }
+    //
+    const maxMemorized = 1e5; // 100,000 bytes
+    //
+    const fromYearElement = document.querySelector("[name='fromYear']");
+    const toYearElement = document.querySelector("[name='toYear']");
+    const fromAmountElement = document.querySelector("[name='fromAmount']");
+    const toAmountElement = document.querySelector("[name='toAmount']");
+    const fromSymbolElements = Array.from(document.querySelectorAll(".from-symbol"));
+    const toSymbolElements = Array.from(document.querySelectorAll(".to-symbol"));
+    //
+    const memorizedElement = document.querySelector(".memorized");
+    const memorizedTextarea = memorizedElement.querySelector("textarea");
+    const memorizeButton = document.querySelector(".memorize button");
+    const memorizedExplained = document.querySelector(".memorized ~ .explanation");
+    //
+    for (const year of years) {
+      const optionElement = document.createElement("option");
+      optionElement.value = year;
+      optionElement.textContent = mostRecentYear - year < 100 ? year.substring(2) : year;
+      fromYearElement.append(optionElement);
+      toYearElement.append(optionElement.cloneNode(true));
+    }
+    //
+    // forks should have a distinct prefix, for example including the country code for which it is,
+    // see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
+    const prefix = "inflation-us-annual";
+    function localStorageGetItem(keyName) {
+      try {
+        return localStorage.getItem(`${prefix}.${keyName}`); // a string or null
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
+    }
+    function localStorageSetItem(keyName, keyValue) {
+      try {
+        localStorage.setItem(`${prefix}.${keyName}`, keyValue);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    //
+    let fromYear;
+    let toYear;
+    let fromAmount;
+    let toAmount;
+    let moreRecentlyHasEnteredToAmount; // boolean
+    //
+    let memorized;
+    //
+    let showHashOnce;
+    //
+    function selectFromYear() {
+      for (const option of fromYearElement.selectedOptions) option.selected = false;
+      fromYearElement.querySelector(`option[value='${fromYear}']`).selected = true;
+    }
+    function selectToYear() {
+      for (const option of toYearElement.selectedOptions) option.selected = false;
+      toYearElement.querySelector(`option[value='${toYear}']`).selected = true;
+    }
+    //
+    function yearBeforeToYear() {
+      const resultIndex = years.indexOf(toYear) - 1;
+      return years[resultIndex >= 0 ? resultIndex : 0];
+    }
+    function yearAfterFromYear() {
+      const resultIndex = years.indexOf(fromYear) + 1;
+      return years[resultIndex > 0 && resultIndex < years.length ? resultIndex : years.length - 1];
+    }
+    //
+    function clearHash() {
+      if (document.location.hash) {
+        history.replaceState("", document.title, document.location.pathname); // clear
+      }
+      showHashOnce = false;
+    }
+    function setFromURLAndMemoryAndStorage() {
+      // use what is given in the URL's hash, if anything,
+      // reuse from memory if not first invocation,
+      // else use from localStorage, if anything,
+      // else use defaults
+      let hash = document.location.hash; // if any
+      if (hash) {
+        try {
+          hash = Object.fromEntries(hash.replace(/^#/, "").split(",").map(entry => entry.split("=")));
+          ({ fy: fromYear = fromYear, ty: toYear = toYear, fa: fromAmount = fromAmount, ta: toAmount = toAmount } = hash);
+          moreRecentlyHasEnteredToAmount = !!toAmount && !fromAmount;
+        } catch {
+        }
+      }
+      //
+      toYear = toYear ?? (localStorageGetItem("toYear") || years[years.length - 1]);
+      if (!cpi[toYear]) toYear = mostRecentYear; // if not known
+      selectToYear(toYear);
+      //
+      fromYear = fromYear ?? localStorageGetItem("fromYear");
+      if (!cpi[fromYear]) fromYear = yearBeforeToYear(); // if not known
+      selectFromYear(fromYear);
+      //
+      fromAmount = fromAmount ?? (Number(localStorageGetItem("fromAmount")) || 0);
+      toAmount = toAmount ?? (Number(localStorageGetItem("toAmount")) || 0);
+      moreRecentlyHasEnteredToAmount = moreRecentlyHasEnteredToAmount ?? localStorageGetItem("moreRecentlyHasEnteredToAmount") === "true";
+      //
+      fromToOrToFrom();
+    }
+    //
+    function round(number, whileEditing) {
+      if (whileEditing || Math.abs(number) < 10) number = Math.round(number * 100) / 100; // allow 1/100ths
+      else if (whileEditing || Math.abs(number) < 100) number = Math.round(number * 10) / 10; // allow 1/10ths
+      else number = Math.round(number); // force integer
+      return number;
+    }
+    const zeroThenDigitRegExp = /^0[0-9]/;
+    function showAmounts() {
+      const editingFromAmount = fromAmountElement === document.activeElement;
+      const editingToAmount = toAmountElement === document.activeElement;
+      fromAmount = round(fromAmount, editingFromAmount);
+      toAmount = round(toAmount, editingToAmount);
+      const fromAmountElementValue = fromAmountElement.value;
+      if (!editingFromAmount // not editing
+        || fromAmountElementValue != fromAmount // not just a decimal point or trailing zeros
+        || zeroThenDigitRegExp.test(fromAmountElementValue)) // an extraneous leading zero
+        fromAmountElement.value = fromAmount; // else while editing allow decimal point entry
+      const toAmountElementValue = toAmountElement.value;
+      if (!editingToAmount
+        || toAmountElementValue != toAmount
+        || zeroThenDigitRegExp.test(toAmountElementValue))
+        toAmountElement.value = toAmount;
+      const fromSymbol = currenciesByYear[fromYear].symbol;
+      for (const element of fromSymbolElements) element.textContent = fromSymbol;
+      const toSymbol = currenciesByYear[toYear].symbol;
+      for (const element of toSymbolElements) element.textContent = toSymbol;
+      localStorageSetAll();
+      updateMemorizedButton();
+      clearHash();
+    }
+    function fromTo() {
+      toAmount = fromAmount
+        * cpi[toYear] * currenciesByYear[fromYear].conversion
+        / cpi[fromYear] / currenciesByYear[toYear].conversion;
+      showAmounts();
+    }
+    function toFrom() {
+      fromAmount = toAmount
+        * cpi[fromYear] * currenciesByYear[toYear].conversion
+        / cpi[toYear] / currenciesByYear[fromYear].conversion;
+      showAmounts();
+    }
+    function fromToOrToFrom() {
+      if (!moreRecentlyHasEnteredToAmount) {
+        fromTo();
+      } else {
+        toFrom();
+      }
+    }
+    //
+    memorized = localStorageGetItem("memorized") || "";
+    //
+    function showMemorized() {
+      if (memorized) {
+        memorizedTextarea.value = memorized;
+        memorizedTextarea.style.visibility = "";
+        memorizedExplained.style.visibility = "";
+      } else {
+        memorizedExplained.style.visibility = "hidden";
+        memorizedTextarea.style.visibility = "hidden";
+        memorizedTextarea.value = "";
+      }
+    }
+    //
+    fromYearElement.addEventListener("input", event => {
+      fromYear = fromYearElement.selectedOptions[0].value;
+      if (fromYear > toYear) { // >=
+        fromYear = toYear; // yearBeforeToYear();
+        selectFromYear(fromYear);
+        fromYearElement.blur();
+      }
+      fromToOrToFrom();
+    });
+    toYearElement.addEventListener("input", event => {
+      toYear = toYearElement.selectedOptions[0].value;
+      if (toYear < fromYear) { // <=
+        toYear = fromYear; // yearAfterFromYear();
+        selectToYear(toYear);
+        toYearElement.blur();
+      }
+      fromTo();
+    });
+    //
+    function localStorageSetAll() {
+      localStorageSetItem("fromYear", fromYear);
+      localStorageSetItem("toYear", toYear);
+      localStorageSetItem("fromAmount", fromAmount);
+      localStorageSetItem("toAmount", toAmount);
+      localStorageSetItem("moreRecentlyHasEnteredToAmount", !!moreRecentlyHasEnteredToAmount);
+    }
+    //
+    fromAmountElement.addEventListener("input", event => {
+      fromAmount = Number(fromAmountElement.value);
+      moreRecentlyHasEnteredToAmount = false;
+      fromTo();
+    });
+    toAmountElement.addEventListener("input", event => {
+      toAmount = Number(toAmountElement.value);
+      moreRecentlyHasEnteredToAmount = true;
+      toFrom();
+    });
+    //
+    fromAmountElement.addEventListener("click", event => {
+      moreRecentlyHasEnteredToAmount = false;
+      fromTo();
+    });
+    toAmountElement.addEventListener("click", event => {
+      moreRecentlyHasEnteredToAmount = true;
+      toFrom();
+    });
+    fromAmountElement.addEventListener("blur", event => {
+      fromToOrToFrom(); // force rounding
+    });
+    toAmountElement.addEventListener("blur", event => {
+      fromToOrToFrom();
+    });
+    //
+    function clearAmounts() {
+      fromAmount = 0;
+      moreRecentlyHasEnteredToAmount = false;
+      fromTo();
+      fromAmountElement.focus();
+    }
+    //
+    function hashchangeHandler() {
+      let hash = document.location.hash; // if any
+      if (hash) {
+        if (hash !== showHashOnce) {
+          setFromURLAndMemoryAndStorage();
+        } // else not this one time
+      } // else ignore
+      showHashOnce = false;
+    }
+    window.addEventListener("hashchange", hashchangeHandler);
+    //
+    function equivalentHash() {
+      return `#fy=${fromYear},ty=${toYear},${moreRecentlyHasEnteredToAmount ? `ta=${toAmount}` : `fa=${fromAmount}`}`;
+    }
+    function showHash(newHash) {
+      const url = `${document.location.pathname}${newHash}`;
+      showHashOnce = newHash;
+      history.replaceState("", document.title, url);
+    }
+    function copyURL() {
+      const newHash = equivalentHash();
+      const url = `${document.location.origin ?? `${document.location.protocol}//`}${document.location.pathname}${newHash}`;
+      navigator.clipboard.writeText(url);
+      showHash(newHash);
+    }
+    //
+    function localStorageSetMemorized() {
+      if (memorized.length <= maxMemorized) {
+        localStorageSetItem("memorized", memorized);
+      }
+    }
+    function getUserChangesToMemorized() {
+      let newMemorized = memorizedTextarea.value;
+      if (!newMemorized.trim().length) newMemorized = ""; // simply empty
+      if (newMemorized !== memorized) {
+        memorized = newMemorized;
+        localStorageSetMemorized();
+        if (!memorized.length) showMemorized(); // hide
+        updateMemorizedButton();
+      }
+    }
+    //
+    memorizedTextarea.addEventListener("blur", getUserChangesToMemorized);
+    window.addEventListener("beforeunload", getUserChangesToMemorized);
+    window.addEventListener("pagehide", getUserChangesToMemorized);
+    document.addEventListener("visibilitychange", getUserChangesToMemorized);
+    //
+    function keyListener(event) {
+      let blur;
+      switch (event.key) {
+        case "Escape": blur = true; break; // Esc key
+        case "Enter": { // Enter key
+          const newMemorized = memorizedTextarea.value;
+          const newLength = newMemorized.length;
+          if (memorizedTextarea.selectionStart === newLength) { // at the end
+            if (!newLength // empty
+              || /\n$/.test(newMemorized)) { // already an \n
+              blur = true;
+              break;
+            }
+          }
+        }
+        default: {
+          if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+              case "s": blur = true; break; // ctrl-S
+            }
+          }
+        }
+      }
+      if (blur) {
+        event.preventDefault();
+        memorizedTextarea.blur();
+      }
+    }
+    memorizedTextarea.addEventListener("keydown", keyListener);
+    memorizedTextarea.addEventListener("keypress", keyListener);
+    //
+    function memo() {
+      const fromSymbol = currenciesByYear[fromYear].symbol;
+      const toSymbol = currenciesByYear[toYear].symbol;
+      return `${fromYear} → ${toYear}  ≈  ${fromSymbol} ${fromAmount} → ${fromSymbol === toSymbol ? "" : `${toSymbol} `}${toAmount}`;
+    }
+    function memorize() {
+      const newMemo = memo();
+      if (!memorized.includes(newMemo)) {
+        memorized = memorized.replace(/([^\n])$/, "$1\n") + newMemo;
+        showMemorized();
+        localStorageSetMemorized();
+        updateMemorizedButton();
+      }
+    }
+    function updateMemorizedButton() {
+      memorizeButton.disabled =
+        memorized.length >= maxMemorized // prevent excessive length
+        || memorized.includes(memo()); // avoid duplicates
+    }
+    //
+    function copyNumbers() {
+      const numbers = memo();
+      navigator.clipboard.writeText(numbers);
+    }
+    //
+    const personal =
+      // to show a personal note, optionally, a developer of a fork may want to adjust this
+      ({ "srguiwiz.github.io": 1, "inflation.cmprh.com": 1 })
+      [document.location.hostname];
+    document.querySelectorAll(".personal").forEach(element => {
+      if (personal) element.style.display = "";
+      else element.remove(); // avoid forks showing another developer's personal note
+    });
+    //
+    setFromURLAndMemoryAndStorage(); // first time
+    showMemorized(); // first time
+    //
+    try {
+      navigator.serviceWorker.register("./sw.js");
+    } catch { } // ignore
+  </script>
+</body>
+
+</html>
