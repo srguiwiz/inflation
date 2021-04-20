@@ -30,16 +30,16 @@ SOFTWARE.
 Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   -->
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
-  <link rel="icon" type="image/svg+xml" href="inflation.svg">
+  <link rel="icon" type="image/svg+xml" href="inflation-de.svg">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-icon" sizes="512x512" href="inflation-512x512.png">
-  <link rel="apple-touch-icon" sizes="256x256" href="inflation-256x256.png">
-  <link rel="apple-touch-icon" sizes="128x128" href="inflation-128x128.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="inflation-96x96.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="inflation-72x72.png">
-  <link rel="apple-touch-icon" sizes="48x48" href="inflation-48x48.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="inflation-de-512x512.png">
+  <link rel="apple-touch-icon" sizes="256x256" href="inflation-de-256x256.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="inflation-de-128x128.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="inflation-de-96x96.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="inflation-de-72x72.png">
+  <link rel="apple-touch-icon" sizes="48x48" href="inflation-de-48x48.png">
   <style>
     body {
       box-sizing: border-box;
@@ -316,16 +316,17 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     }
   </style>
   <!-- forks per country should adjust this title -->
-  <title>Inflation Calculator</title>
+  <title>Inflation Calculator – DE</title>
 </head>
 
 <body>
   <div class="container">
     <!-- forks per country should adjust this heading -->
-    <div class="heading">Inflation Calculator</div>
+    <div class="heading">Inflation Calculator – DE</div>
     <!-- forks per country should adjust this explanation -->
-    <div class="explanation">Approximated from the US
-      <span class="unabbreviated">Consumer Price Index</span><span class="abbreviated">CPI</span>.
+    <div class="explanation">Approximated from the
+      <span class="unabbreviated">consumer price index</span> <span class="abbreviated">CPI</span>
+      in Germany.
     </div>
     <div class="first-column"></div>
     <div class="label">Year</div>
@@ -387,122 +388,89 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     </div>
   </div>
   <script>
-    // data from https://www.bls.gov/data/inflation_calculator.htm
-    // took January of each year
-    // that site mentions it got its data from https://data.bls.gov/timeseries/CUUR0000SA0
-    // and the US Consumer Price Index (CPI) https://www.bls.gov/cpi/
+    // data from https://www.destatis.de/DE/Themen/Wirtschaft/Preise/Verbraucherpreisindex/Publikationen/Downloads-Verbraucherpreise/verbraucherpreisindex-lange-reihen-xlsx-5611103.xlsx
+    // took January of each year,
+    // Verbraucherpreisindex from 1999 on, then before that
+    // Früheres Bundesgebiet, Preisindex für die Lebenshaltung,
+    // 4-Personen-Haushalte von Arbeitern und Angestellten mit mittlerem Einkommen
     const cpi = {
-      "1913": 100,
-      "1914": 102,
-      "1915": 103,
-      "1916": 106,
-      "1917": 119,
-      "1918": 143,
-      "1919": 168,
-      "1920": 200,
-      "1921": 194,
-      "1922": 172,
-      "1923": 171,
-      "1924": 177,
-      "1925": 177,
-      "1926": 183,
-      "1927": 179,
-      "1928": 177,
-      "1929": 174,
-      "1930": 174,
-      "1931": 162,
-      "1932": 146,
-      "1933": 132,
-      "1934": 135,
-      "1935": 139,
-      "1936": 141,
-      "1937": 144,
-      "1938": 145,
-      "1939": 143,
-      "1940": 142,
-      "1941": 144,
-      "1942": 160,
-      "1943": 172,
-      "1944": 178,
-      "1945": 182,
-      "1946": 186,
-      "1947": 219,
-      "1948": 242,
-      "1949": 245,
-      "1950": 240,
-      "1951": 259,
-      "1952": 270,
-      "1953": 271,
-      "1954": 274,
-      "1955": 272,
-      "1956": 273,
-      "1957": 282,
-      "1958": 292,
-      "1959": 296,
-      "1960": 299,
-      "1961": 304,
-      "1962": 306,
-      "1963": 310,
-      "1964": 315,
-      "1965": 318,
-      "1966": 324,
-      "1967": 336,
-      "1968": 348,
-      "1969": 363,
-      "1970": 386,
-      "1971": 406,
-      "1972": 419,
-      "1973": 435,
-      "1974": 476,
-      "1975": 532,
-      "1976": 567,
-      "1977": 597,
-      "1978": 638,
-      "1979": 697,
-      "1980": 794,
-      "1981": 888,
-      "1982": 962,
-      "1983": 998,
-      "1984": 1040,
-      "1985": 1077,
-      "1986": 1118,
-      "1987": 1135,
-      "1988": 1181,
-      "1989": 1236,
-      "1990": 1300,
-      "1991": 1373,
-      "1992": 1409,
-      "1993": 1455,
-      "1994": 1492,
-      "1995": 1534,
-      "1996": 1576,
-      "1997": 1624,
-      "1998": 1650,
-      "1999": 1677,
-      "2000": 1722,
-      "2001": 1787,
-      "2002": 1807,
-      "2003": 1854,
-      "2004": 1890,
-      "2005": 1946,
-      "2006": 2023,
-      "2007": 2065,
-      "2008": 2154,
-      "2009": 2155,
-      "2010": 2211,
-      "2011": 2247,
-      "2012": 2313,
-      "2013": 2350,
-      "2014": 2387,
-      "2015": 2385,
-      "2016": 2418,
-      "2017": 2478,
-      "2018": 2529,
-      "2019": 2568,
-      "2020": 2632,
-      "2021": 2669,
+      "1949": 219,
+      "1950": 203,
+      "1951": 203,
+      "1952": 222,
+      "1953": 218,
+      "1954": 214,
+      "1955": 218,
+      "1956": 221,
+      "1957": 227,
+      "1958": 234,
+      "1959": 234,
+      "1960": 239,
+      "1961": 243,
+      "1962": 249,
+      "1963": 258,
+      "1964": 264,
+      "1965": 270,
+      "1966": 282,
+      "1967": 289,
+      "1968": 292,
+      "1969": 297,
+      "1970": 304,
+      "1971": 316,
+      "1972": 333,
+      "1973": 353,
+      "1974": 379,
+      "1975": 402,
+      "1976": 424,
+      "1977": 440,
+      "1978": 452,
+      "1979": 464,
+      "1980": 486,
+      "1981": 515,
+      "1982": 549,
+      "1983": 571,
+      "1984": 587,
+      "1985": 599,
+      "1986": 607,
+      "1987": 601,
+      "1988": 605,
+      "1989": 620,
+      "1990": 636,
+      "1991": 655,
+      "1992": 683,
+      "1993": 709,
+      "1994": 732,
+      "1995": 747,
+      "1996": 756,
+      "1997": 771,
+      "1998": 780,
+      "1999": 782,
+      "2000": 795,
+      "2001": 806,
+      "2002": 822,
+      "2003": 831,
+      "2004": 840,
+      "2005": 853,
+      "2006": 868,
+      "2007": 883,
+      "2008": 908,
+      "2009": 917,
+      "2010": 923,
+      "2011": 939,
+      "2012": 958,
+      "2013": 974,
+      "2014": 988,
+      "2015": 985,
+      "2016": 990,
+      "2017": 1006,
+      "2018": 1020,
+      "2019": 1034,
+      "2020": 1052,
+      "2021": 1063,
     };
     const currencies = [
+      { symbol: "DM" },
+      { symbol: "€", starting: "1999", conversion: 1.95583 },
     ];
     //
     const years = Object.keys(cpi).sort();
@@ -559,7 +527,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     // forks should have a distinct prefix, for example including the country code for which it is,
     // see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
-    const prefix = "inflation-us-annual";
+    const prefix = "inflation-de-annual";
     function localStorageGetItem(keyName) {
       try {
         return localStorage.getItem(`${prefix}.${keyName}`); // a string or null

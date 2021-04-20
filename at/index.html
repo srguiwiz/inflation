@@ -291,6 +291,20 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       min-width: 1em;
     }
 
+    .abbreviated {
+      display: none;
+    }
+
+    @media (max-width: 500px) {
+      .unabbreviated {
+        display: none;
+      }
+
+      .abbreviated {
+        display: unset;
+      }
+    }
+
     * {
       user-select: none;
     }
@@ -310,7 +324,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <!-- forks per country should adjust this heading -->
     <div class="heading">Inflation Calculator – AT</div>
     <!-- forks per country should adjust this explanation -->
-    <div class="explanation">Based on the consumer price index in Austria.</div>
+    <div class="explanation">Approximated from the
+      <span class="unabbreviated">consumer price index</span> <span class="abbreviated">CPI</span>
+      in Austria.
+    </div>
     <div class="first-column"></div>
     <div class="label">Year</div>
     <div class="symbols symbol"></div>
@@ -367,7 +384,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="explanation installable">This calculator can be installed from the browser to your home screen.</div>
     <div class="explanation personal" style="display:none;">
       <!-- forks automatically should not display this personal note -->
-      App developed by Leo Baschy in 2021-04.
+      App developed by Leo Baschy 2021-04.
     </div>
   </div>
   <script>
