@@ -10,8 +10,10 @@
             m-7,-5 5,0 m-5,2 5,0"
         stroke="#444" stroke-width="1" fill="none"
         stroke-linejoin="round" stroke-linecap="round"/>
-  <rect width="8" height="6" x="15" y="17"
+  <rect width="8" height="2" x="15" y="17"
         stroke="none" fill="red"/>
   <rect width="8" height="2" x="15" y="19"
         stroke="none" fill="white"/>
+  <rect width="8" height="2" x="15" y="21"
+        stroke="none" fill="red"/>
 </svg>

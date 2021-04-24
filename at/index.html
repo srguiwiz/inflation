@@ -305,6 +305,22 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
 
+    .label.direction {
+      margin-inline-start: 0.5em;
+    }
+
+    .label .forward :not(.forward) {
+      display: none;
+    }
+
+    .label .same :not(.same) {
+      display: none;
+    }
+
+    .label .backward :not(.backward) {
+      display: none;
+    }
+
     * {
       user-select: none;
     }
@@ -342,10 +358,11 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <input name="fromAmount" type="number" min="0" />
     </div>
     <div class="clear">
-      <button onclick="clearAmounts()"><label>X</label></button>
+      <button onclick="clearAmounts()" tabindex="-1"><label>X</label></button>
     </div>
     <div class="first-column"></div>
-    <div class="label">To ↓</div>
+    <div class="label direction"><span class="forward"><span class="forward">↓</span><span class="same">=</span><span
+          class="backward">↑</span></span></div>
     <div></div>
     <div class="explanation-right">
       Enter either amount.</div>
@@ -498,6 +515,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const toAmountElement = document.querySelector("[name='toAmount']");
     const fromSymbolElements = Array.from(document.querySelectorAll(".from-symbol"));
     const toSymbolElements = Array.from(document.querySelectorAll(".to-symbol"));
+    const directionElements = document.querySelectorAll(".direction > *");
     //
     const memorizedElement = document.querySelector(".memorized");
     const memorizedTextarea = memorizedElement.querySelector("textarea");
@@ -549,6 +567,15 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       for (const option of toYearElement.selectedOptions) option.selected = false;
       toYearElement.querySelector(`option[value='${toYear}']`).selected = true;
     }
+    function showDirection() {
+      if (fromYear < toYear) {
+        for (const element of directionElements) element.className = "forward";
+      } else if (fromYear > toYear) {
+        for (const element of directionElements) element.className = "backward";
+      } else {
+        for (const element of directionElements) element.className = "same";
+      }
+    }
     //
     function yearBeforeToYear() {
       const resultIndex = years.indexOf(toYear) - 1;
@@ -587,6 +614,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       fromYear = fromYear ?? localStorageGetItem("fromYear");
       if (!cpi[fromYear]) fromYear = yearBeforeToYear(); // if not known
       selectFromYear(fromYear);
+      //
+      showDirection();
       //
       fromAmount = fromAmount ?? (Number(localStorageGetItem("fromAmount")) || 0);
       toAmount = toAmount ?? (Number(localStorageGetItem("toAmount")) || 0);
@@ -661,21 +690,13 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     fromYearElement.addEventListener("input", event => {
       fromYear = fromYearElement.selectedOptions[0].value;
-      if (fromYear > toYear) { // >=
-        fromYear = toYear; // yearBeforeToYear();
-        selectFromYear(fromYear);
-        fromYearElement.blur();
-      }
       fromToOrToFrom();
+      showDirection();
     });
     toYearElement.addEventListener("input", event => {
       toYear = toYearElement.selectedOptions[0].value;
-      if (toYear < fromYear) { // <=
-        toYear = fromYear; // yearAfterFromYear();
-        selectToYear(toYear);
-        toYearElement.blur();
-      }
       fromTo();
+      showDirection();
     });
     //
     function localStorageSetAll() {
