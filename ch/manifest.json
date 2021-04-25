@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – Switzerland",
+  "short_name": "Inflation-CH",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for Swiss francs.",
+  "icons": [
+    {
+      "src": "./inflation-ch-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-ch-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-ch-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-ch-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-ch-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-ch-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-ch.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}
