@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – Canada",
+  "short_name": "Inflation-CA",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for Canadian dollars.",
+  "icons": [
+    {
+      "src": "./inflation-ca-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-ca-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-ca-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-ca-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-ca-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-ca-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-ca.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}

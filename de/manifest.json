@@ -4,7 +4,7 @@
   "start_url": ".",
   "display": "standalone",
   "background_color": "#fff",
-  "description": "An inflation calculator for euro and Austrian schilling.",
+  "description": "An inflation calculator for euro and Deutsche Mark.",
   "icons": [
     {
       "src": "./inflation-de-512x512.png",
