@@ -14,6 +14,7 @@ or can be installed from the browser to your phone's home screen.
 | ![US icon](us/inflation.svg) | US | https://inflation.cmprh.com/us/ | US$ |
 | ![CA icon](ca/inflation-ca.svg) | Canada | https://inflation.cmprh.com/ca/ | CA$ |
 | ![DE icon](de/inflation-de.svg) | Germany | https://inflation.cmprh.com/de/ | € after DM |
+| ![FR icon](fr/inflation-fr.svg) | France | https://inflation.cmprh.com/fr/ | € after F |
 | ![CH icon](ch/inflation-ch.svg) | Switzerland | https://inflation.cmprh.com/ch/ | Fr. |
 | ![AT icon](at/inflation-at.svg) | Austria | https://inflation.cmprh.com/at/ | € after ÖS |
 
@@ -40,6 +41,7 @@ The US, Canadian, and Swiss inflation calculators have been configured for their
 single currency, respectively.
 A historical currency switch is handled correctly in the German and Austrian
 calculators, as an example.
+Two switches are handled in the French calculator, as an example.
 The code for multiple currencies is present equally in all calculators.
 
 This calculator is optimized for certain uses.

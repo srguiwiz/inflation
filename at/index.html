@@ -522,10 +522,11 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const memorizeButton = document.querySelector(".memorize button");
     const memorizedExplained = document.querySelector(".memorized ~ .explanation");
     //
+    const firstTwoDigitYear = Math.max(mostRecentYear, new Date().toLocaleDateString("en-US", { year: "numeric" })) - 99;
     for (const year of years) {
       const optionElement = document.createElement("option");
       optionElement.value = year;
-      optionElement.textContent = mostRecentYear - year < 100 ? year.substring(2) : year;
+      optionElement.textContent = year >= firstTwoDigitYear ? year.substring(2) : year;
       fromYearElement.append(optionElement);
       toYearElement.append(optionElement.cloneNode(true));
     }
