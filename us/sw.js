@@ -9,13 +9,13 @@ self.addEventListener("install", (installEvent) => {
       "./",
       "./sw.js",
       "./manifest.json",
-      "./inflation.svg",
-      "./inflation-48x48.png",
-      "./inflation-72x72.png",
-      "./inflation-96x96.png",
-      "./inflation-128x128.png",
-      "./inflation-256x256.png",
-      "./inflation-512x512.png",
+      "./inflation-us.svg",
+      "./inflation-us-48x48.png",
+      "./inflation-us-72x72.png",
+      "./inflation-us-96x96.png",
+      "./inflation-us-128x128.png",
+      "./inflation-us-256x256.png",
+      "./inflation-us-512x512.png",
     ]);
   }
   installEvent.waitUntil(createAndFillCache());

@@ -1,37 +1,37 @@
 {
-  "name": "Inflation Calculator",
-  "short_name": "Inflation",
+  "name": "Inflation Calculator – US",
+  "short_name": "Inflation-US",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#fff",
   "description": "An inflation calculator for US dollars.",
   "icons": [
     {
-      "src": "./inflation-512x512.png",
+      "src": "./inflation-us-512x512.png",
       "sizes": "512x512"
     },
     {
-      "src": "./inflation-256x256.png",
+      "src": "./inflation-us-256x256.png",
       "sizes": "256x256"
     },
     {
-      "src": "./inflation-128x128.png",
+      "src": "./inflation-us-128x128.png",
       "sizes": "128x128"
     },
     {
-      "src": "./inflation-96x96.png",
+      "src": "./inflation-us-96x96.png",
       "sizes": "96x96"
     },
     {
-      "src": "./inflation-72x72.png",
+      "src": "./inflation-us-72x72.png",
       "sizes": "72x72"
     },
     {
-      "src": "./inflation-48x48.png",
+      "src": "./inflation-us-48x48.png",
       "sizes": "48x48"
     },
     {
-      "src": "./inflation.svg",
+      "src": "./inflation-us.svg",
       "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
     }
   ]

@@ -11,7 +11,7 @@ or can be installed from the browser to your phone's home screen.
 
 | &#x2003; | Country | Live At | Currency |
 | --- | --- | --- | --- |
-| ![US icon](us/inflation.svg) | US | https://inflation.cmprh.com/us/ | US$ |
+| ![US icon](us/inflation-us.svg) | US | https://inflation.cmprh.com/us/ | US$ |
 | ![CA icon](ca/inflation-ca.svg) | Canada | https://inflation.cmprh.com/ca/ | CA$ |
 | ![DE icon](de/inflation-de.svg) | Germany | https://inflation.cmprh.com/de/ | € after DM |
 | ![FR icon](fr/inflation-fr.svg) | France | https://inflation.cmprh.com/fr/ | € after F |
