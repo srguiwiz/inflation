@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – Qatar",
+  "short_name": "Inflation-QA",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for Qatari riyal.",
+  "icons": [
+    {
+      "src": "./inflation-qa-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-qa-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-qa-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-qa-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-qa-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-qa-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-qa.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}

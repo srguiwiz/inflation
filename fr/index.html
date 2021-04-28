@@ -69,6 +69,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       transform: translateX(0.5em);
     }
 
+    [dir='rtl'] .symbol {
+      transform: translateX(-0.5em);
+    }
+
     @media (max-width: 500px) {
       .container {
         column-gap: 0.5rem;
@@ -76,6 +80,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
       .symbol {
         transform: translateX(0.25em);
+      }
+
+      [dir='rtl'] .symbol {
+        transform: translateX(-0.25em);
       }
     }
 
@@ -86,6 +94,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
       .symbol {
         transform: translateX(0.125em);
+      }
+
+      [dir='rtl'] .symbol {
+        transform: translateX(-0.125em);
       }
     }
 
@@ -305,7 +317,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
 
-    .label.direction {
+    .label.time-direction {
       margin-inline-start: 0.5em;
     }
 
@@ -319,6 +331,18 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     .label .backward :not(.backward) {
       display: none;
+    }
+
+    .rtl {
+      display: none;
+    }
+
+    [dir='rtl'] .ltr {
+      display: none;
+    }
+
+    [dir='rtl'] .rtl {
+      display: unset;
     }
 
     * {
@@ -361,11 +385,17 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <button onclick="clearAmounts()" tabindex="-1"><label>X</label></button>
     </div>
     <div class="first-column"></div>
-    <div class="label direction"><span class="forward"><span class="forward">↓</span><span class="same">=</span><span
-          class="backward">↑</span></span></div>
+    <div class="label time-direction">
+      <span class="forward">
+        <span class="forward ltr">↓</span>
+        <span class="forward rtl">⋮</span>
+        <span class="same">=</span>
+        <span class="backward ltr">↑</span>
+        <span class="backward rtl">⋮</span>
+      </span>
+    </div>
     <div></div>
-    <div class="explanation-right">
-      Enter either amount.</div>
+    <div class="explanation-right">Enter either amount.</div>
     <div class="first-column"></div>
     <div class="year">
       <select name="toYear">
@@ -395,8 +425,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="memorized">
       <textarea style="visibility: hidden;"></textarea>
     </div>
-    <div class="explanation" style="visibility: hidden;">You can add notes to this memorized text,
-      edit, copy, or delete all.</div>
+    <div class="explanation" style="visibility: hidden;">
+      You can add notes to this memorized text, edit, copy, or delete all.
+    </div>
     <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to a server.</div>
     <div class="explanation installable">This calculator can be installed from the browser to your home screen.</div>
     <div class="explanation personal" style="display:none;">
@@ -575,7 +606,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const toAmountElement = document.querySelector("[name='toAmount']");
     const fromSymbolElements = Array.from(document.querySelectorAll(".from-symbol"));
     const toSymbolElements = Array.from(document.querySelectorAll(".to-symbol"));
-    const directionElements = document.querySelectorAll(".direction > *");
+    const timeDirectionElements = document.querySelectorAll(".time-direction > *");
     //
     const memorizedElement = document.querySelector(".memorized");
     const memorizedTextarea = memorizedElement.querySelector("textarea");
@@ -628,13 +659,13 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       for (const option of toYearElement.selectedOptions) option.selected = false;
       toYearElement.querySelector(`option[value='${toYear}']`).selected = true;
     }
-    function showDirection() {
+    function showTimeDirection() {
       if (fromYear < toYear) {
-        for (const element of directionElements) element.className = "forward";
+        for (const element of timeDirectionElements) element.className = "forward";
       } else if (fromYear > toYear) {
-        for (const element of directionElements) element.className = "backward";
+        for (const element of timeDirectionElements) element.className = "backward";
       } else {
-        for (const element of directionElements) element.className = "same";
+        for (const element of timeDirectionElements) element.className = "same";
       }
     }
     //
@@ -676,7 +707,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       if (!cpi[fromYear]) fromYear = yearBeforeToYear(); // if not known
       selectFromYear(fromYear);
       //
-      showDirection();
+      showTimeDirection();
       //
       fromAmount = fromAmount ?? (Number(localStorageGetItem("fromAmount")) || 0);
       toAmount = toAmount ?? (Number(localStorageGetItem("toAmount")) || 0);
@@ -752,12 +783,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     fromYearElement.addEventListener("input", event => {
       fromYear = fromYearElement.selectedOptions[0].value;
       fromToOrToFrom();
-      showDirection();
+      showTimeDirection();
     });
     toYearElement.addEventListener("input", event => {
       toYear = toYearElement.selectedOptions[0].value;
       fromTo();
-      showDirection();
+      showTimeDirection();
     });
     //
     function localStorageSetAll() {
@@ -879,10 +910,17 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     memorizedTextarea.addEventListener("keydown", keyListener);
     memorizedTextarea.addEventListener("keypress", keyListener);
     //
+    const rtl = window.getComputedStyle(memorizedTextarea).direction === "rtl";
     function memo() {
       const fromSymbol = currenciesByYear[fromYear].symbol;
       const toSymbol = currenciesByYear[toYear].symbol;
-      return `${fromYear} → ${toYear}  ≈  ${fromSymbol} ${fromAmount} → ${fromSymbol === toSymbol ? "" : `${toSymbol} `}${toAmount}`;
+      if (!rtl) {
+        return `${fromYear} → ${toYear}  ≈  ` +
+          `${fromSymbol} ${fromAmount} → ${fromSymbol === toSymbol ? "" : `${toSymbol} `}${toAmount}`;
+      } else {
+        return `\u200F${fromYear} … ${toYear}  ≈  ` +
+          `${fromSymbol} ${fromAmount} … ${fromSymbol === toSymbol ? "" : `${toSymbol} `}${toAmount}`;
+      }
     }
     function memorize() {
       const newMemo = memo();
