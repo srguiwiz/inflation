@@ -554,10 +554,18 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const mostRecentYear = years[years.length - 1];
     //
     const currenciesByYear = {};
+    let format = "symbol amount"; // default $ 15
     {
       if (!currencies.length) currencies.push({});
-      currencies.forEach((currency, index, currencies) =>
-        currencies[index] = Object.assign({ symbol: "$", starting: "", conversion: 1 }, currency));
+      currencies.forEach(currency => {
+        if (currency.symbol === undefined) currency.symbol = "$";
+        if (currency.starting === undefined) currency.starting = "";
+        if (currency.conversion === undefined) currency.conversion = 1;
+        if (currency.format === undefined) currency.format = format;
+        format = currency.format; // keep using
+        currency.amountFirst = format.indexOf("amount") < format.indexOf("symbol");
+        currency.format = currency.format.replace("symbol", currency.symbol);
+      });
       const sortedCurrencies = currencies.map(currency => currency.starting).sort()
         .map(startingYear => currencies.find(currency => currency.starting === startingYear));
       for (let yi = 0, ci = 0; yi < years.length; yi++) {
@@ -571,7 +579,11 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
             currency = nextCurrency;
           }
         }
-        currenciesByYear[year] = { symbol: currency.symbol, conversion: currency.conversion };
+        currenciesByYear[year] = {
+          symbol: currency.symbol, conversion: currency.conversion,
+          format: currency.format, amountFirst: currency.amountFirst,
+          definition: currency,
+        };
       }
       if (sortedCurrencies.length > 1) {
         document.querySelectorAll(".symbols").forEach(element => {
@@ -894,14 +906,23 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     const rtl = window.getComputedStyle(memorizedTextarea).direction === "rtl";
     function memo() {
-      const fromSymbol = currenciesByYear[fromYear].symbol;
-      const toSymbol = currenciesByYear[toYear].symbol;
+      const fromCurrency = currenciesByYear[fromYear];
+      const toCurrency = currenciesByYear[toYear];
+      const twoCurrencies = fromCurrency.definition !== toCurrency.definition;
+      let fromFormatted, toFormatted;
+      if (!twoCurrencies) {
+        if (!fromCurrency.amountFirst) {
+          toFormatted = toAmount;
+        } else {
+          fromFormatted = fromAmount;
+        }
+      }
+      fromFormatted = fromFormatted ?? fromCurrency.format.replace("amount", fromAmount);
+      toFormatted = toFormatted ?? toCurrency.format.replace("amount", toAmount);
       if (!rtl) {
-        return `${fromYear} → ${toYear}  ≈  ` +
-          `${fromSymbol} ${fromAmount} → ${fromSymbol === toSymbol ? "" : `${toSymbol} `}${toAmount}`;
+        return `${fromYear} → ${toYear}  ≈  ${fromFormatted} → ${toFormatted}`;
       } else {
-        return `\u200F${fromYear} … ${toYear}  ≈  ` +
-          `${fromSymbol} ${fromAmount} … ${fromSymbol === toSymbol ? "" : `${toSymbol} `}${toAmount}`;
+        return `\u2067${fromYear} … ${toYear}  ≈  ${fromFormatted} … ${toFormatted}\u2069`;
       }
     }
     function memorize() {

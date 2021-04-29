@@ -17,6 +17,7 @@ or can be installed from the browser to your phone's home screen.
 | ![FR icon](fr/inflation-fr.svg) | France | https://inflation.cmprh.com/fr/ | € after F |
 | ![CH icon](ch/inflation-ch.svg) | Switzerland | https://inflation.cmprh.com/ch/ | Fr. |
 | ![AT icon](at/inflation-at.svg) | Austria | https://inflation.cmprh.com/at/ | € after ÖS |
+| ![IL icon](il/inflation-il.svg) | ישראל | https://inflation.cmprh.com/il/ | &#x200F;₪ אחרי ל״י |
 
 ## More Currencies
 
