@@ -161,13 +161,13 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
 
-    .phone {
+    .mention-phones {
       font-size: smaller;
       display: none;
     }
 
     @media screen and (hover: hover) and (pointer: fine) {
-      .phone {
+      .mention-phones {
         display: unset;
       }
     }
@@ -189,14 +189,22 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
 <body>
   <div class="container">
-    <div class="heading">Inflation Calculators</div>
-    <div class="explanation">
-      <p class="installable">Each of these calculators runs here.
-        But also, while open, each by itself can be installed from the browser
-        to an icon on your home screen, for offline use like any app.</p>
-      <p class="phone">These work great on phones too.</p>
+    <div class="heading">
+      Inflation Calculators
     </div>
-    <div class="explanation list">
+    <div class="explanation">
+      <p class="installable">Each of these
+        <span class="number-of-calculators"></span>
+        calculators runs here.
+        But also, while open, each by itself can be installed from the browser
+        to an icon on your home screen, for offline use like any app.
+      </p>
+      <p class="mention-phones">These
+        <span class="number-of-calculators"></span>
+        calculators work great on phones too.
+      </p>
+    </div>
+    <div class="explanation list list-of-calculators">
       <ul>
         <li><a href="./us/"><img src="./us/inflation-us.svg" /> United States</a></li>
         <li><a href="./ca/"><img src="./ca/inflation-ca.svg" /> Canada</a></li>
@@ -204,13 +212,21 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         <li><a href="./fr/"><img src="./fr/inflation-fr.svg" /> France</a></li>
         <li><a href="./ch/"><img src="./ch/inflation-ch.svg" /> Switzerland</a></li>
         <li><a href="./at/"><img src="./at/inflation-at.svg" /> Austria</a></li>
+        <li><a href="./jp/"><img src="./jp/inflation-jp.svg" /> 日本</a></li>
         <li><a href="./il/"><img src="./il/inflation-il.svg" /> ישראל</a></li>
+        <li><a href="./qa/"><img src="./qa/inflation-qa.svg" /> قطر</a></li>
       </ul>
       <p class="add">Software developers can add a country with a pull request at
         <span class="link">https://github.com/srguiwiz/inflation</span> .
       </p>
     </div>
   </div>
+  <script>
+    const numberOfCalcuators =
+      document.querySelectorAll(".list-of-calculators a img").length;
+    document.querySelectorAll(".number-of-calculators").forEach(element =>
+      element.textContent = numberOfCalcuators);
+  </script>
 </body>
 
 </html>

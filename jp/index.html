@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="jp">
 
 <head>
   <meta charset="utf-8" />
@@ -30,16 +30,16 @@ SOFTWARE.
 Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   -->
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
-  <link rel="icon" type="image/svg+xml" href="inflation-ca.svg">
+  <link rel="icon" type="image/svg+xml" href="inflation-jp.svg">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-icon" sizes="512x512" href="inflation-ca-512x512.png">
-  <link rel="apple-touch-icon" sizes="256x256" href="inflation-ca-256x256.png">
-  <link rel="apple-touch-icon" sizes="128x128" href="inflation-ca-128x128.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="inflation-ca-96x96.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="inflation-ca-72x72.png">
-  <link rel="apple-touch-icon" sizes="48x48" href="inflation-ca-48x48.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="inflation-jp-512x512.png">
+  <link rel="apple-touch-icon" sizes="256x256" href="inflation-jp-256x256.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="inflation-jp-128x128.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="inflation-jp-96x96.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="inflation-jp-72x72.png">
+  <link rel="apple-touch-icon" sizes="48x48" href="inflation-jp-48x48.png">
   <style>
     body {
       box-sizing: border-box;
@@ -349,22 +349,26 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     }
   </style>
   <!-- forks per country should adjust this title -->
-  <title>Inflation Calculator – CA</title>
+  <!-- Inflation Calculator -->
+  <title>インフレ計算機</title>
 </head>
 
 <body>
   <div class="container">
     <!-- forks per country should adjust this heading -->
-    <div class="heading">Inflation Calculator – CA</div>
+    <!-- Inflation Calculator -->
+    <div class="heading">インフレ計算機</div>
     <!-- forks per country should adjust this explanation -->
-    <div class="explanation">Approximated from the
-      <span class="unabbreviated">Consumer Price Index</span> <span class="abbreviated">CPI</span>
-      of Canada.
+    <div class="explanation">
+      <!-- Approximately from the consumer price index. -->
+      <span>消費者物価指数からおおよそ。</span>
     </div>
     <div class="first-column"></div>
-    <div class="label">Year</div>
+    <!-- Year -->
+    <div class="label">年</div>
     <div class="symbols symbol"></div>
-    <div class="label">Amount</div>
+    <!-- Amount of money -->
+    <div class="label">金額</div>
     <div class="first-column"></div>
     <div class="year">
       <select name="fromYear" autofocus>
@@ -386,7 +390,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       </span>
     </div>
     <div></div>
-    <div class="explanation-right">Enter either amount.</div>
+    <!-- Enter either. -->
+    <div class="explanation-right">どちらかを入力。</div>
     <div class="first-column"></div>
     <div class="year">
       <select name="toYear">
@@ -396,13 +401,15 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="amount">
       <input name="toAmount" type="number" min="0" />
     </div>
-    <div class="explanation-left">This amount:</div>
+    <!-- This amount: -->
+    <div class="explanation-left">この金額：</div>
     <div class="copy-either">
-      <button class="copy-numbers" onclick="copyNumbers()"><label>Copy</label></button>
+      <!-- Copy -->
+      <button class="copy-numbers" onclick="copyNumbers()"><label>コピー</label></button>
       <button class="copy-url" onclick="copyURL()">
         <label>
-          <span class="optional">Copy</span>
-          <span>URL</span>
+          <!-- Copy link -->
+          <span>リンク</span><span class="optional">をコピー</span>
           <svg viewBox="0 0 24 24">
             <path d="M8,12 3,12 3,22 21,22 21,12 16,12 M12,16 12,2 M8,6 12,2 16,6" stroke="black" stroke-width="2"
               fill="none" stroke-linejoin="round" stroke-linecap="round" />
@@ -411,141 +418,100 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       </button>
     </div>
     <div class="memorize">
-      <button onclick="memorize()"><label>Add to List</label></button>
+      <!-- Append below -->
+      <button onclick="memorize()"><label>以下に追加</label></button>
     </div>
     <div class="memorized">
       <textarea style="visibility: hidden;"></textarea>
     </div>
+    <!-- You can add, edit, copy, or delete text. -->
     <div class="explanation" style="visibility: hidden;">
-      You can add notes to this memorized text, edit, copy, or delete all.
+      テキストを追加、編集、コピー、または削除できます。
     </div>
-    <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to a server.</div>
-    <div class="explanation installable">This calculator can be installed from the browser to your home screen.</div>
+    <!-- Numbers and text are only here. No data will be sent. -->
+    <div class="explanation">数字とテキストはここだけです。 データは送信されません。</div>
+    <!-- This page can be added as an app to the home screen directly from your browser. -->
+    <div class="explanation installable">このページは、ブラウザから直接ホーム画面にアプリとして追加できます。</div>
     <div class="explanation personal" style="display:none;">
       <!-- forks if hosted elsewhere automatically w/should not display this personal note -->
       <!-- if you maintain a fork, for a specific country, it makes sense you put your short note here;
         be considerate of limited space on phone screens, hence replace an existing note, for example:
         This version by Your Name. -->
-      App developed by Leo Baschy 2021-04.
+      <!-- This app is a by-product of more difficult tasks on many systems. -->
+      このアプリは、多くのシステムでのより困難なタスクの副産物です。
     </div>
   </div>
   <script>
-    // data from https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401
-    // took January of each year,
-    // Statistics Canada. Table 18-10-0004-01 Consumer Price Index, monthly, not seasonally adjusted
-    // All-items
+    // data from https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
+    // from https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv
+    // which at the time of writing (2021-04) only has been available up to 2019;
+    // formula used: 1960 number = 1959 number * (1 + 1960 percentage / 100), etc.;
+    // full accuracy used before finally rounding
     const cpi = {
-      "1914": 60,
-      "1915": 61,
-      "1916": 64,
-      "1917": 74,
-      "1918": 84,
-      "1919": 95,
-      "1920": 106,
-      "1921": 110,
-      "1922": 94,
-      "1923": 92,
-      "1924": 92,
-      "1925": 92,
-      "1926": 92,
-      "1927": 92,
-      "1928": 92,
-      "1929": 92,
-      "1930": 94,
-      "1931": 87,
-      "1932": 78,
-      "1933": 72,
-      "1934": 72,
-      "1935": 72,
-      "1936": 74,
-      "1937": 76,
-      "1938": 77,
-      "1939": 76,
-      "1940": 78,
-      "1941": 82,
-      "1942": 87,
-      "1943": 88,
-      "1944": 91,
-      "1945": 90,
-      "1946": 92,
-      "1947": 97,
-      "1948": 112,
-      "1949": 121,
-      "1950": 121,
-      "1951": 130,
-      "1952": 144,
-      "1953": 141,
-      "1954": 141,
-      "1955": 141,
-      "1956": 142,
-      "1957": 146,
-      "1958": 150,
-      "1959": 153,
-      "1960": 155,
-      "1961": 157,
-      "1962": 157,
-      "1963": 160,
-      "1964": 163,
-      "1965": 166,
-      "1966": 171,
-      "1967": 177,
-      "1968": 185,
-      "1969": 192,
-      "1970": 202,
-      "1971": 204,
-      "1972": 214,
-      "1973": 226,
-      "1974": 247,
-      "1975": 276,
-      "1976": 303,
-      "1977": 322,
-      "1978": 351,
-      "1979": 381,
-      "1980": 418,
-      "1981": 469,
-      "1982": 522,
-      "1983": 565,
-      "1984": 596,
-      "1985": 617,
-      "1986": 644,
-      "1987": 670,
-      "1988": 697,
-      "1989": 727,
-      "1990": 767,
-      "1991": 820,
-      "1992": 833,
-      "1993": 850,
-      "1994": 861,
-      "1995": 866,
-      "1996": 880,
-      "1997": 899,
-      "1998": 909,
-      "1999": 915,
-      "2000": 935,
-      "2001": 963,
-      "2002": 976,
-      "2003": 1020,
-      "2004": 1033,
-      "2005": 1053,
-      "2006": 1082,
-      "2007": 1094,
-      "2008": 1118,
-      "2009": 1130,
-      "2010": 1151,
-      "2011": 1178,
-      "2012": 1207,
-      "2013": 1213,
-      "2014": 1231,
-      "2015": 1243,
-      "2016": 1268,
-      "2017": 1295,
-      "2018": 1317,
-      "2019": 1336,
-      "2020": 1368,
-      "2021": 1382,
+      "1959": 10000,
+      "1960": 10357,
+      "1961": 10913,
+      "1962": 11659,
+      "1963": 12441,
+      "1964": 12914,
+      "1965": 13774,
+      "1966": 14468,
+      "1967": 15045,
+      "1968": 15849,
+      "1969": 16681,
+      "1970": 17836,
+      "1971": 18976,
+      "1972": 19896,
+      "1973": 22205,
+      "1974": 27362,
+      "1975": 30572,
+      "1976": 33437,
+      "1977": 36167,
+      "1978": 37689,
+      "1979": 39084,
+      "1980": 42124,
+      "1981": 44194,
+      "1982": 45405,
+      "1983": 46268,
+      "1984": 47314,
+      "1985": 48275,
+      "1986": 48563,
+      "1987": 48624,
+      "1988": 48954,
+      "1989": 50067,
+      "1990": 51608,
+      "1991": 53286,
+      "1992": 54224,
+      "1993": 54898,
+      "1994": 55280,
+      "1995": 55209,
+      "1996": 55284,
+      "1997": 56251,
+      "1998": 56623,
+      "1999": 56430,
+      "2000": 56048,
+      "2001": 55633,
+      "2002": 55119,
+      "2003": 54978,
+      "2004": 54973,
+      "2005": 54818,
+      "2006": 54954,
+      "2007": 54987,
+      "2008": 55746,
+      "2009": 54992,
+      "2010": 54596,
+      "2011": 54450,
+      "2012": 54422,
+      "2013": 54610,
+      "2014": 56119,
+      "2015": 56562,
+      "2016": 56496,
+      "2017": 56760,
+      "2018": 57316,
+      "2019": 57589,
     };
     const currencies = [
-      { symbol: "$" },
+      { symbol: "円", format: "amount\u2009symbol" }, // ¥
     ];
     //
     const years = Object.keys(cpi).sort();
@@ -616,7 +582,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     // forks should have a distinct prefix, for example including the country code for which it is,
     // see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
-    const prefix = "inflation-ca-annual";
+    const prefix = "inflation-jp-annual";
     function localStorageGetItem(keyName) {
       try {
         return localStorage.getItem(`${prefix}.${keyName}`); // a string or null
