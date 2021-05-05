@@ -6,8 +6,9 @@ These inflation calculators are live online at
 https://inflation.cmprh.com/
 .
 
-Each calculator works in your browser,
-or can be installed from the browser to your phone's home screen.
+Each calculator immediately works in your browser,
+but also then
+can be installed from the browser to become an icon on your phone's home screen.
 
 | &#x2003; | Country | Live At | Currency |
 | --- | --- | --- | --- |
@@ -17,6 +18,7 @@ or can be installed from the browser to your phone's home screen.
 | ![FR icon](fr/inflation-fr.svg) | France | https://inflation.cmprh.com/fr/ | € after F |
 | ![CH icon](ch/inflation-ch.svg) | Switzerland | https://inflation.cmprh.com/ch/ | Fr. |
 | ![AT icon](at/inflation-at.svg) | Austria | https://inflation.cmprh.com/at/ | € after ÖS |
+| ![IN icon](in/inflation-in.svg) | India | https://inflation.cmprh.com/in/ | ₹ |
 | ![JP icon](jp/inflation-jp.svg) | 日本 | https://inflation.cmprh.com/jp/ | 円 |
 | ![IL icon](il/inflation-il.svg) | ישראל | https://inflation.cmprh.com/il/ | &#x200F;₪ אחרי ל״י |
 | ![QA icon](qa/inflation-qa.svg) | قطر | https://inflation.cmprh.com/qa/ | ر.ق |
@@ -24,16 +26,17 @@ or can be installed from the browser to your phone's home screen.
 ## More Currencies
 
 If you send a pull request, your calculator can be online too.
-First, to understand what you will have to change, compare existing directories
-with `diff de ca` .
+
+First, to understand what you will have to change, compare existing directories,
+for example with `diff de ca` .
 Then, you can work on your files in your new directory.
-Also, if you prefer,
-you can work on files even without running a server, without node, without npm.
+You can work on files even without running a server, without node or npm.
 
 You can fork this repository to derive a calculator
 
 - for another currency,
-- for a currency and its predecessor, or
+- for a currency and its predecessor,
+- with newer or older data, or
 - with a different appearance.
 
 One difficulty level up is to derive a calculator
@@ -63,10 +66,10 @@ across generations.
 
 For example,
 for a grandparent to understand why a kid wants to spend $20 on a shirt,
-when their own shirts to wear on the job used to be $3.
+when their own shirts used to be $3.
 And, for a kid to understand what it means a grandparent worked for $2 per hour.
 
 This also is for people whose activities have prevented them from
 paying attention to some aspects of money.
 Sometimes they have to pay attention.
-This calculator hopefully helps making sense of it.
+This calculator hopefully helps making sense of numbers changing in time.
