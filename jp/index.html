@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="jp">
+<html lang="ja-JP">
 
 <head>
   <meta charset="utf-8" />
@@ -61,6 +61,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       grid-template-rows: repeat(8, auto) 1fr repeat(2, auto);
       gap: 1rem;
       --column-gap: 1rem;
+      --padding-start: 0.5em;
       column-gap: var(--column-gap);
       margin: 0px;
       padding: 0.75rem;
@@ -70,6 +71,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     @media (max-width: 500px) {
       .container {
         --column-gap: 0.5rem;
+        --padding-start: 0.25em;
       }
     }
 
@@ -166,6 +168,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       input[type='number'] {
         max-width: 5em;
       }
+    }
+
+    .padding-start {
+      padding-inline-start: var(--padding-start);
     }
 
     .symbol {
@@ -371,12 +377,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="label">金額</div>
     <div class="first-column"></div>
     <div class="year">
-      <select name="fromYear" autofocus>
+      <select class="padding-start" name="fromYear" autofocus>
       </select>
     </div>
     <div class="from-symbol symbol">$</div>
     <div class="amount">
-      <input name="fromAmount" type="number" min="0" />
+      <input class="padding-start" name="fromAmount" type="number" min="0" />
     </div>
     <div class="clear">
       <button onclick="clearAmounts()" tabindex="-1"><label>X</label></button>
@@ -394,12 +400,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="explanation-right">どちらかを入力。</div>
     <div class="first-column"></div>
     <div class="year">
-      <select name="toYear">
+      <select class="padding-start" name="toYear">
       </select>
     </div>
     <div class="to-symbol symbol">$</div>
     <div class="amount">
-      <input name="toAmount" type="number" min="0" />
+      <input class="padding-start" name="toAmount" type="number" min="0" />
     </div>
     <!-- This amount: -->
     <div class="explanation-left">この金額：</div>
@@ -422,7 +428,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <button onclick="memorize()"><label>以下に追加</label></button>
     </div>
     <div class="memorized">
-      <textarea style="visibility: hidden;"></textarea>
+      <textarea class="padding-start" style="visibility: hidden;"></textarea>
     </div>
     <!-- You can add, edit, copy, or delete text. -->
     <div class="explanation" style="visibility: hidden;">
@@ -442,73 +448,87 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     </div>
   </div>
   <script>
-    // data from https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
-    // from https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv
-    // which at the time of writing (2021-04) only has been available up to 2019;
-    // formula used: 1960 number = 1959 number * (1 + 1960 percentage / 100), etc.;
-    // full accuracy used before finally rounding
+    // data from https://www.e-stat.go.jp/en/statistics/00200573
+    // https://www.e-stat.go.jp/en/stat-search/files?page=1&layout=datalist&toukei=00200573&tstat=000001084976&cycle=0&tclass1=000001085995&tclass2=000001085936&tclass3=000001085996&tclass4=000001085997&tclass5val=0
+    // which is Filtered by: File   Consumer Price Index   2015-Base Consumer Price Index   -   Time Series   Indices of Items   Japan   Annual Average
+    // line Index of All items, less imputed rent (1947 - the Recent Year)
+    // Update date 2021-01-22
+    // file https://www.e-stat.go.jp/en/stat-search/file-download?statInfId=000031431771&fileKind=1
     const cpi = {
-      "1959": 10000,
-      "1960": 10357,
-      "1961": 10913,
-      "1962": 11659,
-      "1963": 12441,
-      "1964": 12914,
-      "1965": 13774,
-      "1966": 14468,
-      "1967": 15045,
-      "1968": 15849,
-      "1969": 16681,
-      "1970": 17836,
-      "1971": 18976,
-      "1972": 19896,
-      "1973": 22205,
-      "1974": 27362,
-      "1975": 30572,
-      "1976": 33437,
-      "1977": 36167,
-      "1978": 37689,
-      "1979": 39084,
-      "1980": 42124,
-      "1981": 44194,
-      "1982": 45405,
-      "1983": 46268,
-      "1984": 47314,
-      "1985": 48275,
-      "1986": 48563,
-      "1987": 48624,
-      "1988": 48954,
-      "1989": 50067,
-      "1990": 51608,
-      "1991": 53286,
-      "1992": 54224,
-      "1993": 54898,
-      "1994": 55280,
-      "1995": 55209,
-      "1996": 55284,
-      "1997": 56251,
-      "1998": 56623,
-      "1999": 56430,
-      "2000": 56048,
-      "2001": 55633,
-      "2002": 55119,
-      "2003": 54978,
-      "2004": 54973,
-      "2005": 54818,
-      "2006": 54954,
-      "2007": 54987,
-      "2008": 55746,
-      "2009": 54992,
-      "2010": 54596,
-      "2011": 54450,
-      "2012": 54422,
-      "2013": 54610,
-      "2014": 56119,
-      "2015": 56562,
-      "2016": 56496,
-      "2017": 56760,
-      "2018": 57316,
-      "2019": 57589,
+      "1947": 54,
+      "1948": 99,
+      "1949": 131,
+      "1950": 122,
+      "1951": 143,
+      "1952": 151,
+      "1953": 161,
+      "1954": 171,
+      "1955": 169,
+      "1956": 170,
+      "1957": 175,
+      "1958": 174,
+      "1959": 176,
+      "1960": 183,
+      "1961": 193,
+      "1962": 206,
+      "1963": 221,
+      "1964": 230,
+      "1965": 244,
+      "1966": 257,
+      "1967": 267,
+      "1968": 282,
+      "1969": 297,
+      "1970": 320,
+      "1971": 339,
+      "1972": 354,
+      "1973": 396,
+      "1974": 492,
+      "1975": 550,
+      "1976": 602,
+      "1977": 650,
+      "1978": 675,
+      "1979": 699,
+      "1980": 755,
+      "1981": 792,
+      "1982": 813,
+      "1983": 828,
+      "1984": 847,
+      "1985": 864,
+      "1986": 867,
+      "1987": 866,
+      "1988": 870,
+      "1989": 890,
+      "1990": 917,
+      "1991": 948,
+      "1992": 963,
+      "1993": 974,
+      "1994": 979,
+      "1995": 976,
+      "1996": 976,
+      "1997": 992,
+      "1998": 999,
+      "1999": 995,
+      "2000": 986,
+      "2001": 977,
+      "2002": 966,
+      "2003": 963,
+      "2004": 963,
+      "2005": 959,
+      "2006": 962,
+      "2007": 963,
+      "2008": 978,
+      "2009": 964,
+      "2010": 956,
+      "2011": 954,
+      "2012": 954,
+      "2013": 958,
+      "2014": 990,
+      "2015": 1000,
+      "2016": 999,
+      "2017": 1005,
+      "2018": 1017,
+      "2019": 1023,
+      "2020": 1023,
     };
     const currencies = [
       { symbol: "円", format: "amount\u2009symbol" }, // ¥
@@ -927,6 +947,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       if (personal) element.style.display = "";
       else element.remove(); // avoid forks showing another developer's personal note
     });
+    //
+    Array.from(document.querySelectorAll(".padding-start")).filter(element => {
+      const computedStyle = window.getComputedStyle(element);
+      return (parseFloat(computedStyle.paddingInlineStart) < parseFloat(computedStyle.paddingInlineEnd));
+    })
+      .forEach(element => element.classList.remove("padding-start"));
     //
     setFromURLAndMemoryAndStorage(); // first time
     showMemorized(); // first time

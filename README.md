@@ -14,13 +14,13 @@ can be installed from the browser to become an icon on your phone's home screen.
 | --- | --- | --- | --- |
 | ![US icon](us/inflation-us.svg) | US | https://inflation.cmprh.com/us/ | US$ |
 | ![CA icon](ca/inflation-ca.svg) | Canada | https://inflation.cmprh.com/ca/ | CA$ |
-| ![DE icon](de/inflation-de.svg) | Germany | https://inflation.cmprh.com/de/ | € after DM |
-| ![FR icon](fr/inflation-fr.svg) | France | https://inflation.cmprh.com/fr/ | € after F |
+| ![DE icon](de/inflation-de.svg) | Deutschland | https://inflation.cmprh.com/de/ | €, davor DM |
+| ![FR icon](fr/inflation-fr.svg) | France | https://inflation.cmprh.com/fr/ | €, avant cela F |
 | ![CH icon](ch/inflation-ch.svg) | Switzerland | https://inflation.cmprh.com/ch/ | Fr. |
-| ![AT icon](at/inflation-at.svg) | Austria | https://inflation.cmprh.com/at/ | € after ÖS |
+| ![AT icon](at/inflation-at.svg) | Österreich | https://inflation.cmprh.com/at/ | €, davor ÖS |
 | ![IN icon](in/inflation-in.svg) | India | https://inflation.cmprh.com/in/ | ₹ |
 | ![JP icon](jp/inflation-jp.svg) | 日本 | https://inflation.cmprh.com/jp/ | 円 |
-| ![IL icon](il/inflation-il.svg) | ישראל | https://inflation.cmprh.com/il/ | &#x200F;₪ אחרי ל״י |
+| ![IL icon](il/inflation-il.svg) | ישראל | https://inflation.cmprh.com/il/ | &#x2067;₪ אחרי ל״י&#x2069; |
 | ![QA icon](qa/inflation-qa.svg) | قطر | https://inflation.cmprh.com/qa/ | ر.ق |
 
 ## More Currencies
@@ -72,4 +72,4 @@ And, for a kid to understand what it means a grandparent worked for $2 per hour.
 This also is for people whose activities have prevented them from
 paying attention to some aspects of money.
 Sometimes they have to pay attention.
-This calculator hopefully helps making sense of numbers changing in time.
+These calculators hopefully help making sense of numbers changing in time.
