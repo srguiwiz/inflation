@@ -16,7 +16,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![CA icon](ca/inflation-ca.svg) | Canada | https://inflation.cmprh.com/ca/ | CA$ |
 | ![DE icon](de/inflation-de.svg) | Deutschland | https://inflation.cmprh.com/de/ | €, davor DM |
 | ![FR icon](fr/inflation-fr.svg) | France | https://inflation.cmprh.com/fr/ | €, avant cela F |
-| ![CH icon](ch/inflation-ch.svg) | Switzerland | https://inflation.cmprh.com/ch/ | Fr. |
+| ![CH icon](ch/inflation-ch.svg) | Schweiz | https://inflation.cmprh.com/ch/ | Fr. |
 | ![AT icon](at/inflation-at.svg) | Österreich | https://inflation.cmprh.com/at/ | €, davor ÖS |
 | ![IN icon](in/inflation-in.svg) | India | https://inflation.cmprh.com/in/ | ₹ |
 | ![JP icon](jp/inflation-jp.svg) | 日本 | https://inflation.cmprh.com/jp/ | 円 |
@@ -28,7 +28,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 If you send a pull request, your calculator can be online too.
 
 First, to understand what you will have to change, compare existing directories,
-for example with `diff de ca` .
+for example with `diff de in` .
 Then, you can work on your files in your new directory.
 You can work on files even without running a server, without node or npm.
 
@@ -49,6 +49,8 @@ A historical currency switch is handled correctly in the German and Austrian
 calculators, as an example.
 Two switches are handled in the French calculator, as an example.
 The code for multiple currencies is present equally in all calculators.
+The Canadian and Swiss calculators are multilingual.
+Right to left writing is supported.
 
 This calculator is optimized for certain uses.
 
@@ -73,3 +75,5 @@ This also is for people whose activities have prevented them from
 paying attention to some aspects of money.
 Sometimes they have to pay attention.
 These calculators hopefully help making sense of numbers changing in time.
+
+This app was started as an exercise.

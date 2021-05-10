@@ -53,7 +53,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     .container {
       box-sizing: border-box;
       height: 100%;
-      width: max-content;
+      width: min(100vw, 35em);
       max-width: 100%;
       /* */
       display: grid;
@@ -63,7 +63,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       --column-gap: 1rem;
       --padding-start: 0.5em;
       column-gap: var(--column-gap);
-      margin: 0px;
+      margin: 0px auto;
       padding: 0.75rem;
       overflow: hidden;
     }
@@ -107,13 +107,16 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
 
-    .heading {
+    div.heading {
       grid-column: 1 / 6;
       font-family: sans-serif;
       font-size: larger;
+      /* */
+      display: flex;
+      justify-content: space-between;
     }
 
-    .first-column {
+    div.first-column {
       grid-column: 1 / 2;
     }
 
@@ -127,7 +130,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       align-self: baseline;
     }
 
-    .amount {
+    div.amount {
       min-width: max-content;
     }
 
@@ -179,16 +182,16 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       text-align: end;
     }
 
-    .clear {
+    div.clear {
       grid-column: 5 / 6;
     }
 
-    .memorize {
+    div.memorize {
       grid-column: 1 / 3;
       align-self: end;
     }
 
-    .copy-either {
+    div.copy-either {
       grid-column: 4 / 6;
       grid-row: 7 / 9;
       align-self: end;
@@ -202,19 +205,19 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       margin-inline-start: 1rem;
     }
 
-    .explanation {
+    div.explanation {
       grid-column: 1 / 6;
       font-size: smaller;
       max-width: 50rem;
     }
 
-    .explanation-right {
+    div.explanation-right {
       grid-column: 4 / 6;
       font-size: smaller;
       max-width: 30rem;
     }
 
-    .explanation-left {
+    div.explanation-left {
       grid-column: 1 / 4;
       font-size: smaller;
       max-width: 15rem;
@@ -227,7 +230,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
 
-    .memorized {
+    div.memorized {
       grid-column: 1 / 6;
       box-sizing: border-box;
       height: 100%;
@@ -265,6 +268,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     button label * {
       text-align: center;
       vertical-align: middle;
+    }
+
+    button.copy-url label {
       font-size: smaller;
     }
 
@@ -293,7 +299,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
 
-    .symbols {
+    div.symbols {
       visibility: hidden;
       max-height: 1px;
       overflow: hidden;
@@ -353,24 +359,81 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     textarea {
       user-select: text;
     }
+
+    .heading .lang-carousel {
+      font-size: small;
+      padding-inline-start: var(--column-gap);
+      min-width: 2em;
+      text-align: end;
+    }
+
+    .lang-carousel {
+      cursor: pointer;
+    }
+
+    .lang-carousel:hover {
+      outline: lightblue solid 1px;
+    }
+
+    .lang-carousel:active {
+      background-color: lightblue;
+    }
+
+    /* forks per country should adjust language codes, if needed at all */
+    body[lang] [lang] {
+      display: none;
+    }
+
+    body[lang|='en'] [lang|='en'] {
+      display: unset;
+    }
+
+    body[lang|='fr'] [lang|='fr'] {
+      display: unset;
+    }
   </style>
   <!-- forks per country should adjust this title -->
   <title>Inflation Calculator – CA</title>
 </head>
 
-<body>
+<body lang="en">
   <div class="container">
     <!-- forks per country should adjust this heading -->
-    <div class="heading">Inflation Calculator – CA</div>
+    <div class="heading">
+      <span>
+        <span lang="en">Inflation Calculator – CA</span>
+        <span lang="fr">Calculateur d'Inflation – CA</span>
+      </span>
+      <span class="lang-carousel">
+        <span lang="en">en</span>
+        <span lang="fr">fr</span>
+      </span>
+    </div>
     <!-- forks per country should adjust this explanation -->
-    <div class="explanation">Approximated from the
-      <span class="unabbreviated">Consumer Price Index</span> <span class="abbreviated">CPI</span>
-      of Canada.
+    <div class="explanation">
+      <span>
+        <span lang="en">Approximated from the
+          <span class="unabbreviated">Consumer Price Index</span> <span class="abbreviated">CPI</span>
+          of Canada.</span>
+        <span lang="fr">À peu près selon
+          <span class="unabbreviated">l'indice canadien des prix à la consommation</span>
+          <span class="abbreviated">l'IPC</span>.</span>
+      </span>
     </div>
     <div class="first-column"></div>
-    <div class="label">Year</div>
+    <div class="label">
+      <span>
+        <span lang="en">Year</span>
+        <span lang="fr">Année</span>
+      </span>
+    </div>
     <div class="symbols symbol"></div>
-    <div class="label">Amount</div>
+    <div class="label">
+      <span>
+        <span lang="en">Amount</span>
+        <span lang="fr">Somme</span>
+      </span>
+    </div>
     <div class="first-column"></div>
     <div class="year">
       <select class="padding-start" name="fromYear" autofocus>
@@ -381,7 +444,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <input class="padding-start" name="fromAmount" type="number" min="0" />
     </div>
     <div class="clear">
-      <button onclick="clearAmounts()" tabindex="-1"><label>X</label></button>
+      <button class="clear" onclick="clearAmounts()" tabindex="-1"><label>X</label></button>
     </div>
     <div class="first-column"></div>
     <div class="label time-direction">
@@ -392,7 +455,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       </span>
     </div>
     <div></div>
-    <div class="explanation-right">Enter either amount.</div>
+    <div class="explanation-right">
+      <span>
+        <span lang="en">Enter either amount.</span>
+        <span lang="fr">Entrez l'une ou l'autre.</span>
+      </span>
+    </div>
     <div class="first-column"></div>
     <div class="year">
       <select class="padding-start" name="toYear">
@@ -402,13 +470,27 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="amount">
       <input class="padding-start" name="toAmount" type="number" min="0" />
     </div>
-    <div class="explanation-left">This amount:</div>
+    <div class="explanation-left">
+      <span>
+        <span lang="en">This amount:</span>
+        <span lang="fr">Cette somme:</span>
+      </span>
+    </div>
     <div class="copy-either">
-      <button class="copy-numbers" onclick="copyNumbers()"><label>Copy</label></button>
+      <button class="copy-numbers" onclick="copyNumbers()">
+        <label>
+          <span>
+            <span lang="en">Copy</span>
+            <span lang="fr">Copier</span>
+          </span>
+        </label>
+      </button>
       <button class="copy-url" onclick="copyURL()">
         <label>
-          <span class="optional">Copy</span>
-          <span>URL</span>
+          <span>
+            <span lang="en"><span class="optional">Copy</span> <span>URL</span></span>
+            <span lang="fr"><span class="optional">Copier l'</span><span>URL</span></span>
+          </span>
           <svg viewBox="0 0 24 24">
             <path d="M8,12 3,12 3,22 21,22 21,12 16,12 M12,16 12,2 M8,6 12,2 16,6" stroke="black" stroke-width="2"
               fill="none" stroke-linejoin="round" stroke-linecap="round" />
@@ -417,22 +499,45 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       </button>
     </div>
     <div class="memorize">
-      <button onclick="memorize()"><label>Make Note</label></button>
+      <button class="memorize" onclick="memorize()">
+        <label>
+          <span>
+            <span lang="en">Make Note</span>
+            <span lang="fr">Noter ici</span>
+          </span>
+        </label>
+      </button>
     </div>
     <div class="memorized">
       <textarea class="padding-start" style="visibility: hidden;"></textarea>
     </div>
     <div class="explanation" style="visibility: hidden;">
-      You can add notes to this memorized text, edit, copy, or delete all.
+      <span>
+        <span lang="en">You can add notes to this memorized text, edit, copy, or delete all.</span>
+        <span lang="fr">Vous pouvez ajouter des notes à ce texte, modifier, copier ou tout effacer.</span>
+      </span>
     </div>
-    <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to a server.</div>
-    <div class="explanation installable">This calculator can be installed from the browser to your home screen.</div>
+    <div class="explanation">
+      <span>
+        <span lang="en">Your numbers and notes are on your device only. Nothing gets sent to a server.</span>
+        <span lang="fr">Vos numéros et notes sont dans votre appareil. Rien n'est envoyé en ligne.</span>
+      </span>
+    </div>
+    <div class="explanation installable">
+      <span>
+        <span lang="en">This calculator can be installed from the browser to your home screen.</span>
+        <span lang="fr">Ce calculateur peut être installée à partir du navigateur sur votre écran d'accueil.</span>
+      </span>
+    </div>
     <div class="explanation personal" style="display:none;">
       <!-- forks if hosted elsewhere automatically w/should not display this personal note -->
       <!-- if you maintain a fork, for a specific country, it makes sense you put your short note here;
         be considerate of limited space on phone screens, hence replace an existing note, for example:
         This version by Your Name. -->
-      This helper app was made as an exercise.
+      <span>
+        <span lang="en">This app was made as an exercise.</span>
+        <span lang="fr">Cette application a été conçue comme un exercice.</span>
+      </span>
     </div>
   </div>
   <script>
@@ -973,6 +1078,24 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       return (parseFloat(computedStyle.paddingInlineStart) < parseFloat(computedStyle.paddingInlineEnd));
     })
       .forEach(element => element.classList.remove("padding-start"));
+    //
+    document.querySelectorAll(".lang-carousel").forEach(element => {
+      element.addEventListener("click", event => {
+        const carousel = event.target.closest(".lang-carousel") || event.target;
+        const lang = document.body.getAttribute("lang");
+        const newLang = (carousel.querySelector(`[lang|='${lang}'] ~ [lang]`)
+          || carousel.querySelector("[lang]"))
+          .getAttribute("lang");
+        document.body.setAttribute("lang", newLang);
+        document.title = document.querySelector(".heading *").innerText;
+        localStorageSetItem("lang", newLang);
+      });
+    });
+    {
+      const lang = localStorageGetItem("lang") || navigator.language.replace(/-.*/, ""); // first time
+      if (lang && document.querySelector(`.lang-carousel [lang|='${lang}']`))
+        document.body.setAttribute("lang", lang);
+    }
     //
     setFromURLAndMemoryAndStorage(); // first time
     showMemorized(); // first time
