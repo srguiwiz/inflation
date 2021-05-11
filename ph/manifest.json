@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – Philippines",
+  "short_name": "Inflation-PH",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for Philippine pesos.",
+  "icons": [
+    {
+      "src": "./inflation-ph-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-ph-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-ph-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-ph-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-ph-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-ph-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-ph.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}

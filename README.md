@@ -22,6 +22,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![JP icon](jp/inflation-jp.svg) | 日本 | https://inflation.cmprh.com/jp/ | 円 |
 | ![IL icon](il/inflation-il.svg) | ישראל | https://inflation.cmprh.com/il/ | &#x2067;₪ אחרי ל״י&#x2069; |
 | ![QA icon](qa/inflation-qa.svg) | قطر | https://inflation.cmprh.com/qa/ | ر.ق |
+| ![PH icon](ph/inflation-ph.svg) | Philippines | https://inflation.cmprh.com/ph/ | ₱ |
 
 ## More Currencies
 

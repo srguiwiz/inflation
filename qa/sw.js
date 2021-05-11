@@ -1,3 +1,5 @@
+// v 1.3.2
+
 // forks should have a distinct cacheName, for example including the country code for which it is,
 // see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
 const cacheName = "inflation-qa-annual";
