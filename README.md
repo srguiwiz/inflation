@@ -23,6 +23,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![IL icon](il/inflation-il.svg) | ישראל | https://inflation.cmprh.com/il/ | &#x2067;₪ אחרי ל״י&#x2069; |
 | ![QA icon](qa/inflation-qa.svg) | قطر | https://inflation.cmprh.com/qa/ | ر.ق |
 | ![PH icon](ph/inflation-ph.svg) | Philippines | https://inflation.cmprh.com/ph/ | ₱ |
+| ![CL icon](cl/inflation-cl.svg) | Chile | https://inflation.cmprh.com/cl/ | CLP$, antes de ese Eº |
 
 ## More Currencies
 

@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – Chile",
+  "short_name": "Inflation-CL",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for Chilean pesos.",
+  "icons": [
+    {
+      "src": "./inflation-cl-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-cl-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-cl-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-cl-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-cl-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-cl-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-cl.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}
