@@ -24,6 +24,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![QA icon](qa/inflation-qa.svg) | قطر | https://inflation.cmprh.com/qa/ | ر.ق |
 | ![PH icon](ph/inflation-ph.svg) | Philippines | https://inflation.cmprh.com/ph/ | ₱ |
 | ![CL icon](cl/inflation-cl.svg) | Chile | https://inflation.cmprh.com/cl/ | CLP$, antes de ese Eº |
+| ![BW icon](bw/inflation-bw.svg) | Botswana | https://inflation.cmprh.com/bw/ | P |
 
 ## More Currencies
 
