@@ -15,6 +15,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![US icon](us/inflation-us.svg) | US | https://inflation.cmprh.com/us/ | US$ |
 | ![CA icon](ca/inflation-ca.svg) | Canada | https://inflation.cmprh.com/ca/ | CA$ |
 | ![DE icon](de/inflation-de.svg) | Deutschland | https://inflation.cmprh.com/de/ | €, davor DM |
+| ![UK icon](uk/inflation-uk.svg) | United Kingdom | https://inflation.cmprh.com/uk/ | £ |
 | ![FR icon](fr/inflation-fr.svg) | France | https://inflation.cmprh.com/fr/ | €, avant cela F |
 | ![CH icon](ch/inflation-ch.svg) | Schweiz | https://inflation.cmprh.com/ch/ | Fr. |
 | ![AT icon](at/inflation-at.svg) | Österreich | https://inflation.cmprh.com/at/ | €, davor ÖS |
@@ -26,20 +27,20 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![CL icon](cl/inflation-cl.svg) | Chile | https://inflation.cmprh.com/cl/ | CLP$, antes de ese Eº |
 | ![BW icon](bw/inflation-bw.svg) | Botswana | https://inflation.cmprh.com/bw/ | P |
 
-## More Currencies
+## More Countries
 
 If you send a pull request, your calculator can be online too.
 
 First, to understand what you will have to change, compare existing directories,
 for example with `diff de in` .
-Then, you can work on your files in your new directory.
+Then, you can work on your files in a specific country directory.
 You can work on files even without running a server, without node or npm.
 
 You can fork this repository to derive a calculator
 
-- for another currency,
+- for another country,
 - for a currency and its predecessor,
-- with newer or older data, or
+- with newer and older data, or
 - with a different appearance.
 
 One difficulty level up is to derive a calculator

@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – UK",
+  "short_name": "Inflation-UK",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for pounds sterling.",
+  "icons": [
+    {
+      "src": "./inflation-uk-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-uk-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-uk-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-uk-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-uk-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-uk-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-uk.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}
