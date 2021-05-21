@@ -696,19 +696,20 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         }
       }
       //
-      toYear = toYear ?? (localStorageGetItem("toYear") || years[years.length - 1]);
+      toYear = nou(toYear) ? (localStorageGetItem("toYear") || years[years.length - 1]) : toYear;
       if (!cpi[toYear]) toYear = mostRecentYear; // if not known
       selectToYear(toYear);
       //
-      fromYear = fromYear ?? localStorageGetItem("fromYear");
+      fromYear = nou(fromYear) ? localStorageGetItem("fromYear") : fromYear;
       if (!cpi[fromYear]) fromYear = yearBeforeToYear(); // if not known
       selectFromYear(fromYear);
       //
       showTimeDirection();
       //
-      fromAmount = fromAmount ?? (Number(localStorageGetItem("fromAmount")) || 0);
-      toAmount = toAmount ?? (Number(localStorageGetItem("toAmount")) || 0);
-      moreRecentlyHasEnteredToAmount = moreRecentlyHasEnteredToAmount ?? localStorageGetItem("moreRecentlyHasEnteredToAmount") === "true";
+      fromAmount = nou(fromAmount) ? (Number(localStorageGetItem("fromAmount")) || 0) : fromAmount;
+      toAmount = nou(toAmount) ? (Number(localStorageGetItem("toAmount")) || 0) : toAmount;
+      moreRecentlyHasEnteredToAmount = nou(moreRecentlyHasEnteredToAmount) ?
+        localStorageGetItem("moreRecentlyHasEnteredToAmount") === "true" : moreRecentlyHasEnteredToAmount;
       //
       fromToOrToFrom();
     }
@@ -850,7 +851,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     }
     function copyURL() {
       const newHash = equivalentHash();
-      const url = `${document.location.origin ?? `${document.location.protocol}//`}${document.location.pathname}${newHash}`;
+      const location = document.location;
+      const url = `${nou(location.origin) ? `${location.protocol}//` : location.origin}${location.pathname}${newHash}`;
       navigator.clipboard.writeText(url);
       showHash(newHash);
     }
@@ -929,8 +931,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
           fromFormatted = fromAmount;
         }
       }
-      fromFormatted = fromFormatted ?? fromCurrency.format.replace("amount", fromAmount);
-      toFormatted = toFormatted ?? toCurrency.format.replace("amount", toAmount);
+      fromFormatted = nou(fromFormatted) ? fromCurrency.format.replace("amount", fromAmount) : fromFormatted;
+      toFormatted = nou(toFormatted) ? toCurrency.format.replace("amount", toAmount) : toFormatted;
       const arrow = horizontalArrow();
       let memo = `${fromYear} ${arrow} ${toYear}  ≈  ${fromFormatted} ${arrow} ${toFormatted}`;
       if (!rtl)
@@ -997,6 +999,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     try {
       navigator.serviceWorker.register("./sw.js");
     } catch { } // ignore
+    //
+    function nou(v) { return v === null || v === undefined } // dream of ??
   </script>
 </body>
 
