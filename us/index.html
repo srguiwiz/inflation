@@ -360,6 +360,34 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       user-select: text;
     }
 
+    div.too-old {
+      box-sizing: border-box;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding: 2rem;
+      z-index: 999;
+      background-color: white;
+      animation: delayed-fade-in 6s;
+    }
+
+    @keyframes delayed-fade-in {
+      0% {
+        opacity: 0;
+      }
+
+      50% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
     .heading .lang-carousel {
       font-size: small;
       padding-inline-start: var(--column-gap);
@@ -386,7 +414,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 </head>
 
 <body>
-  <div class="container">
+  <div class="container" style="visibility: hidden;">
     <!-- forks per country should adjust this heading -->
     <div class="heading">Inflation Calculator</div>
     <!-- forks per country should adjust this explanation -->
@@ -461,6 +489,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       This app was made as an exercise.
     </div>
   </div>
+  <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
     // data from https://www.bls.gov/data/inflation_calculator.htm
     // took January of each year
@@ -723,20 +752,20 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         }
       }
       //
-      toYear = nou(toYear) ? (localStorageGetItem("toYear") || years[years.length - 1]) : toYear;
+      toYear = toYear ?? (localStorageGetItem("toYear") || years[years.length - 1]);
       if (!cpi[toYear]) toYear = mostRecentYear; // if not known
       selectToYear(toYear);
       //
-      fromYear = nou(fromYear) ? localStorageGetItem("fromYear") : fromYear;
+      fromYear = fromYear ?? localStorageGetItem("fromYear");
       if (!cpi[fromYear]) fromYear = yearBeforeToYear(); // if not known
       selectFromYear(fromYear);
       //
       showTimeDirection();
       //
-      fromAmount = nou(fromAmount) ? (Number(localStorageGetItem("fromAmount")) || 0) : fromAmount;
-      toAmount = nou(toAmount) ? (Number(localStorageGetItem("toAmount")) || 0) : toAmount;
-      moreRecentlyHasEnteredToAmount = nou(moreRecentlyHasEnteredToAmount) ?
-        localStorageGetItem("moreRecentlyHasEnteredToAmount") === "true" : moreRecentlyHasEnteredToAmount;
+      fromAmount = fromAmount ?? (Number(localStorageGetItem("fromAmount")) || 0);
+      toAmount = toAmount ?? (Number(localStorageGetItem("toAmount")) || 0);
+      moreRecentlyHasEnteredToAmount = moreRecentlyHasEnteredToAmount ??
+        localStorageGetItem("moreRecentlyHasEnteredToAmount") === "true";
       //
       fromToOrToFrom();
     }
@@ -879,7 +908,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     function copyURL() {
       const newHash = equivalentHash();
       const location = document.location;
-      const url = `${nou(location.origin) ? `${location.protocol}//` : location.origin}${location.pathname}${newHash}`;
+      const url = `${location.origin ?? `${location.protocol}//`}${location.pathname}${newHash}`;
       navigator.clipboard.writeText(url);
       showHash(newHash);
     }
@@ -958,8 +987,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
           fromFormatted = fromAmount;
         }
       }
-      fromFormatted = nou(fromFormatted) ? fromCurrency.format.replace("amount", fromAmount) : fromFormatted;
-      toFormatted = nou(toFormatted) ? toCurrency.format.replace("amount", toAmount) : toFormatted;
+      fromFormatted = fromFormatted ?? fromCurrency.format.replace("amount", fromAmount);
+      toFormatted = toFormatted ?? toCurrency.format.replace("amount", toAmount);
       const arrow = horizontalArrow();
       let memo = `${fromYear} ${arrow} ${toYear}  ≈  ${fromFormatted} ${arrow} ${toFormatted}`;
       if (!rtl)
@@ -1023,11 +1052,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     setFromURLAndMemoryAndStorage(); // first time
     showMemorized(); // first time
     //
+    null ?? document.querySelector?.("div.too-old").remove(); // feature test
+    document.querySelector("div.container").removeAttribute("style"); // show
+    //
     try {
       navigator.serviceWorker.register("./sw.js");
     } catch { } // ignore
-    //
-    function nou(v) { return v === null || v === undefined } // dream of ??
   </script>
 </body>
 
