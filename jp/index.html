@@ -48,21 +48,34 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       margin: 0px;
       padding: 0px;
       overflow: hidden;
+      --container-max-width: 35rem;
+    }
+
+    .page {
+      box-sizing: border-box;
+      height: 100%;
+      width: 100%;
+      /* */
+      display: flex;
+      justify-content: space-around;
+      align-items: stretch;
+      overflow: hidden;
     }
 
     .container {
       box-sizing: border-box;
       height: 100%;
-      width: min(100vw, 35em);
+      width: min(100vw, var(--container-max-width));
       max-width: 100%;
       /* */
       display: grid;
       grid-template-columns: repeat(4, auto) 1fr;
       grid-template-rows: repeat(8, auto) 1fr repeat(2, auto);
-      gap: 1rem;
       --column-gap: 1rem;
+      --row-gap: 1rem;
       --padding-start: 0.5em;
       column-gap: var(--column-gap);
+      row-gap: var(--row-gap);
       margin: 0px auto;
       padding: 0.75rem;
       overflow: hidden;
@@ -91,19 +104,19 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     @media (max-height: 600px) {
       .container {
-        row-gap: 0.75rem;
+        --row-gap: 0.75rem;
       }
     }
 
     @media (max-height: 500px) {
       .container {
-        row-gap: 0.5rem;
+        --row-gap: 0.5rem;
       }
     }
 
     @media (max-height: 400px) {
       .container {
-        row-gap: 0.25rem;
+        --row-gap: 0.25rem;
       }
     }
 
@@ -236,6 +249,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       height: 100%;
       min-height: 3em;
       overflow: hidden;
+      /* */
+      position: relative;
     }
 
     .memorized textarea {
@@ -245,6 +260,38 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       overflow: auto;
       width: 100%;
       height: 100%;
+    }
+
+    textarea.flash-warning {
+      animation: flash-red 6s step-end;
+    }
+
+    @keyframes flash-red {
+      0% {
+        background-color: pink;
+        color: maroon;
+        text-decoration: line-through;
+      }
+
+      100% {}
+    }
+
+    textarea.flash-warning~div.full-warning {
+      position: absolute;
+      box-sizing: border-box;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      font-size: 200%;
+      font-family: sans-serif;
+      text-align: center;
+      padding: var(--row-gap) var(--column-gap);
+      background-color: mistyrose;
+      color: maroon;
+      z-index: 2;
+      opacity: 0.75;
+      overflow: visible;
     }
 
     button svg {
@@ -360,6 +407,46 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       user-select: text;
     }
 
+    .sidebar {
+      box-sizing: border-box;
+      width: calc(50vw - var(--container-max-width) / 2 - 3rem);
+      min-width: 7rem;
+      /* */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 1rem;
+      margin: 0px auto;
+      padding: 0.75rem;
+      overflow: hidden;
+    }
+
+    @media (max-width: 60rem) {
+      .sidebar {
+        display: none;
+      }
+    }
+
+    svg.chart {
+      width: 100%;
+      height: 14rem;
+      font-family: sans-serif;
+      touch-action: manipulation;
+    }
+
+    .pale {
+      opacity: 0.25;
+    }
+
+    select,
+    button:enabled,
+    button:enabled *,
+    .lang-carousel,
+    svg.chart {
+      cursor: pointer;
+    }
+
     div.too-old {
       box-sizing: border-box;
       position: absolute;
@@ -395,10 +482,6 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       text-align: end;
     }
 
-    .lang-carousel {
-      cursor: pointer;
-    }
-
     .lang-carousel:hover {
       outline: lightblue solid 1px;
     }
@@ -415,91 +498,118 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 </head>
 
 <body>
-  <div class="container" style="visibility: hidden;">
-    <!-- forks per country should adjust this heading -->
-    <!-- Inflation Calculator -->
-    <div class="heading">インフレ計算機</div>
-    <!-- forks per country should adjust this explanation -->
-    <div class="explanation">
-      <!-- Approximate based on the consumer price index -->
-      <span>消費者物価指数に基づいた概算</span>
+  <div class="page" style="visibility: hidden;">
+    <div class="sidebar">
     </div>
-    <div class="first-column"></div>
-    <!-- Year -->
-    <div class="label">年</div>
-    <div class="symbols symbol"></div>
-    <!-- Amount of money -->
-    <div class="label">金額</div>
-    <div class="first-column"></div>
-    <div class="year">
-      <select class="padding-start" name="fromYear" autofocus>
-      </select>
-    </div>
-    <div class="from-symbol symbol">$</div>
-    <div class="amount">
-      <input class="padding-start" name="fromAmount" type="number" min="0" />
-    </div>
-    <div class="clear">
-      <button class="clear" onclick="clearAmounts()" tabindex="-1"><label>X</label></button>
-    </div>
-    <div class="first-column"></div>
-    <div class="label time-direction">
-      <span class="forward">
-        <span class="forward">↓</span>
-        <span class="same">=</span>
-        <span class="backward">↑</span>
-      </span>
-    </div>
-    <div></div>
-    <!-- Enter either. -->
-    <div class="explanation-right">どちらかを入力。</div>
-    <div class="first-column"></div>
-    <div class="year">
-      <select class="padding-start" name="toYear">
-      </select>
-    </div>
-    <div class="to-symbol symbol">$</div>
-    <div class="amount">
-      <input class="padding-start" name="toAmount" type="number" min="0" />
-    </div>
-    <!-- This amount: -->
-    <div class="explanation-left">この金額：</div>
-    <div class="copy-either">
-      <!-- Copy -->
-      <button class="copy-numbers" onclick="copyNumbers()"><label>コピー</label></button>
-      <button class="copy-url" onclick="copyURL()">
-        <label>
-          <!-- Copy link -->
-          <span>リンク</span><span class="optional">をコピー</span>
-          <svg viewBox="0 0 24 24">
-            <path d="M8,12 3,12 3,22 21,22 21,12 16,12 M12,16 12,2 M8,6 12,2 16,6" stroke="black" stroke-width="2"
-              fill="none" stroke-linejoin="round" stroke-linecap="round" />
-          </svg>
-        </label>
-      </button>
-    </div>
-    <div class="memorize">
-      <!-- Append below -->
-      <button class="memorize" onclick="memorize()"><label>以下に追加</label></button>
-    </div>
-    <div class="memorized">
-      <textarea class="padding-start" style="visibility: hidden;"></textarea>
-    </div>
-    <!-- You can enter, edit, copy, or delete text. -->
-    <div class="explanation" style="visibility: hidden;">
-      テキストを入力、編集、コピー、または削除できます。
-    </div>
-    <!-- This app does not send numbers or data to any server. -->
-    <div class="explanation">このアプリは、どのサーバーにも数値やデータを送信しません。</div>
-    <!-- This page can be added as an app to the home screen directly from your browser. -->
-    <div class="explanation installable">このページは、ブラウザから直接ホーム画面にアプリとして追加できます。</div>
-    <div class="explanation personal" style="display:none;">
-      <!-- forks if hosted elsewhere automatically w/should not display this personal note -->
-      <!-- if you maintain a fork, for a specific country, it makes sense you put your short note here;
+    <div class="container">
+      <!-- forks per country should adjust this heading -->
+      <!-- Inflation Calculator -->
+      <div class="heading">インフレ計算機</div>
+      <!-- forks per country should adjust this explanation -->
+      <div class="explanation">
+        <!-- Approximate based on the consumer price index -->
+        <span>消費者物価指数に基づいた概算</span>
+      </div>
+      <div class="first-column"></div>
+      <!-- Year -->
+      <div class="label">年</div>
+      <div class="symbols symbol"></div>
+      <!-- Amount of money -->
+      <div class="label">金額</div>
+      <div class="first-column"></div>
+      <div class="year">
+        <select class="padding-start" name="fromYear" autofocus>
+        </select>
+      </div>
+      <div class="from-symbol symbol">$</div>
+      <div class="amount">
+        <input class="padding-start" name="fromAmount" type="number" min="0" />
+      </div>
+      <div class="clear">
+        <button class="clear" tabindex="-1"><label>X</label></button>
+      </div>
+      <div class="first-column"></div>
+      <div class="label time-direction">
+        <span class="forward">
+          <span class="forward">↓</span>
+          <span class="same">=</span>
+          <span class="backward">↑</span>
+        </span>
+      </div>
+      <div></div>
+      <!-- Enter either. -->
+      <div class="explanation-right">どちらかを入力。</div>
+      <div class="first-column"></div>
+      <div class="year">
+        <select class="padding-start" name="toYear">
+        </select>
+      </div>
+      <div class="to-symbol symbol">$</div>
+      <div class="amount">
+        <input class="padding-start" name="toAmount" type="number" min="0" />
+      </div>
+      <!-- This amount: -->
+      <div class="explanation-left">この金額：</div>
+      <div class="copy-either">
+        <button class="copy-numbers">
+          <!-- Copy -->
+          <label>コピー</label>
+        </button>
+        <button class="copy-url">
+          <label>
+            <!-- Copy link -->
+            <span>リンク</span><span class="optional">をコピー</span>
+            <svg viewBox="0 0 24 24">
+              <path d="M8,12 3,12 3,22 21,22 21,12 16,12 M12,16 12,2 M8,6 12,2 16,6" stroke="black" stroke-width="2"
+                fill="none" stroke-linejoin="round" stroke-linecap="round" />
+            </svg>
+          </label>
+        </button>
+      </div>
+      <div class="memorize">
+        <button class="memorize">
+          <!-- Append below -->
+          <label>以下に追加</label>
+        </button>
+      </div>
+      <div class="memorized">
+        <textarea class="padding-start" style="visibility: hidden;"></textarea>
+        <div class="full-warning" display="none">Memo Full</div>
+      </div>
+      <!-- You can enter, edit, copy, or delete text. -->
+      <div class="explanation" style="visibility: hidden;">
+        テキストを入力、編集、コピー、または削除できます。
+      </div>
+      <!-- This app does not send numbers or data to any server. -->
+      <div class="explanation">このアプリは、どのサーバーにも数値やデータを送信しません。</div>
+      <!-- This page can be added as an app to the home screen directly from your browser. -->
+      <div class="explanation installable">このページは、ブラウザから直接ホーム画面にアプリとして追加できます。</div>
+      <div class="explanation personal" style="display:none;">
+        <!-- forks if hosted elsewhere automatically w/should not display this personal note -->
+        <!-- if you maintain a fork, for a specific country, it makes sense you put your short note here;
         be considerate of limited space on phone screens, hence replace an existing note, for example:
         This version by Your Name. -->
-      <!-- This app was created as a practice. -->
-      このアプリは練習として作成されました。
+        <!-- This app was created as a practice. -->
+        このアプリは練習として作成されました。
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="heading">
+        &emsp;
+      </div>
+      <svg class="chart pale">
+        <rect class="chart-area" x="0" y="0" width="0" height="0" fill="none" />
+        <path class="baseline" d="M0,0" fill="none" stroke="#444" stroke-width="0.25" />
+        <text class="first-year">&numsp;&numsp;&numsp;&numsp;</text>
+        <text class="last-year">&numsp;&numsp;&numsp;&numsp;</text>
+        <path class="cpi" d="M0,0" fill="none" stroke="#444" stroke-width="1" />
+        <path class="selected" d="M0,0" fill="none" stroke="#444" stroke-width="3" stroke-linecap="round" />
+        <g class="year-line-group" display="none">
+          <path class="year-line" d="M0,0" fill="none" stroke="lightblue" stroke-width="1" />
+          <text class="line-year">&numsp;&numsp;&numsp;&numsp;</text>
+          <text class="line-amount">&numsp;&numsp;&numsp;&numsp;</text>
+        </g>
+      </svg>
     </div>
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
@@ -595,6 +705,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     const currenciesByYear = {};
     let format = "symbol amount"; // default $ 15
+    const indexesByYear = {}; // accommodate gaps
     {
       if (!currencies.length) currencies.push({});
       currencies.forEach(currency => {
@@ -624,6 +735,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
           format: currency.format, amountFirst: currency.amountFirst,
           definition: currency,
         };
+        indexesByYear[year] = yi;
       }
       if (sortedCurrencies.length > 1) {
         document.querySelectorAll(".symbols").forEach(element => {
@@ -632,7 +744,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
     //
-    const maxMemorized = 1e5; // 100,000 bytes
+    const maxMemorized = 2e4; // 20,000 bytes
     //
     const fromYearElement = document.querySelector("[name='fromYear']");
     const toYearElement = document.querySelector("[name='toYear']");
@@ -707,10 +819,6 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       const resultIndex = years.indexOf(toYear) - 1;
       return years[resultIndex >= 0 ? resultIndex : 0];
     }
-    function yearAfterFromYear() {
-      const resultIndex = years.indexOf(fromYear) + 1;
-      return years[resultIndex > 0 && resultIndex < years.length ? resultIndex : years.length - 1];
-    }
     //
     function clearHash() {
       if (document.location.hash) {
@@ -733,7 +841,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         }
       }
       //
-      toYear = toYear ?? (localStorageGetItem("toYear") || years[years.length - 1]);
+      toYear = toYear ?? (localStorageGetItem("toYear") || mostRecentYear);
       if (!cpi[toYear]) toYear = mostRecentYear; // if not known
       selectToYear(toYear);
       //
@@ -780,6 +888,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       localStorageSetAll();
       updateMemorizedButton();
       clearHash();
+      drawChart();
     }
     function fromTo() {
       toAmount = fromAmount
@@ -801,7 +910,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
     //
-    memorized = localStorageGetItem("memorized") || "";
+    memorized = localStorageGetItem("memorized") || ""; // first time
     //
     function showMemorized() {
       if (memorized) {
@@ -815,12 +924,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
     //
-    fromYearElement.addEventListener("input", event => {
+    fromYearElement.addEventListener("input", () => {
       fromYear = fromYearElement.selectedOptions[0].value;
       fromToOrToFrom();
       showTimeDirection();
     });
-    toYearElement.addEventListener("input", event => {
+    toYearElement.addEventListener("input", () => {
       toYear = toYearElement.selectedOptions[0].value;
       fromTo();
       showTimeDirection();
@@ -834,38 +943,38 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       localStorageSetItem("moreRecentlyHasEnteredToAmount", !!moreRecentlyHasEnteredToAmount);
     }
     //
-    fromAmountElement.addEventListener("input", event => {
+    fromAmountElement.addEventListener("input", () => {
       fromAmount = Number(fromAmountElement.value);
       moreRecentlyHasEnteredToAmount = false;
       fromTo();
     });
-    toAmountElement.addEventListener("input", event => {
+    toAmountElement.addEventListener("input", () => {
       toAmount = Number(toAmountElement.value);
       moreRecentlyHasEnteredToAmount = true;
       toFrom();
     });
     //
-    fromAmountElement.addEventListener("click", event => {
+    fromAmountElement.addEventListener("click", () => {
       moreRecentlyHasEnteredToAmount = false;
       fromTo();
     });
-    toAmountElement.addEventListener("click", event => {
+    toAmountElement.addEventListener("click", () => {
       moreRecentlyHasEnteredToAmount = true;
       toFrom();
     });
-    fromAmountElement.addEventListener("blur", event => {
+    fromAmountElement.addEventListener("blur", () => {
       fromToOrToFrom(); // force rounding
     });
-    toAmountElement.addEventListener("blur", event => {
+    toAmountElement.addEventListener("blur", () => {
       fromToOrToFrom();
     });
     //
-    function clearAmounts() {
+    document.querySelector("button.clear").addEventListener("click", function clearAmounts() {
       fromAmount = 0;
-      moreRecentlyHasEnteredToAmount = false;
       fromTo();
-      fromAmountElement.focus();
-    }
+      if (!moreRecentlyHasEnteredToAmount) fromAmountElement.focus();
+      else toAmountElement.focus();
+    });
     //
     function hashchangeHandler() {
       let hash = document.location.hash; // if any
@@ -886,17 +995,27 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       showHashOnce = newHash;
       history.replaceState("", document.title, url);
     }
-    function copyURL() {
+    document.querySelector("button.copy-url").addEventListener("click", function copyURL() {
       const newHash = equivalentHash();
       const location = document.location;
       const url = `${location.origin ?? `${location.protocol}//`}${location.pathname}${newHash}`;
       navigator.clipboard.writeText(url);
       showHash(newHash);
-    }
+    });
     //
+    document.querySelector("div.full-warning").textContent = `> ${maxMemorized} char`;
+    document.querySelector("div.full-warning").addEventListener("click", () => {
+      memorizedTextarea.classList.remove("flash-warning")
+    });
     function localStorageSetMemorized() {
       if (memorized.length <= maxMemorized) {
         localStorageSetItem("memorized", memorized);
+        memorizedTextarea.classList.remove("flash-warning");
+      } else {
+        memorizedTextarea.classList.add("flash-warning");
+        memorizedTextarea.addEventListener("animationend", () => { memorizedTextarea.classList.remove("flash-warning") });
+        memorized = localStorageGetItem("memorized") || "";
+        showMemorized();
       }
     }
     function getUserChangesToMemorized() {
@@ -926,9 +1045,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
             if (!newLength // empty
               || /\n$/.test(newMemorized)) { // already an \n
               blur = true;
-              break;
             }
           }
+          break;
         }
         default: {
           if (event.ctrlKey || event.metaKey) {
@@ -977,7 +1096,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       else
         return `\u2067${memo}\u2069`;
     }
-    function memorize() {
+    document.querySelector("button.memorize").addEventListener("click", function memorize() {
       const newMemo = memo();
       if (!memorized.includes(newMemo)) {
         memorized = memorized.replace(/([^\n])$/, "$1\n") + newMemo;
@@ -985,22 +1104,21 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         localStorageSetMemorized();
         updateMemorizedButton();
       }
-    }
+    });
     function updateMemorizedButton() {
       memorizeButton.disabled =
         memorized.length >= maxMemorized // prevent excessive length
         || memorized.includes(memo()); // avoid duplicates
     }
     //
-    function copyNumbers() {
+    document.querySelector("button.copy-numbers").addEventListener("click", function copyNumbers() {
       const numbers = memo();
       navigator.clipboard.writeText(numbers);
-    }
+    });
     //
     const personal =
       // to show a personal note, optionally, a developer of a fork may want to adjust this
-      ({ "srguiwiz.github.io": 1, "inflation.cmprh.com": 1 })
-      [document.location.hostname];
+      ({ "srguiwiz.github.io": 1, "inflation.cmprh.com": 1 })[document.location.hostname];
     document.querySelectorAll(".personal").forEach(element => {
       if (personal) element.style.display = "";
       else element.remove(); // avoid forks showing another developer's personal note
@@ -1030,11 +1148,171 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         document.body.setAttribute("lang", lang);
     }
     //
+    const firstYear = Number(years[0]);
+    const lastYear = Number(mostRecentYear);
+    const maxCpi = Math.max(...Object.values(cpi));
+    const rootFontSize = parseFloat(window.getComputedStyle(document.body).fontSize);
+    const chartPadding = Math.round(rootFontSize * 0.75);
+    const svgX = 0, chartX = chartPadding, chartY = chartPadding;
+    let chartWidth = 0, chartHeight = 0, svgX2, chartX2, chartSlotHeight;
+    let chartXScale, chartYScale;
+    let baselineY;
+    const coords = new Array(years.length);
+    const coordStrings = new Array(years.length);
+    const chartSvg = document.querySelector("svg.chart");
+    const chartAreaElement = chartSvg.querySelector("rect.chart-area");
+    chartAreaElement.setAttribute("x", chartX);
+    chartAreaElement.setAttribute("y", chartY);
+    chartSvg.querySelectorAll("*").forEach(element =>
+      element.style.pointerEvents = element === chartAreaElement ? "visible" : "none");
+    const chartFontSize = Math.round(rootFontSize * 0.75);
+    chartSvg.setAttribute("font-size", chartFontSize);
+    const firstYearElement = chartSvg.querySelector("text.first-year");
+    const lastYearElement = chartSvg.querySelector("text.last-year");
+    firstYearElement.textContent = firstYear;
+    lastYearElement.textContent = lastYear;
+    let yearTextWidth;
+    let yearTextWidth5;
+    let yearTextHeight;
+    let yearTextHeight5;
+    const chartHeightSlots = 3;
+    function drawChart() {
+      const bcr = chartSvg.getBoundingClientRect?.();
+      if (!bcr) return;
+      let { width, height } = bcr;
+      if (!width || !height) return;
+      svgX2 = Math.floor(width);
+      width = Math.floor(width - 2 * chartPadding);
+      height = Math.floor(height - 2 * chartPadding - chartFontSize);
+      if (width != chartWidth || height != chartHeight) {
+        chartWidth = width;
+        chartHeight = height;
+        chartX2 = chartX + chartWidth;
+        chartSlotHeight = chartHeight / chartHeightSlots; // don't round here
+        chartAreaElement.setAttribute("width", width);
+        chartAreaElement.setAttribute("height", height);
+        chartXScale = width / (lastYear - firstYear);
+        chartYScale = height / maxCpi;
+        years.forEach((year, i) => {
+          coords[i] = {
+            x: chartX + Math.round(chartXScale * (year - firstYear)),
+            y: chartY + Math.round(height - chartYScale * cpi[year])
+          };
+          coordStrings[i] = `${coords[i].x},${coords[i].y}`;
+        });
+        baselineY = chartY + height;
+        const baselineD = `M${coords[0].x},${baselineY} L${coords[years.length - 1].x},${baselineY}`;
+        const yearTextRect = firstYearElement.getBBox();
+        yearTextWidth = Math.ceil(yearTextRect.width);
+        yearTextWidth5 = Math.ceil(yearTextRect.width / 2);
+        yearTextHeight = Math.ceil(yearTextRect.height);
+        yearTextHeight5 = Math.ceil(yearTextRect.height / 2);
+        firstYearElement.setAttribute("x", coords[0].x + rtl * yearTextWidth);
+        firstYearElement.setAttribute("y", baselineY + yearTextHeight);
+        lastYearElement.setAttribute("x", coords[years.length - 1].x - !rtl * yearTextWidth);
+        lastYearElement.setAttribute("y", baselineY + yearTextHeight);
+        const cpiD = `M${coordStrings[0]} L${coordStrings.slice(1).join(" ")}`;
+        chartSvg.querySelector("path.baseline").setAttribute("d", baselineD);
+        chartSvg.querySelector("path.cpi").setAttribute("d", cpiD);
+      }
+      let earlierYear, laterYear;
+      if (fromYear <= toYear) { earlierYear = fromYear; laterYear = toYear; }
+      else { earlierYear = toYear; laterYear = fromYear; }
+      const earlierIndex = years.indexOf(earlierYear);
+      const laterIndex = years.indexOf(laterYear, earlierIndex);
+      const selectedD = `M${coordStrings[earlierIndex]} L${coordStrings.slice(earlierIndex, laterIndex + 1).join(" ")}`;
+      chartSvg.querySelector("path.selected").setAttribute("d", selectedD);
+    }
+    window.addEventListener("resize", drawChart);
+    let chartPale = chartSvg.classList.contains("pale");
+    chartSvg.addEventListener("click", () => {
+      hideYearLine();
+      chartPale = !chartPale;
+      chartSvg.classList.toggle("pale", chartPale);
+    });
+    //
+    const yearLineGroup = chartSvg.querySelector("g.year-line-group");
+    const yearLineElement = chartSvg.querySelector("path.year-line");
+    const lineYearElement = chartSvg.querySelector("text.line-year");
+    const lineAmountElement = chartSvg.querySelector("text.line-amount");
+    let chartHeightSlot;
+    let chartYearLine = false;
+    function hideYearLine() {
+      yearLineGroup.setAttribute("display", "none");
+      chartYearLine = false;
+    }
+    function forYear(year) {
+      return fromAmount
+        * cpi[year] * currenciesByYear[fromYear].conversion
+        / cpi[fromYear] / currenciesByYear[year].conversion;
+    }
+    function forYearText(year) {
+      return currenciesByYear[year].format.replace("amount", round(forYear(year)));
+    }
+    function updateYearLine(event) {
+      const eventType = event.type;
+      switch (eventType) {
+        case "mouseleave":
+        case "touchend":
+        case "touchcancel":
+          hideYearLine();
+          if (chartPale) chartSvg.classList.add("pale");
+          return;
+        case "mouseenter":
+        case "touchstart":
+          chartYearLine = true;
+      }
+      if (!chartYearLine) return;
+      const bcr = chartSvg.getBoundingClientRect?.();
+      if (!bcr) return;
+      const clientX = event.clientX ?? event.touches?.[0]?.clientX;
+      const clientY = event.clientY ?? event.touches?.[0]?.clientY;
+      if (clientX === undefined || clientY === undefined) return;
+      const eventX = Math.min(Math.max(chartX, Math.round(clientX - bcr.left)), chartX2);
+      const eventY = clientY - bcr.top;
+      let eventYear = Math.round((eventX - chartX) / chartXScale + firstYear);
+      if (!(eventYear in cpi)) eventYear = // if in a gap then find closest
+        years.reduce((acc, cur) => (Math.abs(cur - eventYear) <= Math.abs(acc - eventYear) ? cur : acc), Infinity);
+      const eventIndex = indexesByYear[eventYear];
+      const eventYearCoordY = coords[eventIndex].y;
+      const avoid = new Array(chartHeightSlots).fill(0);
+      [eventY, eventYearCoordY].forEach(avoidY => {
+        const heightSlot = Math.floor((avoidY - chartY) / chartSlotHeight);
+        if (heightSlot in avoid) avoid[heightSlot]++;
+      });
+      if (avoid[chartHeightSlot] !== 0) chartHeightSlot = avoid.indexOf(0); // only change if necessary
+      const eventAmount = forYearText(eventYear);
+      lineYearElement.textContent = eventYear;
+      lineAmountElement.textContent = eventAmount;
+      const amountTextWidth = Math.ceil(lineAmountElement.getBBox()?.width || yearTextWidth);
+      const lineYearElementX = Math.min(Math.max(
+        svgX + rtl * yearTextWidth, coords[eventIndex].x - (-1) ** rtl * yearTextWidth5), svgX2 - !rtl * yearTextWidth);
+      const lineAmountElementX = Math.min(Math.max(
+        svgX + rtl * amountTextWidth, lineYearElementX), svgX2 - !rtl * amountTextWidth);
+      const lineAmountElementY = Math.round(chartY + (chartHeightSlot + 0.5) * chartSlotHeight - yearTextHeight5);
+      const lineYearElementY = lineAmountElementY + 3 * yearTextHeight5;
+      lineYearElement.setAttribute("x", lineYearElementX);
+      lineYearElement.setAttribute("y", lineYearElementY);
+      lineAmountElement.setAttribute("x", lineAmountElementX);
+      lineAmountElement.setAttribute("y", lineAmountElementY);
+      yearLineElement.setAttribute("d",
+        `M${eventX},${chartY} L${eventX},${lineAmountElementY - yearTextHeight} M${eventX},${lineYearElementY + yearTextHeight5} L${eventX},${baselineY}`);
+      switch (eventType) {
+        case "mouseenter":
+        case "touchstart":
+          chartSvg.classList.remove("pale");
+          yearLineGroup.removeAttribute("display");
+      }
+    }
+    ["mouseenter", "mousemove", "mouseleave",
+      "touchstart", "touchmove", "touchend", "touchcancel"].forEach(eventType =>
+        chartAreaElement.addEventListener(eventType, event => { updateYearLine(event); }, { passive: true }));
+    //
     setFromURLAndMemoryAndStorage(); // first time
     showMemorized(); // first time
     //
     null ?? document.querySelector?.("div.too-old").remove(); // feature test
-    document.querySelector("div.container").removeAttribute("style"); // show
+    document.querySelector("div.page").removeAttribute("style"); // show
     //
     try {
       navigator.serviceWorker.register("./sw.js");

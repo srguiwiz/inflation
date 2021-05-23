@@ -1,14 +1,17 @@
 {
   "name": "inflation",
-  "version": "1.5.0",
+  "version": "1.7.1",
   "description": "Inflation calculator",
   "main": "index.html",
   "scripts": {
     "start": "serve",
     "build": "echo Static content, nothing to build",
-    "postinstall": "node -e 'var fs=require(\"fs\");fs.copyFileSync(\"package.json\",\"package.jsonc\");fs.readdirSync(\".\").filter(f=>f.length===2).forEach(f=>{f=f+\"/sw.js\";fs.writeFileSync(f,fs.readFileSync(f,\"utf8\").replace(/^\\/\\/ v .*\\n|^/,\"// v \"+require(\"./package.json\").version+\"\\n\"));});'"
+    "postinstall": "node -e 'var fs=require(\"fs\");fs.copyFileSync(\"package.json\",\"package.jsonc\");fs.readdirSync(\".\").filter(f=>f.length===2).forEach(f=>{f=f+\"/sw.js\";fs.writeFileSync(f,fs.readFileSync(f,\"utf8\").replace(/^\\/\\/ v .*\\n|^/,\"// v \"+require(\"./package.json\").version+\"\\n\"));});'",
+    "eslint": "npx eslint --ext .html ."
   },
   "devDependencies": {
+    "eslint": "^7.27.0",
+    "eslint-plugin-html": "^6.1.2",
     "serve": "^11.2.0"
   },
   "license": "MIT",
