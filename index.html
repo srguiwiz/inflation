@@ -67,11 +67,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       /* */
       display: grid;
       grid-template-columns: repeat(1, auto);
-      grid-template-rows: repeat(2, auto) 1fr;
-      gap: 1rem;
+      grid-template-rows: repeat(3, auto) 1fr;
       --column-gap: 1rem;
+      --row-gap: 1rem;
       --padding-start: 0.5em;
       column-gap: var(--column-gap);
+      row-gap: var(--row-gap);
       margin: 0px auto;
       padding: 0.75rem;
       overflow: hidden;
@@ -92,19 +93,19 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     @media (max-height: 600px) {
       .container {
-        row-gap: 0.75rem;
+        --row-gap: 0.75rem;
       }
     }
 
     @media (max-height: 500px) {
       .container {
-        row-gap: 0.5rem;
+        --row-gap: 0.5rem;
       }
     }
 
     @media (max-height: 400px) {
       .container {
-        row-gap: 0.25rem;
+        --row-gap: 0.25rem;
       }
     }
 
@@ -127,6 +128,25 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     div.explanation:empty {
       max-height: 0px;
+    }
+
+    p {
+      margin-block-start: var(--row-gap);
+      margin-block-end: var(--row-gap);
+    }
+
+    p:first-child {
+      margin-block-start: 0px;
+    }
+
+    p:last-child {
+      margin-block-end: 0px;
+    }
+
+    p.installable,
+    p.mention-phones {
+      margin-block-start: 0px;
+      margin-block-end: 0px;
     }
 
     div.explanation.list {
@@ -271,24 +291,62 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
           calculators work great on phones too.
         </p>
       </div>
+      <div class="explanation list search">
+        <ul>
+          <li><input type="search" placeholder="search" /></li>
+        </ul>
+      </div>
       <div class="explanation list list-of-calculators">
         <ul>
-          <li><a href="./us/"><img src="./us/inflation-us.svg" /> United States</a></li>
-          <li><a href="./ca/"><img src="./ca/inflation-ca.svg" /> Canada</a></li>
-          <li><a href="./de/"><img src="./de/inflation-de.svg" /> Deutschland</a></li>
-          <li><a href="./uk/"><img src="./uk/inflation-uk.svg" /> United Kingdom</a></li>
-          <li><a href="./fr/"><img src="./fr/inflation-fr.svg" /> France</a></li>
-          <li><a href="./ch/"><img src="./ch/inflation-ch.svg" /> Schweiz</a></li>
-          <li><a href="./at/"><img src="./at/inflation-at.svg" /> Österreich</a></li>
-          <li><a href="./in/"><img src="./in/inflation-in.svg" /> India</a></li>
-          <li><a href="./jp/"><img src="./jp/inflation-jp.svg" /> 日本</a></li>
-          <li><a href="./il/"><img src="./il/inflation-il.svg" /> ישראל</a></li>
-          <li><a href="./qa/"><img src="./qa/inflation-qa.svg" /> قطر</a></li>
-          <li><a href="./ph/"><img src="./ph/inflation-ph.svg" /> Philippines</a></li>
-          <li><a href="./cl/"><img src="./cl/inflation-cl.svg" /> Chile</a></li>
-          <li><a href="./bw/"><img src="./bw/inflation-bw.svg" /> Botswana</a></li>
+          <li data-keys="us, United States, USA, dollar, $, USD">
+            <a href="./us/"><img src="./us/inflation-us.svg" /> United States</a>
+          </li>
+          <li data-keys="ca, Canada, dollar, $, CAD">
+            <a href="./ca/"><img src="./ca/inflation-ca.svg" /> Canada</a>
+          </li>
+          <li data-keys="de, Deutschland, Germany, Euro, Deutsche Mark, €, DM">
+            <a href="./de/"><img src="./de/inflation-de.svg" /> Deutschland</a>
+          </li>
+          <li data-keys="uk, United Kingdom, Great Britain, England, pound sterling, £, GBP">
+            <a href="./uk/"><img src="./uk/inflation-uk.svg" /> United Kingdom</a>
+          </li>
+          <li data-keys="fr, France, euro, franc, €, F">
+            <a href="./fr/"><img src="./fr/inflation-fr.svg" /> France</a>
+          </li>
+          <li data-keys="ch, Schweiz, Suisse, Svizzera, Helvetia, Switzerland, Franken, franc, franco, Fr., CHF">
+            <a href="./ch/"><img src="./ch/inflation-ch.svg" /> Schweiz</a>
+          </li>
+          <li data-keys="at, Österreich, Austria, Euro, Schilling, €, ÖS">
+            <a href="./at/"><img src="./at/inflation-at.svg" /> Österreich</a>
+          </li>
+          <li data-keys="in, India, rupee, ₹, ₨">
+            <a href="./in/"><img src="./in/inflation-in.svg" /> India</a>
+          </li>
+          <li data-keys="jp, 日本, Japan, yen, 円, ¥, JPY">
+            <a href="./jp/"><img src="./jp/inflation-jp.svg" /> 日本</a>
+          </li>
+          <li data-keys="il, שראל, Israel, shekel, ₪, ש">
+            <a href="./il/"><img src="./il/inflation-il.svg" /> ישראל</a>
+          </li>
+          <li data-keys="qa, قطر, Qatar, riyal, ر.ق">
+            <a href="./qa/"><img src="./qa/inflation-qa.svg" /> قطر</a>
+          </li>
+          <li data-keys="ph, Philippines, Pilipinas, Filipinas, peso, ₱">
+            <a href="./ph/"><img src="./ph/inflation-ph.svg" /> Philippines</a>
+          </li>
+          <li data-keys="cl, Chile, peso, escudo, $, Eº">
+            <a href="./cl/"><img src="./cl/inflation-cl.svg" /> Chile</a>
+          </li>
+          <li data-keys="bw, Botswana, pula, P">
+            <a href="./bw/"><img src="./bw/inflation-bw.svg" /> Botswana</a>
+          </li>
         </ul>
-        <p class="add">Software developers can add a country with a pull request at
+        <p class="add">
+          To ask us to make one more country for you,
+          write to <span class="link">inflation at cmprh dot com</span> .
+        </p>
+        <p class="add">
+          Software developers could try adding a country with a pull request at
           <span class="link">https://github.com/srguiwiz/inflation</span> .
         </p>
       </div>
@@ -298,10 +356,43 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
-    const numberOfCalcuators =
-      document.querySelectorAll(".list-of-calculators a img").length;
+    const numberOfCalcuators = document.querySelectorAll(".list-of-calculators a img").length;
     document.querySelectorAll(".number-of-calculators").forEach(element =>
       element.textContent = numberOfCalcuators);
+    //
+    class MapOfSets extends Map {
+      at(key) {
+        let set = this.get(key);
+        if (!set) this.set(key, set = new Set());
+        return set;
+      }
+    }
+    const searchIndex = new MapOfSets();
+    document.querySelectorAll(".list-of-calculators li").forEach(li => {
+      searchIndex.at(li.textContent.trim().replace(/\s+/g, " ")).add(li);
+      (li.dataset?.keys ?? "").split(",").map(key => key.trim().replace(/\s+/g, " ")).forEach(key => {
+        searchIndex.at(key).add(li);
+      });
+    });
+    const searchElement = document.querySelector("input[type='search'");
+    function regesc(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+    searchElement.addEventListener("input", () => {
+      const searchRegExp = new RegExp(regesc(searchElement.value), "i");
+      const lis = new Set();
+      searchIndex.forEach((value, key) => {
+        if (searchRegExp.test(key)) value.forEach(e => lis.add(e));
+      });
+      document.querySelectorAll(".list-of-calculators li").forEach(li => {
+        if (lis.has(li)) li.style.display = "";
+        else li.style.display = "none";
+      });
+    });
+    window.addEventListener("load", () => {
+      searchElement.value = "";
+      document.querySelectorAll(".list-of-calculators li").forEach(li => {
+        li.style.display = "";
+      });
+    });
     //
     null ?? document.querySelector?.("div.too-old").remove(); // feature test
     document.querySelector("div.page").removeAttribute("style"); // show
