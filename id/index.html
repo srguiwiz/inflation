@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-PH">
+<html lang="id-ID">
 
 <head>
   <meta charset="utf-8" />
@@ -30,16 +30,16 @@ SOFTWARE.
 Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   -->
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
-  <link rel="icon" type="image/svg+xml" href="inflation-ph.svg">
+  <link rel="icon" type="image/svg+xml" href="inflation-id.svg">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-icon" sizes="512x512" href="inflation-ph-512x512.png">
-  <link rel="apple-touch-icon" sizes="256x256" href="inflation-ph-256x256.png">
-  <link rel="apple-touch-icon" sizes="128x128" href="inflation-ph-128x128.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="inflation-ph-96x96.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="inflation-ph-72x72.png">
-  <link rel="apple-touch-icon" sizes="48x48" href="inflation-ph-48x48.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="inflation-id-512x512.png">
+  <link rel="apple-touch-icon" sizes="256x256" href="inflation-id-256x256.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="inflation-id-128x128.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="inflation-id-96x96.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="inflation-id-72x72.png">
+  <link rel="apple-touch-icon" sizes="48x48" href="inflation-id-48x48.png">
   <style>
     body {
       box-sizing: border-box;
@@ -520,7 +520,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     /* forks per country should adjust language codes, if needed at all */
   </style>
   <!-- forks per country should adjust this title -->
-  <title>Inflation Calculator – PH</title>
+  <title>Kalkulator Inflasi – ID</title>
 </head>
 
 <body>
@@ -529,16 +529,16 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     </div>
     <div class="container">
       <!-- forks per country should adjust this heading -->
-      <div class="heading">Inflation Calculator – PH</div>
+      <div class="heading">Kalkulator Inflasi – ID</div>
       <!-- forks per country should adjust this explanation -->
-      <div class="explanation">Approximated from the
-        <span class="unabbreviated">consumer price index</span> <span class="abbreviated">CPI</span>
-        in the Philippines.
+      <div class="explanation">Kurang lebih dari
+        <span class="unabbreviated">Indeks Harga Konsumen</span> <span class="abbreviated">IHK</span>
+        di Indonesia.
       </div>
       <div class="first-column"></div>
-      <div class="label">Year</div>
+      <div class="label">Tahun</div>
       <div class="symbols symbol"></div>
-      <div class="label">Amount</div>
+      <div class="label">Jumlah Uang</div>
       <div class="first-column"></div>
       <div class="year">
         <select class="padding-start" name="fromYear" autofocus>
@@ -560,7 +560,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         </span>
       </div>
       <div></div>
-      <div class="explanation-right">Enter either amount.</div>
+      <div class="explanation-right">
+        Masukkan satu <span class="abbreviated">↕</span><span class="unabbreviated">atau lainnya</span>.
+      </div>
       <div class="first-column"></div>
       <div class="year">
         <select class="padding-start" name="toYear">
@@ -578,10 +580,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
             fill="none" />
         </svg>
       </div>
-      <div class="explanation-left">This amount:</div>
+      <div class="explanation-left">Jumlah ini:</div>
       <div class="buttons">
         <button class="memorize">
-          <label>Make Note</label>
+          <label><span>Catatan</span> <span class="optional">Di Sini</span></label>
         </button>
         <button class="copy-numbers">
           <label>Copy</label>
@@ -602,16 +604,20 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         <div class="full-warning">Memo Full</div>
       </div>
       <div class="explanation hide">
-        You can add notes to this memorized text, edit, copy, or delete all.
+        Anda dapat mengetik teks ini, mengedit, menyalin, atau menghapus semua.
       </div>
-      <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to a server.</div>
-      <div class="explanation installable">This calculator can be installed from the browser to your home screen.</div>
+      <div class="explanation">
+        Data ini hanya ada di perangkat Anda. Tidak ada yang dikirim ke server.
+      </div>
+      <div class="explanation installable">
+        Aplikasi ini dapat diinstal di layar beranda.
+      </div>
       <div class="explanation personal" style="display: none;">
         <!-- forks if hosted elsewhere automatically w/should not display this personal note -->
         <!-- if you maintain a fork, for a specific country, it makes sense you put your short note here;
         be considerate of limited space on phone screens, hence replace an existing note, for example:
         This version by Your Name. -->
-        This app was made as an exercise.
+        Aplikasi ini telah dibuat untuk latihan.
       </div>
     </div>
     <div class="sidebar">
@@ -640,72 +646,88 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     // from https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv
     // which at the time of writing (2021-04) only has been available up to 2019;
     // formula used: 1960 number = 1959 number * (1 + 1960 percentage / 100), etc.;
-    // full accuracy used before finally rounding
+    // full accuracy used before finally rounding;
+    // compared with
+    // from https://www.bps.go.id/subject/3/inflasi.html#subjekViewTab3
+    // and https://www.bps.go.id/indicator/3/2/1/consumer-price-index-general-.html
+    // and https://www.bps.go.id/subject/3/consumer-prices-indices.html#subjekViewTab5
+    // Consumer Price Index (General), 1979-2019,
+    // which apparently is consistent with other data source, thank you;
+    // for 2020 approximated based on numbers
+    // from https://www.bps.go.id/statictable/2009/06/15/907/indeks-harga-konsumen-dan-inflasi-bulanan-indonesia-2006-2021.html
+    // Monthly Indonesia Consumers Price Indices and Inflations, 2006-2021,
+    // formula not used: 2020 number = 2019 number * number for January 2020 / number for January 2019, etc.;
+    // because of "Since January 2020, CPI has been based on a consumption pattern obtained from 2018 Cost of Living Survey in 90 cities (2018=100)"
+    // formula actually used: 2020 number = 2018 number * ∏ from February 2018 to January 2020 of ( 1 + inflation since previous month percentage / 100 );
+    // full accuracy used before finally rounding;
+    // from then on hopefully will be 2021 number = 2020 number * CPI number for January 2021 / CPI number for January 2020
     const cpi = {
       "1959": 100,
-      "1960": 104,
-      "1961": 106,
-      "1962": 112,
-      "1963": 118,
-      "1964": 128,
-      "1965": 131,
-      "1966": 138,
-      "1967": 147,
-      "1968": 150,
-      "1969": 153,
-      "1970": 175,
-      "1971": 213,
-      "1972": 230,
-      "1973": 269,
-      "1974": 360,
-      "1975": 385,
-      "1976": 420,
-      "1977": 462,
-      "1978": 496,
-      "1979": 582,
-      "1980": 689,
-      "1981": 779,
-      "1982": 858,
-      "1983": 944,
-      "1984": 1420,
-      "1985": 1748,
-      "1986": 1768,
-      "1987": 1840,
-      "1988": 2094,
-      "1989": 2351,
-      "1990": 2637,
-      "1991": 3145,
-      "1992": 3417,
-      "1993": 3647,
-      "1994": 4025,
-      "1995": 4301,
-      "1996": 4622,
-      "1997": 4880,
-      "1998": 5331,
-      "1999": 5648,
-      "2000": 5872,
-      "2001": 6186,
-      "2002": 6355,
-      "2003": 6500,
-      "2004": 6814,
-      "2005": 7258,
-      "2006": 7656,
-      "2007": 7878,
-      "2008": 8529,
-      "2009": 8889,
-      "2010": 9226,
-      "2011": 9661,
-      "2012": 9954,
-      "2013": 10211,
-      "2014": 10578,
-      "2015": 10649,
-      "2016": 10783,
-      "2017": 11090,
-      "2018": 11668,
-      "2019": 11958,
+      "1960": 140,
+      "1961": 159,
+      "1962": 367,
+      "1963": 903,
+      "1964": 1887,
+      "1965": 7677,
+      "1966": 94909,
+      "1967": 195512,
+      "1968": 447416,
+      "1969": 516676,
+      "1970": 580741,
+      "1971": 605328,
+      "1972": 644806,
+      "1973": 844966,
+      "1974": 1187107,
+      "1975": 1414625,
+      "1976": 1695126,
+      "1977": 1882473,
+      "1978": 2035190,
+      "1979": 2365557,
+      "1980": 2792196,
+      "1981": 3134684,
+      "1982": 3430768,
+      "1983": 3835590,
+      "1984": 4236602,
+      "1985": 4436762,
+      "1986": 4695100,
+      "1987": 5130742,
+      "1988": 5543529,
+      "1989": 5899176,
+      "1990": 6360444,
+      "1991": 6959538,
+      "1992": 7483140,
+      "1993": 8206902,
+      "1994": 8907115,
+      "1995": 9746194,
+      "1996": 10523285,
+      "1997": 11178480,
+      "1998": 17712418,
+      "1999": 21339537,
+      "2000": 22126672,
+      "2001": 24671264,
+      "2002": 27607174,
+      "2003": 29472678,
+      "2004": 31259919,
+      "2005": 34527580,
+      "2006": 39053688,
+      "2007": 41555687,
+      "2008": 45805447,
+      "2009": 47814665,
+      "2010": 50269567,
+      "2011": 52962029,
+      "2012": 55228539,
+      "2013": 58770076,
+      "2014": 62528379,
+      "2015": 66507135,
+      "2016": 68852047,
+      "2017": 71474483,
+      "2018": 73760484,
+      "2019": 75995860,
+      "2020": 77967341,
+      "2021": 79177990,
     };
     const currencies = [
-      { symbol: "₱" },
+      { symbol: "Rp" },
     ];
     //
     const years = Object.keys(cpi).sort();
@@ -778,7 +800,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     // forks should have a distinct prefix, for example including the country code for which it is,
     // see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
-    const prefix = "inflation-ph-annual";
+    const prefix = "inflation-id-annual";
     function localStorageGetItem(keyName) {
       try {
         return localStorage.getItem(`${prefix}.${keyName}`); // a string or null

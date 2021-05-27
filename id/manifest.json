@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – Indonesia",
+  "short_name": "Inflation-ID",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for Indonesian rupiah.",
+  "icons": [
+    {
+      "src": "./inflation-id-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-id-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-id-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-id-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-id-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-id-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-id.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}

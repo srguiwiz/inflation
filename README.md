@@ -26,6 +26,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![PH icon](ph/inflation-ph.svg) | Philippines | https://inflation.cmprh.com/ph/ | ₱ |
 | ![CL icon](cl/inflation-cl.svg) | Chile | https://inflation.cmprh.com/cl/ | CLP$, antes de ese Eº |
 | ![BW icon](bw/inflation-bw.svg) | Botswana | https://inflation.cmprh.com/bw/ | P |
+| ![ID icon](id/inflation-id.svg) | Indonesia | https://inflation.cmprh.com/id/ | Rp |
 
 ## More Countries
 
@@ -81,3 +82,12 @@ Sometimes they have to pay attention.
 These calculators hopefully help making sense of numbers changing in time.
 
 This app was started as an exercise.
+
+## Outlook
+
+The organization of the project at that time has been chosen to fit the phase it
+is or has been in.
+
+Some more changes are expected.
+
+Better development documentation can be written on demand.
