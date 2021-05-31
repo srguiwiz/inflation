@@ -29,7 +29,7 @@ SOFTWARE.
   <!--
 Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   -->
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
   <link rel="icon" type="image/svg+xml" href="inflation-il.svg">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.json">
@@ -525,7 +525,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 </head>
 
 <body>
-  <div class="page" style="visibility: hidden;">
+  <div class="page" style="opacity: 0;">
     <div class="sidebar">
     </div>
     <div class="container">
@@ -654,7 +654,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   <script>
     // data from https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
     // from https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv
-    // which at the time of writing (2021-04) only has been available up to 2019;
+    // which at the time of writing (2021-05) only has been available up to 2020;
     // formula used: 1960 number = 1959 number * (1 + 1960 percentage / 100), etc.;
     // full accuracy used before finally rounding
     const cpi = {
@@ -680,45 +680,46 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       "1978": 1380,
       "1979": 2461,
       "1980": 5686,
-      "1981": 12326,
-      "1982": 27163,
-      "1983": 66807,
-      "1984": 316142,
-      "1985": 1292368,
-      "1986": 1913282,
-      "1987": 2289750,
-      "1988": 2664155,
-      "1989": 3202555,
-      "1990": 3753333,
-      "1991": 4465012,
-      "1992": 5000318,
-      "1993": 5548002,
-      "1994": 6234927,
-      "1995": 6857904,
-      "1996": 7636625,
-      "1997": 8318393,
-      "1998": 8774280,
-      "1999": 9227073,
-      "2000": 9324026,
-      "2001": 9431294,
-      "2002": 9972789,
-      "2003": 10044988,
-      "2004": 10003731,
-      "2005": 10134721,
-      "2006": 10349256,
-      "2007": 10397733,
-      "2008": 10875280,
-      "2009": 11237308,
-      "2010": 11541577,
-      "2011": 11941767,
-      "2012": 12142894,
-      "2013": 12333706,
-      "2014": 12393529,
-      "2015": 12315141,
-      "2016": 12248098,
-      "2017": 12278010,
-      "2018": 12378057,
-      "2019": 12482231,
+      "1981": 12327,
+      "1982": 27164,
+      "1983": 66725,
+      "1984": 316155,
+      "1985": 1279113,
+      "1986": 1892639,
+      "1987": 2254016,
+      "1988": 2624582,
+      "1989": 3157461,
+      "1990": 3702590,
+      "1991": 4406970,
+      "1992": 4936786,
+      "1993": 5478852,
+      "1994": 6151587,
+      "1995": 6763070,
+      "1996": 7533805,
+      "1997": 8208581,
+      "1998": 8659792,
+      "1999": 9107941,
+      "2000": 9203900,
+      "2001": 9310068,
+      "2002": 9846009,
+      "2003": 9917468,
+      "2004": 9876635,
+      "2005": 10006281,
+      "2006": 10212491,
+      "2007": 10259450,
+      "2008": 10726995,
+      "2009": 11085310,
+      "2010": 11386458,
+      "2011": 11782544,
+      "2012": 11981608,
+      "2013": 12170464,
+      "2014": 12229673,
+      "2015": 12152089,
+      "2016": 12085734,
+      "2017": 12115338,
+      "2018": 12214360,
+      "2019": 12317465,
+      "2020": 12244985,
     };
     const currencies = [
       { symbol: "ל״י", format: "amount\u2009symbol" }, // Israeli pound, I£, £I, Lira Yisr'elit, לירה ישראלית
@@ -732,6 +733,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const currenciesByYear = {};
     let format = "symbol amount"; // default $ 15
     const indexesByYear = {}; // accommodate gaps
+    const dirs = !!(document.querySelector(".lang-carousel [dir='ltr']") && document.querySelector(".lang-carousel [dir='rtl']"));
     {
       if (!currencies.length) currencies.push({});
       currencies.forEach(currency => {
@@ -741,6 +743,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         if (currency.format === undefined) currency.format = format;
         format = currency.format; // keep using
         currency.amountFirst = format.indexOf("amount") < format.indexOf("symbol");
+        if (dirs && currency.symbol.length) {
+          if (currency.dir === "rtl") currency.symbol = `\u2067${currency.symbol}\u2069`;
+          else currency.symbol = `\u2066${currency.symbol}\u2069`;
+        }
         currency.format = currency.format.replace("symbol", currency.symbol);
       });
       const sortedCurrencies = currencies.map(currency => currency.starting).sort()
@@ -1091,7 +1097,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     memorizedTextarea.addEventListener("keydown", memoKeyListener);
     memorizedTextarea.addEventListener("keypress", memoKeyListener);
     //
-    const rtl = window.getComputedStyle(memorizedTextarea).direction === "rtl";
+    let dir, rtl;
+    function determineRtl() {
+      dir = window.getComputedStyle(memorizedTextarea).direction;
+      rtl = dir === "rtl";
+    }
+    determineRtl(); // first time
     function horizontalArrow() {
       if (fromYear < toYear) {
         return !rtl ? "→" : "←";
@@ -1118,7 +1129,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       const arrow = horizontalArrow();
       let memo = `${fromYear} ${arrow} ${toYear}  ≈  ${fromFormatted} ${arrow} ${toFormatted}`;
       if (!rtl)
-        return memo;
+        return !dirs ? memo : `\u2066${memo}\u2069`;
       else
         return `\u2067${memo}\u2069`;
     }
@@ -1156,22 +1167,32 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     })
       .forEach(element => element.classList.remove("padding-start"));
     //
+    function setLang(lang, dir) {
+      document.documentElement.setAttribute("lang", lang);
+      if (dir) {
+        document.documentElement.setAttribute("dir", dir);
+        determineRtl();
+      }
+      document.title = document.querySelector("div.heading *").innerText;
+    }
     document.querySelectorAll(".lang-carousel").forEach(element => {
       element.addEventListener("click", event => {
         const carousel = event.target.closest(".lang-carousel") || event.target;
-        const lang = document.body.getAttribute("lang");
-        const newLang = (carousel.querySelector(`[lang|='${lang}'] ~ [lang]`)
-          || carousel.querySelector("[lang]"))
-          .getAttribute("lang");
-        document.body.setAttribute("lang", newLang);
-        document.title = document.querySelector("div.heading *").innerText;
+        const lang = document.documentElement.getAttribute("lang")?.replace(/-.*/, "");
+        const newLangElement = (carousel.querySelector(`[lang|='${lang}'] ~ [lang]`)
+          || carousel.querySelector("[lang]"));
+        const newLang = newLangElement.getAttribute("lang");
+        const newDir = newLangElement.getAttribute("dir");
+        setLang(newLang, newDir);
         localStorageSetItem("lang", newLang);
+        if (newDir) localStorageSetItem("dir", newDir);
+        showAmounts();
       });
     });
     {
-      const lang = localStorageGetItem("lang") || navigator.language.replace(/-.*/, ""); // first time
+      const lang = localStorageGetItem("lang") || navigator.language?.replace(/-.*/, ""); // first time
       if (lang && document.querySelector(`.lang-carousel [lang|='${lang}']`))
-        document.body.setAttribute("lang", lang);
+        setLang(lang, localStorageGetItem("dir"));
     }
     //
     const firstYear = Number(years[0]);
@@ -1180,7 +1201,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const rootFontSize = parseFloat(window.getComputedStyle(document.body).fontSize);
     const chartPadding = Math.round(rootFontSize * 0.75);
     const svgX = 0, chartX = chartPadding, chartY = chartPadding;
-    let chartWidth = 0, chartHeight = 0, svgX2, chartX2, chartSlotHeight;
+    let chartWidth = 0, chartHeight = 0, chartDir, svgX2, chartX2, chartSlotHeight;
     let chartXScale, chartYScale;
     let baselineY;
     const coords = new Array(years.length);
@@ -1213,9 +1234,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       svgX2 = Math.floor(width);
       width = Math.floor(width - 2 * chartPadding);
       height = Math.floor(height - 2 * chartPadding - chartFontSize);
-      if (width != chartWidth || height != chartHeight) {
+      if (width != chartWidth || height != chartHeight || dir !== chartDir) {
         chartWidth = width;
         chartHeight = height;
+        chartDir = dir;
         chartX2 = chartX + chartWidth;
         chartSlotHeight = chartHeight / chartHeightSlots; // don't round here
         chartBackgroundElement.setAttribute("width", bcr.width);

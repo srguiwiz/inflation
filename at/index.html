@@ -29,7 +29,7 @@ SOFTWARE.
   <!--
 Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   -->
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
   <link rel="icon" type="image/svg+xml" href="inflation-at.svg">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.json">
@@ -524,7 +524,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 </head>
 
 <body>
-  <div class="page" style="visibility: hidden;">
+  <div class="page" style="opacity: 0;">
     <div class="sidebar">
     </div>
     <div class="container">
@@ -716,6 +716,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const currenciesByYear = {};
     let format = "symbol amount"; // default $ 15
     const indexesByYear = {}; // accommodate gaps
+    const dirs = !!(document.querySelector(".lang-carousel [dir='ltr']") && document.querySelector(".lang-carousel [dir='rtl']"));
     {
       if (!currencies.length) currencies.push({});
       currencies.forEach(currency => {
@@ -725,6 +726,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         if (currency.format === undefined) currency.format = format;
         format = currency.format; // keep using
         currency.amountFirst = format.indexOf("amount") < format.indexOf("symbol");
+        if (dirs && currency.symbol.length) {
+          if (currency.dir === "rtl") currency.symbol = `\u2067${currency.symbol}\u2069`;
+          else currency.symbol = `\u2066${currency.symbol}\u2069`;
+        }
         currency.format = currency.format.replace("symbol", currency.symbol);
       });
       const sortedCurrencies = currencies.map(currency => currency.starting).sort()
@@ -1075,7 +1080,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     memorizedTextarea.addEventListener("keydown", memoKeyListener);
     memorizedTextarea.addEventListener("keypress", memoKeyListener);
     //
-    const rtl = window.getComputedStyle(memorizedTextarea).direction === "rtl";
+    let dir, rtl;
+    function determineRtl() {
+      dir = window.getComputedStyle(memorizedTextarea).direction;
+      rtl = dir === "rtl";
+    }
+    determineRtl(); // first time
     function horizontalArrow() {
       if (fromYear < toYear) {
         return !rtl ? "→" : "←";
@@ -1102,7 +1112,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       const arrow = horizontalArrow();
       let memo = `${fromYear} ${arrow} ${toYear}  ≈  ${fromFormatted} ${arrow} ${toFormatted}`;
       if (!rtl)
-        return memo;
+        return !dirs ? memo : `\u2066${memo}\u2069`;
       else
         return `\u2067${memo}\u2069`;
     }
@@ -1140,22 +1150,32 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     })
       .forEach(element => element.classList.remove("padding-start"));
     //
+    function setLang(lang, dir) {
+      document.documentElement.setAttribute("lang", lang);
+      if (dir) {
+        document.documentElement.setAttribute("dir", dir);
+        determineRtl();
+      }
+      document.title = document.querySelector("div.heading *").innerText;
+    }
     document.querySelectorAll(".lang-carousel").forEach(element => {
       element.addEventListener("click", event => {
         const carousel = event.target.closest(".lang-carousel") || event.target;
-        const lang = document.body.getAttribute("lang");
-        const newLang = (carousel.querySelector(`[lang|='${lang}'] ~ [lang]`)
-          || carousel.querySelector("[lang]"))
-          .getAttribute("lang");
-        document.body.setAttribute("lang", newLang);
-        document.title = document.querySelector("div.heading *").innerText;
+        const lang = document.documentElement.getAttribute("lang")?.replace(/-.*/, "");
+        const newLangElement = (carousel.querySelector(`[lang|='${lang}'] ~ [lang]`)
+          || carousel.querySelector("[lang]"));
+        const newLang = newLangElement.getAttribute("lang");
+        const newDir = newLangElement.getAttribute("dir");
+        setLang(newLang, newDir);
         localStorageSetItem("lang", newLang);
+        if (newDir) localStorageSetItem("dir", newDir);
+        showAmounts();
       });
     });
     {
-      const lang = localStorageGetItem("lang") || navigator.language.replace(/-.*/, ""); // first time
+      const lang = localStorageGetItem("lang") || navigator.language?.replace(/-.*/, ""); // first time
       if (lang && document.querySelector(`.lang-carousel [lang|='${lang}']`))
-        document.body.setAttribute("lang", lang);
+        setLang(lang, localStorageGetItem("dir"));
     }
     //
     const firstYear = Number(years[0]);
@@ -1164,7 +1184,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const rootFontSize = parseFloat(window.getComputedStyle(document.body).fontSize);
     const chartPadding = Math.round(rootFontSize * 0.75);
     const svgX = 0, chartX = chartPadding, chartY = chartPadding;
-    let chartWidth = 0, chartHeight = 0, svgX2, chartX2, chartSlotHeight;
+    let chartWidth = 0, chartHeight = 0, chartDir, svgX2, chartX2, chartSlotHeight;
     let chartXScale, chartYScale;
     let baselineY;
     const coords = new Array(years.length);
@@ -1197,9 +1217,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       svgX2 = Math.floor(width);
       width = Math.floor(width - 2 * chartPadding);
       height = Math.floor(height - 2 * chartPadding - chartFontSize);
-      if (width != chartWidth || height != chartHeight) {
+      if (width != chartWidth || height != chartHeight || dir !== chartDir) {
         chartWidth = width;
         chartHeight = height;
+        chartDir = dir;
         chartX2 = chartX + chartWidth;
         chartSlotHeight = chartHeight / chartHeightSlots; // don't round here
         chartBackgroundElement.setAttribute("width", bcr.width);
