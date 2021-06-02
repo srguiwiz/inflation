@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de-DE">
+<html lang="ur-PK" dir="rtl">
 
 <head>
   <meta charset="utf-8" />
@@ -30,16 +30,16 @@ SOFTWARE.
 Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   -->
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-  <link rel="icon" type="image/svg+xml" href="inflation-de.svg">
+  <link rel="icon" type="image/svg+xml" href="inflation-pk.svg">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-icon" sizes="512x512" href="inflation-de-512x512.png">
-  <link rel="apple-touch-icon" sizes="256x256" href="inflation-de-256x256.png">
-  <link rel="apple-touch-icon" sizes="128x128" href="inflation-de-128x128.png">
-  <link rel="apple-touch-icon" sizes="96x96" href="inflation-de-96x96.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="inflation-de-72x72.png">
-  <link rel="apple-touch-icon" sizes="48x48" href="inflation-de-48x48.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="inflation-pk-512x512.png">
+  <link rel="apple-touch-icon" sizes="256x256" href="inflation-pk-256x256.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="inflation-pk-128x128.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="inflation-pk-96x96.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="inflation-pk-72x72.png">
+  <link rel="apple-touch-icon" sizes="48x48" href="inflation-pk-48x48.png">
   <style>
     body {
       box-sizing: border-box;
@@ -535,9 +535,21 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     }
 
     /* forks per country should adjust language codes, if needed at all */
+    html[lang] [lang] {
+      display: none;
+    }
+
+    html[lang|='ur'] [lang|='ur'] {
+      display: unset;
+    }
+
+    html[lang|='en'] [lang|='en'] {
+      display: unset;
+    }
   </style>
   <!-- forks per country should adjust this title -->
-  <title>Inflationsrechner – DE</title>
+  <!-- Historical Inflation – PK -->
+  <title>تاریخی افراط زر</title>
 </head>
 
 <body>
@@ -547,17 +559,49 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     <div class="container">
       <!-- forks per country should adjust this heading -->
       <div class="heading">
-        <span>Inflationsrechner <span class="annotation">– DE</span></span>
+        <span>
+          <!-- Historical Inflation -->
+          <span lang="ur">تاریخی افراط زر</span>
+          <span lang="en">Inflation Calculator <span class="annotation">– PK</span></span>
+        </span>
+        <span class="lang-carousel">
+          <span lang="ur" dir="rtl">ur</span>
+          <span lang="en" dir="ltr">en</span>
+        </span>
       </div>
       <!-- forks per country should adjust this explanation -->
-      <div class="explanation">Ungefähr vom
-        <span class="unabbreviated">Verbraucherpreisindex</span> <span class="abbreviated">VPI</span>
-        in Deutschland.
+      <div class="explanation">
+        <span>
+          <span lang="ur">
+            <!-- Close to the consumer price index in Pakistan. -->
+            <span class="unabbreviated">پاکستان میں صارف قیمت اشاریہ سے قریب۔</span>
+            <!-- Close to statistics for Pakistan. -->
+            <span class="abbreviated">پاکستان کے اعدادوشمار کے قریب۔</span>
+          </span>
+          <span lang="en">
+            Approximated from the
+            <span class="unabbreviated">Consumer Price Index</span>
+            <span class="abbreviated">CPI</span>
+            of Pakistan.
+          </span>
+        </span>
       </div>
       <div class="first-column"></div>
-      <div class="label">Jahr</div>
+      <div class="label">
+        <span>
+          <!-- Year -->
+          <span lang="ur">سال</span>
+          <span lang="en">Year</span>
+        </span>
+      </div>
       <div class="symbols symbol"></div>
-      <div class="label">Betrag</div>
+      <div class="label">
+        <span>
+          <!-- Amount -->
+          <span lang="ur">رقم</span>
+          <span lang="en">Amount</span>
+        </span>
+      </div>
       <div class="first-column"></div>
       <div class="year">
         <select class="padding-start" name="fromYear" autofocus>
@@ -585,7 +629,13 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         </span>
       </div>
       <div></div>
-      <div class="explanation-right">Einen ↕ eingeben.</div>
+      <div class="explanation-right">
+        <span>
+          <!-- Enter an amount. -->
+          <span lang="ur">ایک رقم درج کریں۔</span>
+          <span lang="en">Enter either amount.</span>
+        </span>
+      </div>
       <div class="first-column"></div>
       <div class="year">
         <select class="padding-start" name="toYear">
@@ -603,18 +653,46 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
             fill="none" />
         </svg>
       </div>
-      <div class="explanation-left">Den Betrag:</div>
+      <div class="explanation-left">
+        <span>
+          <!-- This amount: -->
+          <span lang="ur">یہ رقم:</span>
+          <span lang="en">This amount:</span>
+        </span>
+      </div>
       <div class="buttons">
         <button class="memorize">
-          <label>Merken</label>
+          <label>
+            <span>
+              <!-- Make Note -->
+              <span lang="ur">نوٹ بنائیں</span>
+              <span lang="en">Make Note</span>
+            </span>
+          </label>
         </button>
         <button class="copy-numbers">
-          <label>Kopieren</label>
+          <label>
+            <span>
+              <!-- Copy -->
+              <span lang="ur">کاپی</span>
+              <span lang="en">Copy</span>
+            </span>
+          </label>
         </button>
         <button class="copy-url">
           <label>
-            <span>URL</span>
-            <span class="optional">Kopieren</span>
+            <span>
+              <span lang="ur">
+                <!-- Copy -->
+                <span class="optional">کاپی</span>
+                <!-- Link -->
+                <span>لنک</span>
+              </span>
+              <span lang="en">
+                <span class="optional">Copy</span>
+                <span>URL</span>
+              </span>
+            </span>
             <svg viewBox="0 0 24 24">
               <path d="M8,12 3,12 3,22 21,22 21,12 16,12 M12,16 12,2 M8,6 12,2 16,6" stroke="black" stroke-width="2"
                 fill="none" stroke-linejoin="round" stroke-linecap="round" />
@@ -627,18 +705,36 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         <div class="full-warning">Memo Full</div>
       </div>
       <div class="explanation hide">
-        Sie können diese Notizen bearbeiten, kopieren, oder löschen.
+        <span>
+          <!-- You can write, edit, copy, or delete. -->
+          <span lang="ur">آپ لکھ سکتے ہیں ، تدوین کرسکتے ہیں ، کاپی کرسکتے ہیں ، یا حذف کرسکتے ہیں۔</span>
+          <span lang="en">You can add notes to this memorized text, edit, copy, or delete all.</span>
+        </span>
       </div>
-      <div class="explanation">Ihre Zahlen und Notizen sind nur hier. Nichts wird hochgeladen.</div>
+      <div class="explanation">
+        <span>
+          <!-- Data is on this device only. Nothing is sent online. -->
+          <span lang="ur">ڈیٹا صرف اس آلہ پر ہے۔ کچھ بھی آن لائن نہیں بھیجا جاتا ہے۔</span>
+          <span lang="en">Your numbers and notes are on your device only. Nothing gets sent to a server.</span>
+        </span>
+      </div>
       <div class="explanation installable">
-        Diese App kann vom Browser von hier in den Home Screen installiert werden, als Icon.
+        <span>
+          <!-- This calculator can be installed on your home screen from the browser. -->
+          <span lang="ur">یہ کیلکولیٹر آپ کے ہوم اسکرین پر براؤزر سے انسٹال کیا جاسکتا ہے۔</span>
+          <span lang="en">This calculator can be installed from the browser to your home screen.</span>
+        </span>
       </div>
       <div class="explanation personal" style="display: none;">
         <!-- forks if hosted elsewhere automatically w/should not display this personal note -->
         <!-- if you maintain a fork, for a specific country, it makes sense you put your short note here;
         be considerate of limited space on phone screens, hence replace an existing note, for example:
         This version by Your Name. -->
-        Eine kleine Utility-App.
+        <span>
+          <!-- This app was created as a practice. -->
+          <span lang="ur">یہ ایپ بطور پریکٹس بنائی گئی تھی۔</span>
+          <span lang="en">This app was made as an exercise.</span>
+        </span>
       </div>
     </div>
     <div class="sidebar">
@@ -668,89 +764,77 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
-    // data from https://www.destatis.de/DE/Themen/Wirtschaft/Preise/Verbraucherpreisindex/Publikationen/Downloads-Verbraucherpreise/verbraucherpreisindex-lange-reihen-xlsx-5611103.xlsx
-    // took January of each year,
-    // Verbraucherpreisindex from 1999 on, then before that
-    // Früheres Bundesgebiet, Preisindex für die Lebenshaltung,
-    // 4-Personen-Haushalte von Arbeitern und Angestellten mit mittlerem Einkommen
+    // data from https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
+    // from https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv
+    // which at the time of writing (2021-05) only has been available up to 2020;
+    // formula used: 1960 number = 1959 number * (1 + 1960 percentage / 100), etc.;
+    // full accuracy used before finally rounding
     const cpi = {
-      "1949": 219,
-      "1950": 203,
-      "1951": 203,
-      "1952": 222,
-      "1953": 218,
-      "1954": 214,
-      "1955": 218,
-      "1956": 221,
-      "1957": 227,
-      "1958": 234,
-      "1959": 234,
-      "1960": 239,
-      "1961": 243,
-      "1962": 249,
-      "1963": 258,
-      "1964": 264,
-      "1965": 270,
-      "1966": 282,
-      "1967": 289,
-      "1968": 292,
-      "1969": 297,
-      "1970": 304,
-      "1971": 316,
-      "1972": 333,
-      "1973": 353,
-      "1974": 379,
-      "1975": 402,
-      "1976": 424,
-      "1977": 440,
-      "1978": 452,
-      "1979": 464,
-      "1980": 486,
-      "1981": 515,
-      "1982": 549,
-      "1983": 571,
-      "1984": 587,
-      "1985": 599,
-      "1986": 607,
-      "1987": 601,
-      "1988": 605,
-      "1989": 620,
-      "1990": 636,
-      "1991": 655,
-      "1992": 683,
-      "1993": 709,
-      "1994": 732,
-      "1995": 747,
-      "1996": 756,
-      "1997": 771,
-      "1998": 780,
-      "1999": 782,
-      "2000": 795,
-      "2001": 806,
-      "2002": 822,
-      "2003": 831,
-      "2004": 840,
-      "2005": 853,
-      "2006": 868,
-      "2007": 883,
-      "2008": 908,
-      "2009": 917,
-      "2010": 923,
-      "2011": 939,
-      "2012": 958,
-      "2013": 974,
-      "2014": 988,
-      "2015": 985,
-      "2016": 990,
-      "2017": 1006,
-      "2018": 1020,
-      "2019": 1034,
-      "2020": 1052,
-      "2021": 1063,
+      "1959": 100,
+      "1960": 107,
+      "1961": 109,
+      "1962": 108,
+      "1963": 110,
+      "1964": 114,
+      "1965": 121,
+      "1966": 129,
+      "1967": 138,
+      "1968": 138,
+      "1969": 143,
+      "1970": 150,
+      "1971": 158,
+      "1972": 166,
+      "1973": 204,
+      "1974": 258,
+      "1975": 312,
+      "1976": 335,
+      "1977": 369,
+      "1978": 391,
+      "1979": 424,
+      "1980": 474,
+      "1981": 531,
+      "1982": 562,
+      "1983": 598,
+      "1984": 634,
+      "1985": 670,
+      "1986": 693,
+      "1987": 726,
+      "1988": 790,
+      "1989": 852,
+      "1990": 929,
+      "1991": 1038,
+      "1992": 1137,
+      "1993": 1251,
+      "1994": 1405,
+      "1995": 1579,
+      "1996": 1742,
+      "1997": 1941,
+      "1998": 2061,
+      "1999": 2147,
+      "2000": 2241,
+      "2001": 2311,
+      "2002": 2387,
+      "2003": 2457,
+      "2004": 2640,
+      "2005": 2879,
+      "2006": 3107,
+      "2007": 3343,
+      "2008": 4021,
+      "2009": 4570,
+      "2010": 5161,
+      "2011": 5776,
+      "2012": 6336,
+      "2013": 6823,
+      "2014": 7314,
+      "2015": 7499,
+      "2016": 7781,
+      "2017": 8099,
+      "2018": 8510,
+      "2019": 9410,
+      "2020": 10327,
     };
     const currencies = [
-      { symbol: "DM" },
-      { symbol: "€", starting: "1999", conversion: 1.95583 },
+      { symbol: "₨" },
     ];
     //
     const years = Object.keys(cpi).sort();
@@ -830,7 +914,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     // forks should have a distinct prefix, for example including the country code for which it is,
     // see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
-    const prefix = "inflation-de-annual";
+    const prefix = "inflation-pk-annual";
     function localStorageGetItem(keyName) {
       try {
         return localStorage.getItem(`${prefix}.${keyName}`); // a string or null
@@ -1265,7 +1349,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       svgX2 = Math.floor(width);
       width = Math.floor(width - 2 * chartPadding);
       height = Math.floor(height - 2 * chartPadding - chartFontSize);
-      if (width != chartWidth || height != chartHeight || dir !== chartDir) {
+      if (width !== chartWidth || height !== chartHeight || dir !== chartDir) {
         chartWidth = width;
         chartHeight = height;
         chartDir = dir;

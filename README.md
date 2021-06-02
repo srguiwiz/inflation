@@ -27,6 +27,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![CL icon](cl/inflation-cl.svg) | Chile | https://inflation.cmprh.com/cl/ | CLP$, antes de ese Eº |
 | ![BW icon](bw/inflation-bw.svg) | Botswana | https://inflation.cmprh.com/bw/ | P |
 | ![ID icon](id/inflation-id.svg) | Indonesia | https://inflation.cmprh.com/id/ | Rp |
+| ![PK icon](pk/inflation-pk.svg) | پاکستان | https://inflation.cmprh.com/pk/ | ₨ |
 | ![LB icon](lb/inflation-lb.svg) | لبنان | https://inflation.cmprh.com/lb/ | ⁧ل.ل.⁩ |
 
 ## More Countries
@@ -86,9 +87,9 @@ This app was started as an exercise.
 
 ## Outlook
 
-The organization of the project at that time has been chosen to fit the phase it
-is or has been in.
+The initial organization and structure of this project had been chosen to fit
+the phase it has been in.
 
-Further incremental changes are expected.
+Incremental changes are expected.
 
 Better development documentation is intended to be written on demand.

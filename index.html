@@ -178,6 +178,14 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       margin-inline-end: 0.2em;
     }
 
+    div.explanation.list ul li svg.search-icon {
+      min-width: 24px;
+      height: 24px;
+      max-height: min(24px, 1em);
+      vertical-align: middle;
+      margin-inline-end: 0.2em;
+    }
+
     @media (display-mode: standalone) {
       .installable {
         display: none;
@@ -240,6 +248,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       }
     }
 
+    svg.search-icon {
+      cursor: pointer;
+    }
+
     div.too-old {
       box-sizing: border-box;
       position: absolute;
@@ -293,15 +305,22 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       </div>
       <div class="explanation list search">
         <ul>
-          <li><input type="search" placeholder="search" /></li>
+          <li>
+            <svg class="search-icon" viewBox="0 0 24 24">
+              <rect x="0" y="0" width="24" height="24" rx="2" ry="2" stroke="none" fill="none" />
+              <circle r="6" cx="8" cy="8" stroke="#444" stroke-width="2" fill="none" />
+              <line x1="13" y1="13" x2="22" y2="22" stroke="#444" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <input type="search" placeholder="search" autofocus />
+          </li>
         </ul>
       </div>
       <div class="explanation list list-of-calculators">
         <ul>
-          <li data-keys="us, United States, USA, dollar, $, USD">
+          <li data-keys="us, United States of America, USA, United States dollar, $, USD">
             <a href="./us/"><img src="./us/inflation-us.svg" /> United States</a>
           </li>
-          <li data-keys="ca, Canada, dollar, $, CAD">
+          <li data-keys="ca, Canada, Canadian dollar, $, CAD">
             <a href="./ca/"><img src="./ca/inflation-ca.svg" /> Canada</a>
           </li>
           <li data-keys="de, Deutschland, Germany, Euro, Deutsche Mark, €, DM">
@@ -310,38 +329,42 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
           <li data-keys="uk, United Kingdom, Great Britain, England, pound sterling, £, GBP">
             <a href="./uk/"><img src="./uk/inflation-uk.svg" /> United Kingdom</a>
           </li>
-          <li data-keys="fr, France, euro, franc, €, F">
+          <li data-keys="fr, France, euro, French franc, €, F">
             <a href="./fr/"><img src="./fr/inflation-fr.svg" /> France</a>
           </li>
-          <li data-keys="ch, Schweiz, Suisse, Svizzera, Helvetia, Switzerland, Franken, franc, franco, Fr., CHF">
+          <li
+            data-keys="ch, Schweiz, Suisse, Svizzera, Helvetia, Switzerland, Schweizer Franken, franc suisse, franco svizzero, Fr., CHF">
             <a href="./ch/"><img src="./ch/inflation-ch.svg" /> Schweiz</a>
           </li>
           <li data-keys="at, Österreich, Austria, Euro, Schilling, €, ÖS">
             <a href="./at/"><img src="./at/inflation-at.svg" /> Österreich</a>
           </li>
-          <li data-keys="in, India, rupee, ₹, ₨, INR">
+          <li data-keys="in, India, Indian rupee, ₹, ₨, INR">
             <a href="./in/"><img src="./in/inflation-in.svg" /> India</a>
           </li>
-          <li data-keys="jp, 日本, Japan, yen, 円, ¥, JPY">
+          <li data-keys="jp, 日本, Japan, Japanese yen, 円, ¥, JPY">
             <a href="./jp/"><img src="./jp/inflation-jp.svg" /> 日本</a>
           </li>
           <li data-keys="il, שראל, Israel, shekel, ₪, ש, ILS">
             <a href="./il/"><img src="./il/inflation-il.svg" /> ישראל</a>
           </li>
-          <li data-keys="qa, قطر, Qatar, riyal, ر.ق, QAR">
+          <li data-keys="qa, قطر, Qatar, Qatari riyal, ر.ق, QAR">
             <a href="./qa/"><img src="./qa/inflation-qa.svg" /> قطر</a>
           </li>
-          <li data-keys="ph, Philippines, Pilipinas, Filipinas, peso, ₱, PHP">
+          <li data-keys="ph, Philippines, Pilipinas, Filipinas, Philippine peso, ₱, PHP">
             <a href="./ph/"><img src="./ph/inflation-ph.svg" /> Philippines</a>
           </li>
-          <li data-keys="cl, Chile, peso, escudo, $, Eº, CLP">
+          <li data-keys="cl, Chile, Chilean peso, escudo, $, Eº, CLP">
             <a href="./cl/"><img src="./cl/inflation-cl.svg" /> Chile</a>
           </li>
-          <li data-keys="bw, Botswana, pula, P, BWP">
+          <li data-keys="bw, Botswana, Botswana pula, P, BWP">
             <a href="./bw/"><img src="./bw/inflation-bw.svg" /> Botswana</a>
           </li>
-          <li data-keys="id, Indonesia, rupiah, Rp, IDR">
+          <li data-keys="id, Indonesia, Indonesian rupiah, Rp, IDR">
             <a href="./id/"><img src="./id/inflation-id.svg" /> Indonesia</a>
+          </li>
+          <li data-keys="pk, پاکستان, Pakistan, روپیہ, Pakistani rupee, ₨, PKR">
+            <a href="./pk/"><img src="./pk/inflation-pk.svg" /> پاکستان</a>
           </li>
           <li data-keys="lb, لبنان, Liban, Lebanon, ليرة لبنانية, livre libanaise, Lebanese pound, ل.ل., LBP">
             <a href="./lb/"><img src="./lb/inflation-lb.svg" /> لبنان</a>
@@ -366,38 +389,35 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     document.querySelectorAll(".number-of-calculators").forEach(element =>
       element.textContent = numberOfCalcuators);
     //
-    class MapOfSets extends Map {
-      at(key) {
-        let set = this.get(key);
-        if (!set) this.set(key, set = new Set());
-        return set;
-      }
-    }
-    const searchIndex = new MapOfSets();
+    const keysByLi = new Map();
     document.querySelectorAll(".list-of-calculators li").forEach(li => {
-      searchIndex.at(li.textContent.trim().replace(/\s+/g, " ")).add(li);
-      (li.dataset?.keys ?? "").split(",").map(key => key.trim().replace(/\s+/g, " ")).forEach(key => {
-        searchIndex.at(key).add(li);
-      });
+      const keys = `${li.dataset?.keys ?? ""} ${li.textContent}`;
+      keysByLi.set(li, keys);
     });
     const searchElement = document.querySelector("input[type='search'");
     function regesc(string) { return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
-    searchElement.addEventListener("input", () => {
-      const searchRegExp = new RegExp(regesc(searchElement.value), "i");
+    function search() {
+      const searchRegExps = searchElement.value.trim().split(/\s+/).map(s => new RegExp(regesc(s), "i"));
       const lis = new Set();
-      searchIndex.forEach((value, key) => {
-        if (searchRegExp.test(key)) value.forEach(e => lis.add(e));
+      keysByLi.forEach((keys, li) => {
+        if (searchRegExps.every(r => r.test(keys))) lis.add(li);
       });
       document.querySelectorAll(".list-of-calculators li").forEach(li => {
         if (lis.has(li)) li.style.display = "";
         else li.style.display = "none";
       });
-    });
+    }
+    searchElement.addEventListener("input", search);
     window.addEventListener("load", () => {
       searchElement.value = "";
       document.querySelectorAll(".list-of-calculators li").forEach(li => {
         li.style.display = "";
       });
+    });
+    //
+    document.querySelector("svg.search-icon").addEventListener("click", () => {
+      searchElement.focus();
+      search();
     });
     //
     null ?? document.querySelector?.("div.too-old").remove(); // feature test

@@ -129,6 +129,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       justify-content: space-between;
     }
 
+    div.heading .annotation {
+      font-size: small;
+    }
+
     div.first-column {
       grid-column: 1 / 2;
     }
@@ -201,7 +205,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     button.clear,
     svg.toggle-chart {
-      min-width: 1.5em;
+      min-width: 1.5rem;
     }
 
     svg.toggle-chart {
@@ -451,6 +455,15 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       touch-action: manipulation;
     }
 
+    svg.chart * {
+      pointer-events: none;
+    }
+
+    svg.chart rect.chart-area,
+    svg .clickable {
+      pointer-events: visible;
+    }
+
     svg.chart.maximize-chart {
       box-sizing: border-box;
       position: absolute;
@@ -463,6 +476,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
     .pale:not(.maximize-chart) {
       opacity: 0.25;
+    }
+
+    svg.chart:not(.maximize-chart) .close-chart {
+      display: none;
     }
 
     select,
@@ -529,7 +546,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     </div>
     <div class="container">
       <!-- forks per country should adjust this heading -->
-      <div class="heading">Inflation Calculator</div>
+      <div class="heading">
+        <span>Inflation Calculator</span>
+      </div>
       <!-- forks per country should adjust this explanation -->
       <div class="explanation">Approximated from the US
         <span class="unabbreviated">Consumer Price Index</span><span class="abbreviated">CPI</span>.
@@ -548,7 +567,13 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         <input class="padding-start" name="fromAmount" type="number" min="0" />
       </div>
       <div class="button-right">
-        <button class="clear" tabindex="-1"><label>X</label></button>
+        <button class="clear" tabindex="-1">
+          <label>
+            <svg viewBox="0 0 24 24">
+              <path d="M4,4 L20,20 M4,20 L20,4" stroke="#444" stroke-width="1" stroke-linecap="round" />
+            </svg>
+          </label>
+        </button>
       </div>
       <div class="first-column"></div>
       <div class="label time-direction">
@@ -603,8 +628,12 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <div class="explanation hide">
         You can add notes to this memorized text, edit, copy, or delete all.
       </div>
-      <div class="explanation">Your numbers and notes are on your device only. Nothing gets sent to a server.</div>
-      <div class="explanation installable">This calculator can be installed from the browser to your home screen.</div>
+      <div class="explanation">
+        Your numbers and notes are on your device only. Nothing gets sent to a server.
+      </div>
+      <div class="explanation installable">
+        This calculator can be installed from the browser to your home screen.
+      </div>
       <div class="explanation personal" style="display: none;">
         <!-- forks if hosted elsewhere automatically w/should not display this personal note -->
         <!-- if you maintain a fork, for a specific country, it makes sense you put your short note here;
@@ -629,6 +658,11 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
           <path class="year-line" d="M0,0" fill="none" stroke="lightblue" stroke-width="1" />
           <text class="line-year">&numsp;&numsp;&numsp;&numsp;</text>
           <text class="line-amount">&numsp;&numsp;&numsp;&numsp;</text>
+        </g>
+        <g class="close-chart">
+          <path class="clickable" d="M0,0" stroke="none" fill="ghostwhite" opacity="0" />
+          <path d="M0,0" stroke="#444" stroke-width="0" stroke-linejoin="round" fill="ghostwhite" />
+          <path d="M0,0" stroke="#444" stroke-width="1" stroke-linecap="round" fill="none" />
         </g>
       </svg>
     </div>
@@ -759,7 +793,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     const currenciesByYear = {};
     let format = "symbol amount"; // default $ 15
     const indexesByYear = {}; // accommodate gaps
-    const dirs = !!(document.querySelector(".lang-carousel [dir='ltr']") && document.querySelector(".lang-carousel [dir='rtl']"));
+    const langs = new Map(Array.from(document.querySelectorAll(".lang-carousel [lang]"))
+      .map(element => [element.getAttribute("lang"), element.getAttribute("dir")]));
+    const dirs = new Set(Array.from(langs.values()).filter(dir => dir));
     {
       if (!currencies.length) currencies.push({});
       currencies.forEach(currency => {
@@ -769,7 +805,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         if (currency.format === undefined) currency.format = format;
         format = currency.format; // keep using
         currency.amountFirst = format.indexOf("amount") < format.indexOf("symbol");
-        if (dirs && currency.symbol.length) {
+        if (dirs.size > 1 && currency.symbol.length) {
           if (currency.dir === "rtl") currency.symbol = `\u2067${currency.symbol}\u2069`;
           else currency.symbol = `\u2066${currency.symbol}\u2069`;
         }
@@ -855,6 +891,10 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     let showHashOnce;
     //
+    let lang = alpha2(document.documentElement.getAttribute("lang"));
+    let dir = document.documentElement.getAttribute("dir");
+    let rtl = isRtl(dir);
+    //
     function selectFromYear() {
       for (const option of fromYearElement.selectedOptions) option.selected = false;
       fromYearElement.querySelector(`option[value='${fromYear}']`).selected = true;
@@ -890,14 +930,18 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       // else use from localStorage, if anything,
       // else use defaults
       let hash = document.location.hash; // if any
+      let newLang;
       if (hash) {
         try {
           hash = Object.fromEntries(hash.replace(/^#/, "").split(",").map(entry => entry.split("=")));
-          ({ fy: fromYear = fromYear, ty: toYear = toYear, fa: fromAmount = fromAmount, ta: toAmount = toAmount } = hash);
+          ({ fy: fromYear = fromYear, ty: toYear = toYear, fa: fromAmount = fromAmount, ta: toAmount = toAmount, l: newLang = lang } = hash);
           moreRecentlyHasEnteredToAmount = !!toAmount && !fromAmount;
         } catch {
         }
       }
+      //
+      newLang = newLang ?? (localStorageGetItem("lang") || alpha2(navigator.language));
+      setLang(newLang);
       //
       toYear = toYear ?? (localStorageGetItem("toYear") || mostRecentYear);
       if (!cpi[toYear]) toYear = mostRecentYear; // if not known
@@ -1046,7 +1090,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     window.addEventListener("hashchange", hashchangeHandler);
     //
     function equivalentHash() {
-      return `#fy=${fromYear},ty=${toYear},${moreRecentlyHasEnteredToAmount ? `ta=${toAmount}` : `fa=${fromAmount}`}`;
+      return `#fy=${fromYear},ty=${toYear},${moreRecentlyHasEnteredToAmount ? `ta=${toAmount}` : `fa=${fromAmount}`}${langs.size > 1 ? `,l=${lang}` : ""}`;
     }
     function showHash(newHash) {
       const url = `${document.location.pathname}${newHash}`;
@@ -1123,12 +1167,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     memorizedTextarea.addEventListener("keydown", memoKeyListener);
     memorizedTextarea.addEventListener("keypress", memoKeyListener);
     //
-    let dir, rtl;
-    function determineRtl() {
-      dir = window.getComputedStyle(memorizedTextarea).direction;
-      rtl = dir === "rtl";
+    function isRtl(dir) {
+      return dir === "rtl";
     }
-    determineRtl(); // first time
     function horizontalArrow() {
       if (fromYear < toYear) {
         return !rtl ? "→" : "←";
@@ -1155,7 +1196,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       const arrow = horizontalArrow();
       let memo = `${fromYear} ${arrow} ${toYear}  ≈  ${fromFormatted} ${arrow} ${toFormatted}`;
       if (!rtl)
-        return !dirs ? memo : `\u2066${memo}\u2069`;
+        return dirs.size <= 1 ? memo : `\u2066${memo}\u2069`;
       else
         return `\u2067${memo}\u2069`;
     }
@@ -1193,38 +1234,38 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     })
       .forEach(element => element.classList.remove("padding-start"));
     //
-    function setLang(lang, dir) {
-      document.documentElement.setAttribute("lang", lang);
-      if (dir) {
-        document.documentElement.setAttribute("dir", dir);
-        determineRtl();
+    function alpha2(lang) {
+      return lang?.substring(0, 2);
+    }
+    function setLang(newLang) {
+      if (!langs.has(newLang)) return;
+      lang = newLang;
+      const newDir = langs.get(newLang);
+      if (newLang === alpha2(document.documentElement.getAttribute("lang"))) return;
+      document.documentElement.setAttribute("lang", newLang);
+      if (newDir && newDir !== document.documentElement.getAttribute("dir")) {
+        dir = newDir;
+        rtl = isRtl(dir);
+        document.documentElement.setAttribute("dir", newDir);
       }
       document.title = document.querySelector("div.heading *").innerText;
     }
     document.querySelectorAll(".lang-carousel").forEach(element => {
       element.addEventListener("click", event => {
         const carousel = event.target.closest(".lang-carousel") || event.target;
-        const lang = document.documentElement.getAttribute("lang")?.replace(/-.*/, "");
         const newLangElement = (carousel.querySelector(`[lang|='${lang}'] ~ [lang]`)
           || carousel.querySelector("[lang]"));
         const newLang = newLangElement.getAttribute("lang");
-        const newDir = newLangElement.getAttribute("dir");
-        setLang(newLang, newDir);
+        setLang(newLang);
         localStorageSetItem("lang", newLang);
-        if (newDir) localStorageSetItem("dir", newDir);
         showAmounts();
       });
     });
-    {
-      const lang = localStorageGetItem("lang") || navigator.language?.replace(/-.*/, ""); // first time
-      if (lang && document.querySelector(`.lang-carousel [lang|='${lang}']`))
-        setLang(lang, localStorageGetItem("dir"));
-    }
     //
     const firstYear = Number(years[0]);
     const lastYear = Number(mostRecentYear);
     const maxCpi = Math.max(...Object.values(cpi));
-    const rootFontSize = parseFloat(window.getComputedStyle(document.body).fontSize);
+    const rootFontSize = Math.round(parseFloat(window.getComputedStyle(document.body).fontSize));
     const chartPadding = Math.round(rootFontSize * 0.75);
     const svgX = 0, chartX = chartPadding, chartY = chartPadding;
     let chartWidth = 0, chartHeight = 0, chartDir, svgX2, chartX2, chartSlotHeight;
@@ -1239,8 +1280,6 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     chartBackgroundElement.setAttribute("y", 0);
     chartAreaElement.setAttribute("x", chartX);
     chartAreaElement.setAttribute("y", chartY);
-    chartSvg.querySelectorAll("*").forEach(element =>
-      element.style.pointerEvents = element === chartAreaElement ? "visible" : "none");
     const chartFontSize = Math.round(rootFontSize * 0.75);
     chartSvg.setAttribute("font-size", chartFontSize);
     const firstYearElement = chartSvg.querySelector("text.first-year");
@@ -1305,14 +1344,27 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     window.addEventListener("resize", drawChart);
     let chartPale = chartSvg.classList.contains("pale");
     chartSvg.addEventListener("click", () => {
-      hideYearLine();
       if (!chartSvg.classList.contains("maximize-chart")) {
+        hideYearLine();
         chartPale = !chartPale;
         chartSvg.classList.toggle("pale", chartPale);
-      } else {
-        toggleChart();
       }
     });
+    function closeChartEventHandler() {
+      if (chartSvg.classList.contains("maximize-chart")) {
+        toggleChart(false);
+        event.stopPropagation();
+      }
+    }
+    chartSvg.addEventListener("dblclick", closeChartEventHandler);
+    {
+      const closeChartElement = chartSvg.querySelector("g.close-chart");
+      const c1 = 0, c2 = chartPadding, c3 = c2 + 2, c4 = chartPadding + rootFontSize, c5 = c4 + 2, c6 = c5 + chartPadding;
+      closeChartElement.querySelector("path:nth-child(1)").setAttribute("d", `M${c1},${c1} L${c6},${c1} ${c6},${c6} L${c1},${c6} z`);
+      closeChartElement.querySelector("path:nth-child(2)").setAttribute("d", `M${c2},${c2} L${c5},${c2} ${c5},${c5} L${c2},${c5} z`);
+      closeChartElement.querySelector("path:nth-child(3)").setAttribute("d", `M${c3},${c3} L${c4},${c4} M${c4},${c3} L${c3},${c4}`);
+      closeChartElement.addEventListener("click", closeChartEventHandler);
+    }
     //
     const yearLineGroup = chartSvg.querySelector("g.year-line-group");
     const yearLineElement = chartSvg.querySelector("path.year-line");

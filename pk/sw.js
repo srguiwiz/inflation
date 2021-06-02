@@ -2,7 +2,7 @@
 
 // forks should have a distinct cacheName, for example including the country code for which it is,
 // see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
-const cacheName = "inflation-jp-annual";
+const cacheName = "inflation-pk-annual";
 
 self.addEventListener("install", (installEvent) => {
   async function createAndFillCache() {
@@ -11,13 +11,13 @@ self.addEventListener("install", (installEvent) => {
       "./",
       "./sw.js",
       "./manifest.json",
-      "./inflation-jp.svg",
-      "./inflation-jp-48x48.png",
-      "./inflation-jp-72x72.png",
-      "./inflation-jp-96x96.png",
-      "./inflation-jp-128x128.png",
-      "./inflation-jp-256x256.png",
-      "./inflation-jp-512x512.png",
+      "./inflation-pk.svg",
+      "./inflation-pk-48x48.png",
+      "./inflation-pk-72x72.png",
+      "./inflation-pk-96x96.png",
+      "./inflation-pk-128x128.png",
+      "./inflation-pk-256x256.png",
+      "./inflation-pk-512x512.png",
     ]);
   }
   installEvent.waitUntil(createAndFillCache());

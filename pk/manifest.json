@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – Pakistan",
+  "short_name": "Inflation-PK",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for Pakistani rupees.",
+  "icons": [
+    {
+      "src": "./inflation-pk-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-pk-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-pk-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-pk-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-pk-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-pk-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-pk.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}
