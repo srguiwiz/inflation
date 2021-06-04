@@ -38,17 +38,25 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
   <link rel="apple-touch-icon" sizes="72x72" href="inflation-72x72.png">
   <link rel="apple-touch-icon" sizes="48x48" href="inflation-48x48.png">
   <style>
+    html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: fixed;
+    }
+
     body {
       box-sizing: border-box;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       margin: 0px;
       padding: 0px;
       overflow: hidden;
+      position: fixed;
       --container-max-width: 35rem;
     }
 
-    .page {
+    div.page {
       box-sizing: border-box;
       height: 100%;
       width: 100%;
@@ -59,7 +67,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       overflow: hidden;
     }
 
-    .container {
+    div.container {
       box-sizing: border-box;
       max-height: 100%;
       width: min(100vw, var(--container-max-width));
@@ -79,32 +87,32 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     }
 
     @media (max-width: 500px) {
-      .container {
+      div.container {
         --column-gap: 0.5rem;
         --padding-start: 0.25em;
       }
     }
 
     @media (max-width: 320px) {
-      .container {
+      div.container {
         --column-gap: 0.25rem;
       }
     }
 
     @media (max-height: 600px) {
-      .container {
+      div.container {
         --row-gap: 0.75rem;
       }
     }
 
     @media (max-height: 500px) {
-      .container {
+      div.container {
         --row-gap: 0.5rem;
       }
     }
 
     @media (max-height: 400px) {
-      .container {
+      div.container {
         --row-gap: 0.25rem;
       }
     }
@@ -118,7 +126,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       justify-content: space-between;
     }
 
-    .container * {
+    div.container * {
       align-self: baseline;
     }
 
@@ -147,6 +155,20 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     p.mention-phones {
       margin-block-start: 0px;
       margin-block-end: 0px;
+    }
+
+    .minimal-tall {
+      display: none;
+    }
+
+    @media (max-height: 360px) {
+      .normal-tall {
+        display: none;
+      }
+
+      .minimal-tall {
+        display: unset;
+      }
     }
 
     div.explanation.list {
@@ -184,6 +206,20 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       max-height: min(24px, 1em);
       vertical-align: middle;
       margin-inline-end: 0.2em;
+    }
+
+    div.explanation.list ul li.search {
+      display: flex;
+      align-items: center;
+    }
+
+    div.explanation.list ul li.search * {
+      vertical-align: middle;
+      align-self: center;
+    }
+
+    div.explanation.list ul li input[type='search'] {
+      flex-grow: 1;
     }
 
     @media (display-mode: standalone) {
@@ -227,7 +263,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       user-select: text;
     }
 
-    .sidebar {
+    div.sidebar {
       box-sizing: border-box;
       width: calc(50vw - var(--container-max-width) / 2 - 3rem);
       min-width: 7rem;
@@ -243,7 +279,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     }
 
     @media (max-width: 60rem) {
-      .sidebar {
+      div.page div.sidebar {
         display: none;
       }
     }
@@ -292,11 +328,20 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         Inflation Calculators
       </div>
       <div class="explanation">
-        <p class="installable">Each of these
-          <span class="number-of-calculators"></span>
-          calculators runs here.
-          But also, while open, each by itself can be installed from the browser
-          to an icon on your home screen, for offline use like any app.
+        <p class="installable">
+          <span class="normal-tall">
+            Each of these
+            <span class="number-of-calculators"></span>
+            calculators runs here.
+            But also, while open, each by itself can be installed from the browser
+            to an icon on your home screen, for offline use like any app.
+          </span>
+          <span class="minimal-tall">
+            Each of the
+            <span class="number-of-calculators"></span>
+            calcs runs here.
+            Or, while open each can be installed to an icon.
+          </span>
         </p>
         <p class="mention-phones">These
           <span class="number-of-calculators"></span>
@@ -305,13 +350,13 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       </div>
       <div class="explanation list search">
         <ul>
-          <li>
+          <li class="search">
             <svg class="search-icon" viewBox="0 0 24 24">
               <rect x="0" y="0" width="24" height="24" rx="2" ry="2" stroke="none" fill="none" />
               <circle r="6" cx="8" cy="8" stroke="#444" stroke-width="2" fill="none" />
               <line x1="13" y1="13" x2="22" y2="22" stroke="#444" stroke-width="2" stroke-linecap="round" />
             </svg>
-            <input type="search" placeholder="search" autofocus />
+            <input type="search" placeholder="search by country or currency — or scroll" autofocus />
           </li>
         </ul>
       </div>
@@ -368,6 +413,9 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
           </li>
           <li data-keys="lb, لبنان, Liban, Lebanon, ليرة لبنانية, livre libanaise, Lebanese pound, ل.ل., LBP">
             <a href="./lb/"><img src="./lb/inflation-lb.svg" /> لبنان</a>
+          </li>
+          <li data-keys="cn, 中国, China, Chinese yuan, 人民币, renminbi, 元, ￥, ¥, CNY, CN¥, RMB">
+            <a href="./cn/"><img src="./cn/inflation-cn.svg" /> 中国</a>
           </li>
         </ul>
         <p class="add">

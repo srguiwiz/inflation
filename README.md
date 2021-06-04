@@ -29,6 +29,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![ID icon](id/inflation-id.svg) | Indonesia | https://inflation.cmprh.com/id/ | Rp |
 | ![PK icon](pk/inflation-pk.svg) | پاکستان | https://inflation.cmprh.com/pk/ | ₨ |
 | ![LB icon](lb/inflation-lb.svg) | لبنان | https://inflation.cmprh.com/lb/ | ⁧ل.ل.⁩ |
+| ![CN icon](cn/inflation-cn.svg) | 中国 | https://inflation.cmprh.com/cn/ | 元 |
 
 ## More Countries
 
