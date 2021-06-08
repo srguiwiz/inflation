@@ -28,6 +28,10 @@ SOFTWARE.
   -->
   <!--
 Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
+After modifications by others, original author names still w/sh/could be here,
+possibly and plausibly without their knowledge of later modifications.
+A tool morphing may be a phenomenon that is complex to fully grasp.
+We all and each of us should act sensibly, trustworthily, compassionately.
   -->
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
   <link rel="icon" type="image/svg+xml" href="inflation-fr.svg">
@@ -44,6 +48,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     html {
       width: 100%;
       height: 100%;
+      height: -webkit-fill-available;
       overflow: hidden;
       position: fixed;
     }
@@ -57,36 +62,70 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       overflow: hidden;
       position: fixed;
       --container-max-width: 35rem;
+      --container-padding-x: 5rem;
+      --container-width: calc(var(--container-max-width) + 2 * var(--container-padding-x));
+      --container-lesser-width: min(var(--container-width), var(--container-max-width));
+      --container-padding: 0.75em;
+      --sidebar-width: auto;
+      --page-overflow-x: hidden;
+    }
+
+    @media (max-width: 60rem) {
+      body {
+        --container-width: 100vw;
+        --container-padding-x: max(var(--container-padding), calc((100vw - var(--container-lesser-width)) / 2));
+        --sidebar-width: 100vw;
+        --page-overflow-x: auto;
+      }
+
+      div.page>div.sidebar {
+        flex-grow: 0;
+        flex-shrink: 0;
+        /* */
+        width: 0px;
+        min-width: 0px;
+        padding: 0px;
+      }
+
+      div.sidebar svg.chart {
+        --chart-height: 100%;
+      }
     }
 
     div.page {
       box-sizing: border-box;
-      height: 100%;
       width: 100%;
+      height: 100%;
+      overflow-y: hidden;
+      overflow-x: hidden;
       /* */
       display: flex;
-      justify-content: space-around;
+      justify-content: flex-start;
       align-items: stretch;
-      overflow: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: auto;
     }
 
     div.container {
       box-sizing: border-box;
-      height: 100%;
-      width: min(100vw, var(--container-max-width));
+      width: var(--container-width);
       max-width: 100%;
+      min-width: 12rem;
+      margin: 0px;
+      flex-grow: 0;
+      flex-shrink: 0;
+      height: 100%;
+      overflow: hidden;
       /* */
       display: grid;
       grid-template-columns: repeat(4, auto) 1fr;
       grid-template-rows: repeat(8, auto) 1fr repeat(1, auto);
       --column-gap: 1rem;
       --row-gap: 1rem;
-      --padding-start: 0.5em;
       column-gap: var(--column-gap);
       row-gap: var(--row-gap);
-      margin: 0px auto;
-      padding: 0.75rem;
-      overflow: hidden;
+      padding: var(--container-padding) var(--container-padding-x);
+      --padding-start: 0.5em;
     }
 
     @media (max-width: 500px) {
@@ -100,6 +139,25 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       div.container {
         --column-gap: 0.25rem;
       }
+    }
+
+    div.sidebar {
+      box-sizing: border-box;
+      width: var(--sidebar-width);
+      max-width: 100%;
+      min-width: 7rem;
+      margin: 0px;
+      flex-grow: 1;
+      flex-shrink: 1;
+      height: 100%;
+      overflow: hidden;
+      /* */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 1rem;
+      padding: var(--container-padding);
     }
 
     .symbol {
@@ -228,7 +286,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       display: flex;
       justify-content: space-between;
       column-gap: calc(1em + 3 * var(--column-gap));
-      max-width: calc(0.8 * var(--container-max-width));
+      max-width: calc(0.8 * var(--container-lesser-width));
       white-space: nowrap;
     }
 
@@ -433,32 +491,16 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       user-select: text;
     }
 
-    div.sidebar {
-      box-sizing: border-box;
-      width: calc(50vw - var(--container-max-width) / 2 - 3rem);
-      min-width: 7rem;
-      /* */
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 1rem;
-      margin: 0px auto;
-      padding: 0.75rem;
-      overflow: hidden;
-    }
-
-    @media (max-width: 60rem) {
-      div.page div.sidebar {
-        width: 0px;
-        min-width: 0px;
-        padding: 0px;
-      }
+    div.chart {
+      width: 100%;
+      flex-grow: 1;
+      flex-shrink: 1;
     }
 
     svg.chart {
       width: 100%;
-      height: 14rem;
+      --chart-height: clamp(14rem, calc(100vw - var(--container-width)), 100%);
+      height: var(--chart-height);
       font-family: sans-serif;
       touch-action: manipulation;
     }
@@ -472,21 +514,29 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       pointer-events: visible;
     }
 
-    svg.chart.maximize-chart {
+    div.chart.maximize-chart {
       box-sizing: border-box;
       position: absolute;
       top: 0px;
       left: 0px;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
+      z-index: 899;
+      background-color: white;
+    }
+
+    div.chart.maximize-chart svg.chart {
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
       z-index: 900;
     }
 
-    .pale:not(.maximize-chart) {
+    div.chart:not(.maximize-chart) .pale {
       opacity: 0.25;
     }
 
-    svg.chart:not(.maximize-chart) .close-chart {
+    div.chart:not(.maximize-chart) svg.chart .close-chart {
       display: none;
     }
 
@@ -550,8 +600,6 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
 
 <body>
   <div class="page" style="opacity: 0;">
-    <div class="sidebar">
-    </div>
     <div class="container">
       <!-- forks per country should adjust this heading -->
       <div class="heading">
@@ -647,8 +695,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <div class="explanation personal" style="display: none;">
         <!-- forks if hosted elsewhere automatically w/should not display this personal note -->
         <!-- if you maintain a fork, for a specific country, it makes sense you put your short note here;
-        be considerate of limited space on phone screens, hence replace an existing note, for example:
-        This version by Your Name. -->
+          be considerate of limited space on phone screens, hence replace an existing note, for example:
+          This version by Your Name. -->
         <!-- This app was made as an exercise. -->
         Cette application a été conçue comme un exercice.
       </div>
@@ -657,25 +705,27 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
       <div class="heading">
         &emsp;
       </div>
-      <svg class="chart pale">
-        <rect class="chart-background" x="0" y="0" width="0" height="0" fill="white" />
-        <rect class="chart-area" x="0" y="0" width="0" height="0" fill="none" />
-        <path class="baseline" d="M0,0" fill="none" stroke="#444" stroke-width="0.25" />
-        <text class="first-year">&numsp;&numsp;&numsp;&numsp;</text>
-        <text class="last-year">&numsp;&numsp;&numsp;&numsp;</text>
-        <path class="cpi" d="M0,0" fill="none" stroke="#444" stroke-width="1" />
-        <path class="selected" d="M0,0" fill="none" stroke="#444" stroke-width="3" stroke-linecap="round" />
-        <g class="year-line-group" display="none">
-          <path class="year-line" d="M0,0" fill="none" stroke="lightblue" stroke-width="1" />
-          <text class="line-year">&numsp;&numsp;&numsp;&numsp;</text>
-          <text class="line-amount">&numsp;&numsp;&numsp;&numsp;</text>
-        </g>
-        <g class="close-chart">
-          <path class="clickable" d="M0,0" stroke="none" fill="ghostwhite" opacity="0" />
-          <path d="M0,0" stroke="#444" stroke-width="0" stroke-linejoin="round" fill="ghostwhite" />
-          <path d="M0,0" stroke="#444" stroke-width="1" stroke-linecap="round" fill="none" />
-        </g>
-      </svg>
+      <div class="chart">
+        <svg class="chart pale">
+          <rect class="chart-background" x="0" y="0" width="0" height="0" fill="white" />
+          <rect class="chart-area" x="0" y="0" width="0" height="0" fill="none" />
+          <path class="baseline" d="M0,0" fill="none" stroke="#444" stroke-width="0.25" />
+          <text class="first-year">&numsp;&numsp;&numsp;&numsp;</text>
+          <text class="last-year">&numsp;&numsp;&numsp;&numsp;</text>
+          <path class="cpi" d="M0,0" fill="none" stroke="#444" stroke-width="1" />
+          <path class="selected" d="M0,0" fill="none" stroke="#444" stroke-width="3" stroke-linecap="round" />
+          <g class="year-line-group" display="none">
+            <path class="year-line" d="M0,0" fill="none" stroke="lightblue" stroke-width="1" />
+            <text class="line-year">&numsp;&numsp;&numsp;&numsp;</text>
+            <text class="line-amount">&numsp;&numsp;&numsp;&numsp;</text>
+          </g>
+          <g class="close-chart">
+            <path class="clickable" d="M0,0" stroke="none" fill="ghostwhite" opacity="0" />
+            <path d="M0,0" stroke="#444" stroke-width="0" stroke-linejoin="round" fill="ghostwhite" />
+            <path d="M0,0" stroke="#444" stroke-width="1" stroke-linecap="round" fill="none" />
+          </g>
+        </svg>
+      </div>
     </div>
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
@@ -1244,7 +1294,7 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     //
     const personal =
       // to show a personal note, optionally, a developer of a fork may want to adjust this
-      ({ "srguiwiz.github.io": 1, "inflation.cmprh.com": 1 })[document.location.hostname];
+      ({ "srguiwiz.github.io": 1, "inflation.cmprh.com": 1, "infl.at": 1 })[document.location.hostname];
     document.querySelectorAll(".personal").forEach(element => {
       if (personal) element.style.display = "";
       else element.remove(); // avoid forks showing another developer's personal note
@@ -1295,7 +1345,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     let baselineY;
     const coords = new Array(years.length);
     const coordStrings = new Array(years.length);
-    const chartSvg = document.querySelector("svg.chart");
+    const chartDiv = document.querySelector("div.chart");
+    const chartSvg = chartDiv.querySelector("svg.chart");
     const chartBackgroundElement = chartSvg.querySelector("rect.chart-background");
     const chartAreaElement = chartSvg.querySelector("rect.chart-area");
     chartBackgroundElement.setAttribute("x", 0);
@@ -1366,14 +1417,14 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
     window.addEventListener("resize", drawChart);
     let chartPale = chartSvg.classList.contains("pale");
     chartSvg.addEventListener("click", () => {
-      if (!chartSvg.classList.contains("maximize-chart")) {
+      if (!chartDiv.classList.contains("maximize-chart")) {
         hideYearLine();
         chartPale = !chartPale;
         chartSvg.classList.toggle("pale", chartPale);
       }
     });
     function closeChartEventHandler() {
-      if (chartSvg.classList.contains("maximize-chart")) {
+      if (chartDiv.classList.contains("maximize-chart")) {
         toggleChart(false);
         event.stopPropagation();
       }
@@ -1466,8 +1517,8 @@ Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
         chartAreaElement.addEventListener(eventType, event => { updateYearLine(event); }, { passive: true }));
     //
     function toggleChart(force) {
-      const prev = chartSvg.classList.contains("maximize-chart");
-      const max = chartSvg.classList.toggle("maximize-chart", force);
+      const prev = chartDiv.classList.contains("maximize-chart");
+      const max = chartDiv.classList.toggle("maximize-chart", force);
       if (max !== prev) drawChart();
       chartSvg.classList.toggle("pale", max ? false : chartPale);
     }
