@@ -51,6 +51,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       height: -webkit-fill-available;
       overflow: hidden;
       position: fixed;
+      left: 0px;
     }
 
     body {
@@ -85,10 +86,6 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         width: 0px;
         min-width: 0px;
         padding: 0px;
-      }
-
-      div.sidebar svg.chart {
-        --chart-height: 100%;
       }
     }
 
@@ -309,8 +306,16 @@ We all and each of us should act sensibly, trustworthily, compassionately.
     }
 
     @media (max-height: 360px) {
-      .explanation-left {
+
+      div.explanation-left,
+      div.explanation-right,
+      div.label.time-direction,
+      div.container div:empty,
+      button.memorize,
+      div.memorized,
+      div.explanation.editing {
         max-height: 0px;
+        align-self: unset;
         visibility: hidden;
       }
     }
@@ -499,10 +504,13 @@ We all and each of us should act sensibly, trustworthily, compassionately.
 
     svg.chart {
       width: 100%;
-      --chart-height: clamp(14rem, calc(100vw - var(--container-width)), 100%);
-      height: var(--chart-height);
+      height: max(10rem, min(calc(100vw - var(--container-width)), 100%));
       font-family: sans-serif;
       touch-action: manipulation;
+    }
+
+    html.safari svg.chart {
+      height: max(10rem, min(calc(100vw - var(--container-width)), calc(100vh - 5rem)));
     }
 
     svg.chart * {
@@ -616,7 +624,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       <div class="label">Jumlah Uang</div>
       <div class="first-column"></div>
       <div class="year">
-        <select class="padding-start" name="fromYear" autofocus>
+        <select class="padding-start" name="fromYear">
         </select>
       </div>
       <div class="from-symbol symbol">$</div>
@@ -663,9 +671,6 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       </div>
       <div class="explanation-left">Jumlah ini:</div>
       <div class="buttons">
-        <button class="memorize">
-          <label><span>Catatan</span> <span class="optional">Di Sini</span></label>
-        </button>
         <button class="copy-numbers">
           <label>Salin</label>
         </button>
@@ -679,15 +684,18 @@ We all and each of us should act sensibly, trustworthily, compassionately.
             </svg>
           </label>
         </button>
+        <button class="memorize">
+          <label><span>Catatan</span> <span class="optional">Di Sini</span></label>
+        </button>
       </div>
       <div class="memorized hide">
         <textarea class="padding-start"></textarea>
         <div class="full-warning">Memo Full</div>
       </div>
-      <div class="explanation hide">
+      <div class="explanation editing hide">
         Anda dapat menambah catatan di teks ini, mengedit, menyalin, atau menghapus semua.
       </div>
-      <div class="explanation">
+      <div class="explanation privacy">
         Data ini hanya ada di perangkat Anda. Tidak ada yang dikirim ke server.
       </div>
       <div class="explanation installable">
@@ -1293,6 +1301,12 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       });
     });
     //
+    const { userAgent } = navigator;
+    const probablySafari = /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
+    const multiTouch = navigator.maxTouchPoints > 1;
+    const probablyMobileSafari = probablySafari && multiTouch;
+    if (probablySafari) document.documentElement.classList.toggle("safari", true);
+    //
     const firstYear = Number(years[0]);
     const lastYear = Number(mostRecentYear);
     const maxCpi = Math.max(...Object.values(cpi));
@@ -1323,61 +1337,76 @@ We all and each of us should act sensibly, trustworthily, compassionately.
     let yearTextHeight;
     let yearTextHeight5;
     const chartHeightSlots = 3;
-    function drawChart() {
-      const bcr = chartSvg.getBoundingClientRect?.();
-      if (!bcr) return;
-      let { width, height } = bcr;
-      if (!width || !height) return;
-      svgX2 = Math.floor(width);
-      width = Math.floor(width - 2 * chartPadding);
-      height = Math.floor(height - 2 * chartPadding - chartFontSize);
-      if (width != chartWidth || height != chartHeight || dir !== chartDir) {
-        chartWidth = width;
-        chartHeight = height;
-        chartDir = dir;
-        chartX2 = chartX + chartWidth;
-        chartSlotHeight = chartHeight / chartHeightSlots; // don't round here
-        chartBackgroundElement.setAttribute("width", bcr.width);
-        chartBackgroundElement.setAttribute("height", bcr.height);
-        chartAreaElement.setAttribute("width", width);
-        chartAreaElement.setAttribute("height", height);
-        chartXScale = width / (lastYear - firstYear);
-        chartYScale = height / maxCpi;
-        years.forEach((year, i) => {
-          coords[i] = {
-            x: chartX + Math.round(chartXScale * (year - firstYear)),
-            y: chartY + Math.round(height - chartYScale * cpi[year])
-          };
-          coordStrings[i] = `${coords[i].x},${coords[i].y}`;
-        });
-        baselineY = chartY + height;
-        const baselineD = `M${coords[0].x},${baselineY} L${coords[years.length - 1].x},${baselineY}`;
-        const yearTextRect = firstYearElement.getBBox();
-        yearTextWidth = Math.ceil(yearTextRect.width);
-        yearTextWidth5 = Math.ceil(yearTextRect.width / 2);
-        yearTextHeight = Math.ceil(yearTextRect.height);
-        yearTextHeight5 = Math.ceil(yearTextRect.height / 2);
-        firstYearElement.setAttribute("x", coords[0].x + rtl * yearTextWidth);
-        firstYearElement.setAttribute("y", baselineY + yearTextHeight);
-        lastYearElement.setAttribute("x", coords[years.length - 1].x - !rtl * yearTextWidth);
-        lastYearElement.setAttribute("y", baselineY + yearTextHeight);
-        const cpiD = `M${coordStrings[0]} L${coordStrings.slice(1).join(" ")}`;
-        chartSvg.querySelector("path.baseline").setAttribute("d", baselineD);
-        chartSvg.querySelector("path.cpi").setAttribute("d", cpiD);
+    let chartFromYear, chartToYear;
+    function drawChart(eventOrRepeat = 0) {
+      try {
+        const bcr = chartSvg.getBoundingClientRect?.();
+        if (!bcr) return;
+        let { width, height } = bcr;
+        if (!width || !height) return;
+        svgX2 = Math.floor(width);
+        width = Math.floor(width - 2 * chartPadding);
+        height = Math.floor(height - 2 * chartPadding - chartFontSize);
+        const dimensionsChanged = width != chartWidth || height != chartHeight || dir !== chartDir;
+        if (dimensionsChanged) {
+          chartWidth = width;
+          chartHeight = height;
+          chartDir = dir;
+          chartX2 = chartX + chartWidth;
+          chartSlotHeight = chartHeight / chartHeightSlots; // don't round here
+          chartBackgroundElement.setAttribute("width", bcr.width);
+          chartBackgroundElement.setAttribute("height", bcr.height);
+          chartAreaElement.setAttribute("width", width);
+          chartAreaElement.setAttribute("height", height);
+          chartXScale = width / (lastYear - firstYear);
+          chartYScale = height / maxCpi;
+          years.forEach((year, i) => {
+            coords[i] = {
+              x: chartX + Math.round(chartXScale * (year - firstYear)),
+              y: chartY + Math.round(height - chartYScale * cpi[year])
+            };
+            coordStrings[i] = `${coords[i].x},${coords[i].y}`;
+          });
+          baselineY = chartY + height;
+          const baselineD = `M${coords[0].x},${baselineY} L${coords[years.length - 1].x},${baselineY}`;
+          const yearTextRect = firstYearElement.getBBox();
+          yearTextWidth = Math.ceil(yearTextRect.width);
+          yearTextWidth5 = Math.ceil(yearTextRect.width / 2);
+          yearTextHeight = Math.ceil(yearTextRect.height);
+          yearTextHeight5 = Math.ceil(yearTextRect.height / 2);
+          firstYearElement.setAttribute("x", coords[0].x + rtl * yearTextWidth);
+          firstYearElement.setAttribute("y", baselineY + yearTextHeight);
+          lastYearElement.setAttribute("x", coords[years.length - 1].x - !rtl * yearTextWidth);
+          lastYearElement.setAttribute("y", baselineY + yearTextHeight);
+          const cpiD = `M${coordStrings[0]} L${coordStrings.slice(1).join(" ")}`;
+          chartSvg.querySelector("path.baseline").setAttribute("d", baselineD);
+          chartSvg.querySelector("path.cpi").setAttribute("d", cpiD);
+        }
+        const yearsChanged = fromYear != chartFromYear || toYear != chartToYear;
+        if (yearsChanged || dimensionsChanged) {
+          chartFromYear = fromYear;
+          chartToYear = toYear;
+          let earlierYear, laterYear;
+          if (fromYear <= toYear) { earlierYear = fromYear; laterYear = toYear; }
+          else { earlierYear = toYear; laterYear = fromYear; }
+          const earlierIndex = years.indexOf(earlierYear);
+          const laterIndex = years.indexOf(laterYear, earlierIndex);
+          const selectedD = `M${coordStrings[earlierIndex]} L${coordStrings.slice(earlierIndex, laterIndex + 1).join(" ")}`;
+          chartSvg.querySelector("path.selected").setAttribute("d", selectedD);
+        }
+      } finally {
+        if (probablyMobileSafari && eventOrRepeat) { // in case size was nonsensical after switch to landscape
+          if ("number" !== typeof eventOrRepeat) eventOrRepeat = 3;
+          else eventOrRepeat--;
+          if (eventOrRepeat) window.setTimeout(drawChart, 300, eventOrRepeat);
+        }
       }
-      let earlierYear, laterYear;
-      if (fromYear <= toYear) { earlierYear = fromYear; laterYear = toYear; }
-      else { earlierYear = toYear; laterYear = fromYear; }
-      const earlierIndex = years.indexOf(earlierYear);
-      const laterIndex = years.indexOf(laterYear, earlierIndex);
-      const selectedD = `M${coordStrings[earlierIndex]} L${coordStrings.slice(earlierIndex, laterIndex + 1).join(" ")}`;
-      chartSvg.querySelector("path.selected").setAttribute("d", selectedD);
     }
     window.addEventListener("resize", drawChart);
     let chartPale = chartSvg.classList.contains("pale");
-    chartSvg.addEventListener("click", () => {
+    chartSvg.addEventListener("click", event => {
       if (!chartDiv.classList.contains("maximize-chart")) {
-        hideYearLine();
+        hideYearLine(event);
         chartPale = !chartPale;
         chartSvg.classList.toggle("pale", chartPale);
       }
@@ -1404,9 +1433,12 @@ We all and each of us should act sensibly, trustworthily, compassionately.
     const lineAmountElement = chartSvg.querySelector("text.line-amount");
     let chartHeightSlot;
     let chartYearLine = false;
-    function hideYearLine() {
+    let hideYearLineEvent;
+    const hideYearLineTolerance = 2 * rootFontSize;
+    function hideYearLine(event = null) {
       yearLineGroup.setAttribute("display", "none");
       chartYearLine = false;
+      hideYearLineEvent = event;
     }
     function forYear(year) {
       return fromAmount
@@ -1428,6 +1460,14 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         case "mouseenter":
         case "touchstart":
           chartYearLine = true;
+          if (probablySafari) drawChart(); // in case size was nonsensical after switch to landscape
+          break;
+        case "mousemove":
+          if (!chartYearLine && hideYearLineEvent)
+            if (((hideYearLineEvent.clientX - event.clientX) ** 2 + (hideYearLineEvent.clientY - event.clientY) ** 2) ** 0.5 > hideYearLineTolerance) {
+              chartYearLine = true;
+              hideYearLineEvent = null;
+            }
       }
       if (!chartYearLine) return;
       const bcr = chartSvg.getBoundingClientRect?.();
@@ -1464,11 +1504,9 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       lineAmountElement.setAttribute("y", lineAmountElementY);
       yearLineElement.setAttribute("d",
         `M${eventX},${chartY} L${eventX},${lineAmountElementY - yearTextHeight} M${eventX},${lineYearElementY + yearTextHeight5} L${eventX},${baselineY}`);
-      switch (eventType) {
-        case "mouseenter":
-        case "touchstart":
-          chartSvg.classList.remove("pale");
-          yearLineGroup.removeAttribute("display");
+      if (chartYearLine && yearLineGroup.getAttribute("display")) {
+        chartSvg.classList.remove("pale");
+        yearLineGroup.removeAttribute("display");
       }
     }
     ["mouseenter", "mousemove", "mouseleave",

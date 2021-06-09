@@ -3,7 +3,7 @@
 ## Use
 
 These inflation calculators are live online at
-https://inflation.cmprh.com/
+https://infl.at/
 .
 
 Each calculator immediately works in your browser,
@@ -12,24 +12,24 @@ can be installed from the browser to become an icon on your phone's home screen.
 
 | &#x2003; | Country | Live At | Currency |
 | --- | --- | --- | --- |
-| ![US icon](us/inflation-us.svg) | US | https://inflation.cmprh.com/us/ | US$ |
-| ![CA icon](ca/inflation-ca.svg) | Canada | https://inflation.cmprh.com/ca/ | CA$ |
-| ![DE icon](de/inflation-de.svg) | Deutschland | https://inflation.cmprh.com/de/ | €, davor DM |
-| ![UK icon](uk/inflation-uk.svg) | United Kingdom | https://inflation.cmprh.com/uk/ | £ |
-| ![FR icon](fr/inflation-fr.svg) | France | https://inflation.cmprh.com/fr/ | €, avant cela F |
-| ![CH icon](ch/inflation-ch.svg) | Schweiz | https://inflation.cmprh.com/ch/ | Fr. |
-| ![AT icon](at/inflation-at.svg) | Österreich | https://inflation.cmprh.com/at/ | €, davor ÖS |
-| ![IN icon](in/inflation-in.svg) | India | https://inflation.cmprh.com/in/ | ₹ |
-| ![JP icon](jp/inflation-jp.svg) | 日本 | https://inflation.cmprh.com/jp/ | 円 |
-| ![IL icon](il/inflation-il.svg) | ישראל | https://inflation.cmprh.com/il/ | &#x2067;₪ אחרי ל״י&#x2069; |
-| ![QA icon](qa/inflation-qa.svg) | قطر | https://inflation.cmprh.com/qa/ | ر.ق |
-| ![PH icon](ph/inflation-ph.svg) | Philippines | https://inflation.cmprh.com/ph/ | ₱ |
-| ![CL icon](cl/inflation-cl.svg) | Chile | https://inflation.cmprh.com/cl/ | CLP$, antes de ese Eº |
-| ![BW icon](bw/inflation-bw.svg) | Botswana | https://inflation.cmprh.com/bw/ | P |
-| ![ID icon](id/inflation-id.svg) | Indonesia | https://inflation.cmprh.com/id/ | Rp |
-| ![PK icon](pk/inflation-pk.svg) | پاکستان | https://inflation.cmprh.com/pk/ | ₨ |
-| ![LB icon](lb/inflation-lb.svg) | لبنان | https://inflation.cmprh.com/lb/ | ⁧ل.ل.⁩ |
-| ![CN icon](cn/inflation-cn.svg) | 中国 | https://inflation.cmprh.com/cn/ | 元 |
+| ![US icon](us/inflation-us.svg) | US | https://infl.at/us/ | US$ |
+| ![CA icon](ca/inflation-ca.svg) | Canada | https://infl.at/ca/ | CA$ |
+| ![DE icon](de/inflation-de.svg) | Deutschland | https://infl.at/de/ | €, davor DM |
+| ![UK icon](uk/inflation-uk.svg) | United Kingdom | https://infl.at/uk/ | £ |
+| ![FR icon](fr/inflation-fr.svg) | France | https://infl.at/fr/ | €, avant cela F |
+| ![CH icon](ch/inflation-ch.svg) | Schweiz | https://infl.at/ch/ | Fr. |
+| ![AT icon](at/inflation-at.svg) | Österreich | https://infl.at/at/ | €, davor ÖS |
+| ![IN icon](in/inflation-in.svg) | India | https://infl.at/in/ | ₹ |
+| ![JP icon](jp/inflation-jp.svg) | 日本 | https://infl.at/jp/ | 円 |
+| ![IL icon](il/inflation-il.svg) | ישראל | https://infl.at/il/ | &#x2067;₪ אחרי ל״י&#x2069; |
+| ![QA icon](qa/inflation-qa.svg) | قطر | https://infl.at/qa/ | ر.ق |
+| ![PH icon](ph/inflation-ph.svg) | Philippines | https://infl.at/ph/ | ₱ |
+| ![CL icon](cl/inflation-cl.svg) | Chile | https://infl.at/cl/ | CLP$, antes de ese Eº |
+| ![BW icon](bw/inflation-bw.svg) | Botswana | https://infl.at/bw/ | P |
+| ![ID icon](id/inflation-id.svg) | Indonesia | https://infl.at/id/ | Rp |
+| ![PK icon](pk/inflation-pk.svg) | پاکستان | https://infl.at/pk/ | ₨ |
+| ![LB icon](lb/inflation-lb.svg) | لبنان | https://infl.at/lb/ | ⁧ل.ل.⁩ |
+| ![CN icon](cn/inflation-cn.svg) | 中国 | https://infl.at/cn/ | 元 |
 
 ## More Countries
 
