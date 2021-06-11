@@ -809,25 +809,55 @@ We all and each of us should act sensibly, trustworthily, compassionately.
     const mostRecentYear = years[years.length - 1];
     //
     const currenciesByYear = {};
-    let format = "symbol amount"; // default $ 15
     const indexesByYear = {}; // accommodate gaps
     const langs = new Map(Array.from(document.querySelectorAll(".lang-carousel [lang]"))
       .map(element => [element.getAttribute("lang"), element.getAttribute("dir")]));
     const dirs = new Set(Array.from(langs.values()).filter(dir => dir));
+    //
+    let lang = alpha2(document.documentElement.getAttribute("lang"));
+    let dir = document.documentElement.getAttribute("dir");
+    let rtl = isRtl(dir);
+    //
+    class ByLang {
+      constructor(data) {
+        if ("object" === typeof data) {
+          if (!(data instanceof Array)) data = Object.entries(data);
+          (this._map = new Map(data)).set(undefined, this._map.values().next().value);
+        } else {
+          (this._map = new Map()).set(undefined, data);
+        }
+      }
+      forLang(langFor = lang) {
+        return this._map.get(langFor) ?? this._map.get(undefined);
+      }
+      mapBL(func) {
+        return new ByLang(Array.from(this._map.entries()).map(entry => [entry[0], func.call(this, entry[1], entry[0])]));
+      }
+      langs() {
+        return this._map.keys();
+      }
+    }
+    //
     {
       if (!currencies.length) currencies.push({});
+      let formatBL = new ByLang("symbol amount"); // default $ 15
       currencies.forEach(currency => {
-        if (currency.symbol === undefined) currency.symbol = "$";
+        currency.symbolBL = new ByLang(currency.symbol ?? "$");
         if (currency.starting === undefined) currency.starting = "";
         if (currency.conversion === undefined) currency.conversion = 1;
-        if (currency.format === undefined) currency.format = format;
-        format = currency.format; // keep using
-        currency.amountFirst = format.indexOf("amount") < format.indexOf("symbol");
-        if (dirs.size > 1 && currency.symbol.length) {
-          if (currency.dir === "rtl") currency.symbol = `\u2067${currency.symbol}\u2069`;
-          else currency.symbol = `\u2066${currency.symbol}\u2069`;
+        if (currency.format === undefined) currency.formatBL = formatBL; // keep using
+        else currency.formatBL = new ByLang(currency.format);
+        formatBL = currency.formatBL;
+        currency.amountFirstBL = currency.formatBL.mapBL(format => format.indexOf("amount") < format.indexOf("symbol"));
+        currency.dirBL = new ByLang(currency.dir ?? "ltr"); // default ltr
+        if (dirs.size > 1) {
+          currency.symbolBL = currency.symbolBL.mapBL((symbol, lang) =>
+            symbol.length > 1 ?
+              currency.dirBL.forLang(lang) === "rtl" ? `\u2067${symbol}\u2069` : `\u2066${symbol}\u2069` :
+              symbol);
         }
-        currency.format = currency.format.replace("symbol", currency.symbol);
+        currency.formatBL = new ByLang(Array.from(new Set([...currency.formatBL.langs(), ...currency.symbolBL.langs()]))
+          .map(lang => [lang, currency.formatBL.forLang(lang).replace("symbol", currency.symbolBL.forLang(lang))]));
       });
       const sortedCurrencies = currencies.map(currency => currency.starting).sort()
         .map(startingYear => currencies.find(currency => currency.starting === startingYear));
@@ -843,16 +873,11 @@ We all and each of us should act sensibly, trustworthily, compassionately.
           }
         }
         currenciesByYear[year] = {
-          symbol: currency.symbol, conversion: currency.conversion,
-          format: currency.format, amountFirst: currency.amountFirst,
+          symbolBL: currency.symbolBL, conversion: currency.conversion,
+          formatBL: currency.formatBL, amountFirstBL: currency.amountFirstBL,
           definition: currency,
         };
         indexesByYear[year] = yi;
-      }
-      if (sortedCurrencies.length > 1) {
-        document.querySelectorAll(".symbols").forEach(element => {
-          element.innerHTML = Object.values(sortedCurrencies).map(currency => currency.symbol).join("<br/>");
-        });
       }
     }
     //
@@ -908,10 +933,6 @@ We all and each of us should act sensibly, trustworthily, compassionately.
     let memorized;
     //
     let showHashOnce;
-    //
-    let lang = alpha2(document.documentElement.getAttribute("lang"));
-    let dir = document.documentElement.getAttribute("dir");
-    let rtl = isRtl(dir);
     //
     function selectFromYear() {
       for (const option of fromYearElement.selectedOptions) option.selected = false;
@@ -1001,9 +1022,9 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         || toAmountElementValue != toAmount
         || zeroThenDigitRegExp.test(toAmountElementValue))
         toAmountElement.value = toAmount;
-      const fromSymbol = currenciesByYear[fromYear].symbol;
+      const fromSymbol = currenciesByYear[fromYear].symbolBL.forLang();
       for (const element of fromSymbolElements) element.textContent = fromSymbol;
-      const toSymbol = currenciesByYear[toYear].symbol;
+      const toSymbol = currenciesByYear[toYear].symbolBL.forLang();
       for (const element of toSymbolElements) element.textContent = toSymbol;
       localStorageSetAll();
       updateMemorizedButton();
@@ -1203,14 +1224,14 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       const twoCurrencies = fromCurrency.definition !== toCurrency.definition;
       let fromFormatted, toFormatted;
       if (!twoCurrencies) {
-        if (!fromCurrency.amountFirst) {
+        if (!fromCurrency.amountFirstBL.forLang()) {
           toFormatted = toAmount;
         } else {
           fromFormatted = fromAmount;
         }
       }
-      fromFormatted = fromFormatted ?? fromCurrency.format.replace("amount", fromAmount);
-      toFormatted = toFormatted ?? toCurrency.format.replace("amount", toAmount);
+      fromFormatted = fromFormatted ?? fromCurrency.formatBL.forLang().replace("amount", fromAmount);
+      toFormatted = toFormatted ?? toCurrency.formatBL.forLang().replace("amount", toAmount);
       const arrow = horizontalArrow();
       let memo = `${fromYear} ${arrow} ${toYear}  ≈  ${fromFormatted} ${arrow} ${toFormatted}`;
       if (!rtl)
@@ -1267,6 +1288,11 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         document.documentElement.setAttribute("dir", newDir);
       }
       document.title = document.querySelector("div.heading *").innerText;
+      if (currencies.length > 1) {
+        document.querySelectorAll(".symbols").forEach(element => {
+          element.innerHTML = Object.values(currencies).map(currency => currency.symbolBL.forLang()).join("<br/>");
+        });
+      }
     }
     document.querySelectorAll(".lang-carousel").forEach(element => {
       element.addEventListener("click", event => {
@@ -1425,7 +1451,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         / cpi[fromYear] / currenciesByYear[year].conversion;
     }
     function forYearText(year) {
-      return currenciesByYear[year].format.replace("amount", round(forYear(year)));
+      return currenciesByYear[year].formatBL.forLang().replace("amount", round(forYear(year)));
     }
     function updateYearLine(event) {
       const eventType = event.type;
