@@ -94,3 +94,11 @@ the phase it has been in.
 Incremental changes are expected.
 
 Better development documentation is intended to be written on demand.
+
+## Internationalization Services
+
+For help with internationalization and localization,
+for education, training, consulting, development, automation, and testing,
+write to i18n at infl dot at.
+
+Internationalization is work that enables localization.

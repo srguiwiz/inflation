@@ -33,6 +33,10 @@ possibly and plausibly without their knowledge of later modifications.
 A tool morphing may be a phenomenon that is complex to fully grasp.
 We all and each of us should act sensibly, trustworthily, compassionately.
   -->
+  <!--
+For help with internationalization and localization, for education, training,
+consulting, development, automation, and testing, write to i18n at infl dot at.
+  -->
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
   <link rel="icon" type="image/svg+xml" href="inflation-ph.svg">
   <meta name="mobile-web-app-capable" content="yes">
@@ -303,6 +307,19 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       grid-column: 1 / 4;
       font-size: smaller;
       max-width: 15rem;
+    }
+
+    div.preview {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: sans-serif;
+    }
+
+    @media (max-width: 300px) {
+      div.preview {
+        display: none;
+      }
     }
 
     @media (max-height: 360px) {
@@ -627,7 +644,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         <select class="padding-start" name="fromYear">
         </select>
       </div>
-      <div class="from-symbol symbol">$</div>
+      <div class="from-symbol symbol">₱</div>
       <div class="amount">
         <input class="padding-start" name="fromAmount" type="number" min="0" />
       </div>
@@ -655,7 +672,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         <select class="padding-start" name="toYear">
         </select>
       </div>
-      <div class="to-symbol symbol">$</div>
+      <div class="to-symbol symbol">₱</div>
       <div class="amount">
         <input class="padding-start" name="toAmount" type="number" min="0" />
       </div>
@@ -668,6 +685,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         </svg>
       </div>
       <div class="explanation-left">This amount:</div>
+      <div class="explanation-right preview"></div>
       <div class="buttons">
         <button class="copy-numbers">
           <label>Copy</label>
@@ -814,13 +832,15 @@ We all and each of us should act sensibly, trustworthily, compassionately.
     //
     const currenciesByYear = {};
     const indexesByYear = {}; // accommodate gaps
-    const langs = new Map(Array.from(document.querySelectorAll(".lang-carousel [lang]"))
-      .map(element => [element.getAttribute("lang"), element.getAttribute("dir")]));
-    const dirs = new Set(Array.from(langs.values()).filter(dir => dir));
     //
     let lang = alpha2(document.documentElement.getAttribute("lang"));
     let dir = document.documentElement.getAttribute("dir");
     let rtl = isRtl(dir);
+    //
+    const langs = new Map(Array.from(document.querySelectorAll(".lang-carousel [lang]"))
+      .map(element => [element.getAttribute("lang"), element.getAttribute("dir")]));
+    if (!langs.size) langs.set(lang, dir);
+    const dirs = new Set(Array.from(langs.values()).filter(dir => dir));
     //
     class ByLang {
       constructor(data) {
@@ -962,8 +982,9 @@ We all and each of us should act sensibly, trustworthily, compassionately.
     }
     //
     function clearHash() {
-      if (document.location.hash) {
-        history.replaceState("", document.title, document.location.pathname); // clear
+      const idleHash = langs.size > 1 ? `#l=${lang}` : "";
+      if (document.location.hash !== idleHash) {
+        history.replaceState(null, "", `${document.location.pathname}${idleHash}`); // clear
       }
       showHashOnce = false;
     }
@@ -983,7 +1004,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         }
       }
       //
-      newLang = newLang ?? (localStorageGetItem("lang") || alpha2(navigator.language));
+      newLang = newLang ?? (localStorageGetItem("lang") || lang || alpha2(navigator.language));
       setLang(newLang);
       //
       toYear = toYear ?? (localStorageGetItem("toYear") || mostRecentYear);
@@ -1138,14 +1159,18 @@ We all and each of us should act sensibly, trustworthily, compassionately.
     function showHash(newHash) {
       const url = `${document.location.pathname}${newHash}`;
       showHashOnce = newHash;
-      history.replaceState("", document.title, url);
+      history.replaceState(null, "", url);
     }
-    document.querySelector("button.copy-url").addEventListener("click", function copyURL() {
+    function equivalentURL() {
       const newHash = equivalentHash();
       const location = document.location;
-      const url = `${location.origin ?? `${location.protocol}//`}${location.pathname}${newHash}`;
-      navigator.clipboard.writeText(url);
-      showHash(newHash);
+      return `${location.origin ?? `${location.protocol}//`}${location.pathname}${newHash}`;
+    }
+    const copyURLButton = document.querySelector("button.copy-url");
+    copyURLButton.addEventListener("click", function copyURL() {
+      navigator.clipboard.writeText(equivalentURL());
+      showHash(equivalentHash());
+      clearPreview();
     });
     //
     document.querySelector("div.full-warning").textContent = `> ${maxMemorized} char`;
@@ -1243,7 +1268,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       else
         return `\u2067${memo}\u2069`;
     }
-    document.querySelector("button.memorize").addEventListener("click", function memorize() {
+    memorizeButton.addEventListener("click", function memorize() {
       const newMemo = memo();
       if (!memorized.includes(newMemo)) {
         memorized = memorized.replace(/([^\n])$/, "$1\n") + newMemo;
@@ -1251,6 +1276,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         localStorageSetMemorized();
         updateMemorizedButton();
       }
+      clearPreview();
     });
     function updateMemorizedButton() {
       memorizeButton.disabled =
@@ -1258,9 +1284,10 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         || memorized.includes(memo()); // avoid duplicates
     }
     //
-    document.querySelector("button.copy-numbers").addEventListener("click", function copyNumbers() {
-      const numbers = memo();
-      navigator.clipboard.writeText(numbers);
+    const copyNumbersButton = document.querySelector("button.copy-numbers");
+    copyNumbersButton.addEventListener("click", function copyNumbers() {
+      navigator.clipboard.writeText(memo());
+      clearPreview();
     });
     //
     const personal =
@@ -1281,17 +1308,18 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       return lang?.substring(0, 2);
     }
     function setLang(newLang) {
-      if (!langs.has(newLang)) return;
+      if (!langs.has(newLang)) newLang = langs.keys().next().value;
       lang = newLang;
       const newDir = langs.get(newLang);
-      if (newLang === alpha2(document.documentElement.getAttribute("lang"))) return;
-      document.documentElement.setAttribute("lang", newLang);
-      if (newDir && newDir !== document.documentElement.getAttribute("dir")) {
-        dir = newDir;
-        rtl = isRtl(dir);
-        document.documentElement.setAttribute("dir", newDir);
+      if (newLang !== alpha2(document.documentElement.getAttribute("lang"))) {
+        document.documentElement.setAttribute("lang", newLang);
+        if (newDir && newDir !== document.documentElement.getAttribute("dir")) {
+          dir = newDir;
+          rtl = isRtl(dir);
+          document.documentElement.setAttribute("dir", newDir);
+        }
+        document.title = document.querySelector("div.heading *").innerText;
       }
-      document.title = document.querySelector("div.heading *").innerText;
       if (currencies.length > 1) {
         document.querySelectorAll(".symbols").forEach(element => {
           element.innerHTML = Object.values(currencies).map(currency => currency.symbolBL.forLang()).join("<br/>");
@@ -1412,12 +1440,17 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       }
     }
     window.addEventListener("resize", drawChart);
-    let chartPale = chartSvg.classList.contains("pale");
+    let chartPale = localStorageGetItem("chartPale") === "true" ?? chartSvg.classList.contains("pale");
+    function setChartPale(newChartPale) {
+      chartPale = newChartPale ?? chartPale;
+      chartSvg.classList.toggle("pale", chartPale);
+      if (newChartPale !== undefined) localStorageSetItem("chartPale", chartPale);
+    }
+    setChartPale(); // first time
     chartSvg.addEventListener("click", event => {
       if (!chartDiv.classList.contains("maximize-chart")) {
         hideYearLine(event);
-        chartPale = !chartPale;
-        chartSvg.classList.toggle("pale", chartPale);
+        setChartPale(!chartPale);
       }
     });
     function closeChartEventHandler() {
@@ -1464,7 +1497,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         case "touchend":
         case "touchcancel":
           hideYearLine();
-          if (chartPale) chartSvg.classList.add("pale");
+          setChartPale();
           return;
         case "mouseenter":
         case "touchstart":
@@ -1526,7 +1559,6 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       const prev = chartDiv.classList.contains("maximize-chart");
       const max = chartDiv.classList.toggle("maximize-chart", force);
       if (max !== prev) drawChart();
-      chartSvg.classList.toggle("pale", max ? false : chartPale);
     }
     document.querySelector("svg.toggle-chart").addEventListener("click", toggleChart);
     //
@@ -1539,6 +1571,23 @@ We all and each of us should act sensibly, trustworthily, compassionately.
     }
     document.body.addEventListener("keydown", keyListener);
     document.body.addEventListener("keypress", keyListener);
+    //
+    const previewElement = document.querySelector("div.preview");
+    function clearPreview() {
+      previewElement.textContent = "";
+    }
+    [copyNumbersButton, memorizeButton].forEach(button =>
+      ["mouseenter", "touchstart"].forEach(eventType =>
+        button.addEventListener(eventType, () => {
+          previewElement.textContent = memo();
+        }, { passive: true })));
+    ["mouseenter", "touchstart"].forEach(eventType =>
+      copyURLButton.addEventListener(eventType, () => {
+        previewElement.textContent = equivalentURL();
+      }, { passive: true }));
+    [copyNumbersButton, copyURLButton, memorizeButton].forEach(button =>
+      ["mouseleave", "touchend", "touchcancel"].forEach(eventType =>
+        button.addEventListener(eventType, clearPreview, { passive: true })));
     //
     setFromURLAndMemoryAndStorage(); // first time
     showMemorized(); // first time

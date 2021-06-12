@@ -33,6 +33,10 @@ possibly and plausibly without their knowledge of later modifications.
 A tool morphing may be a phenomenon that is complex to fully grasp.
 We all and each of us should act sensibly, trustworthily, compassionately.
   -->
+  <!--
+For help with internationalization and localization, for education, training,
+consulting, development, automation, and testing, write to i18n at infl dot at.
+  -->
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
   <link rel="icon" type="image/svg+xml" href="inflation.svg">
   <link rel="apple-touch-icon" sizes="512x512" href="inflation-512x512.png">
@@ -276,6 +280,10 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       flex-grow: 1;
     }
 
+    div.explanation.list ul li.hide {
+      display: none;
+    }
+
     @media (display-mode: standalone) {
       .installable {
         display: none;
@@ -313,8 +321,14 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       user-select: none;
     }
 
+    .email-address {
+      user-select: text;
+      white-space: nowrap;
+    }
+
     .link {
       user-select: text;
+      overflow-wrap: anywhere;
     }
 
     svg.search-icon {
@@ -359,19 +373,22 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         Inflation Calculators
       </div>
       <div class="explanation">
+        <p>
+          Select a country.
+        </p>
         <p class="installable">
           <span class="normal-tall">
             Each of these
             <span class="number-of-calculators"></span>
             calculators runs here.
-            But also, while open, each by itself can be installed from the browser
+            But also, when opened, each one by itself can be installed from the browser
             to an icon on your home screen, for offline use like any app.
           </span>
           <span class="minimal-tall">
             Each of the
             <span class="number-of-calculators"></span>
             calcs runs here.
-            Or, while open each can be installed to an icon.
+            Or, when opened, each can be installed to an icon.
           </span>
         </p>
         <p class="mention-phones">These
@@ -451,7 +468,7 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         </ul>
         <p class="add">
           To ask us to make one more country for you,
-          write to <span class="link">inflation at cmprh dot com</span> .
+          write to <span class="email-address">calc at infl dot at</span> .
         </p>
         <p class="add">
           Software developers could try adding a country with a pull request at
@@ -482,15 +499,15 @@ We all and each of us should act sensibly, trustworthily, compassionately.
         if (searchRegExps.every(r => r.test(keys))) lis.add(li);
       });
       document.querySelectorAll(".list-of-calculators li").forEach(li => {
-        if (lis.has(li)) li.style.display = "";
-        else li.style.display = "none";
+        if (lis.has(li)) li.classList.toggle("hide", false);
+        else li.classList.toggle("hide", true);
       });
     }
     searchElement.addEventListener("input", search);
     window.addEventListener("load", () => {
       searchElement.value = "";
       document.querySelectorAll(".list-of-calculators li").forEach(li => {
-        li.style.display = "";
+        li.classList.toggle("hide", false);
       });
     });
     //
@@ -498,6 +515,21 @@ We all and each of us should act sensibly, trustworthily, compassionately.
       searchElement.focus();
       search();
     });
+    //
+    function searchKeyListener(event) {
+      switch (event.key) {
+        case "Enter": { // Enter key
+          const lisNotHidden = document.querySelectorAll(".list-of-calculators li:not(.hide)");
+          if (lisNotHidden.length === 1) {
+            lisNotHidden[0].querySelector("a").click();
+            event.preventDefault();
+          }
+          break;
+        }
+      }
+    }
+    searchElement.addEventListener("keydown", searchKeyListener);
+    searchElement.addEventListener("keypress", searchKeyListener);
     //
     null ?? document.querySelector?.("div.too-old").remove(); // feature test
     document.querySelector("div.page").removeAttribute("style"); // show
