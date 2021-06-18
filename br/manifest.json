@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – Brazil",
+  "short_name": "Inflation-BR",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for Brazilian reals.",
+  "icons": [
+    {
+      "src": "./inflation-br-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-br-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-br-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-br-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-br-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-br-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-br.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}

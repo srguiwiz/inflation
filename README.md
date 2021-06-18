@@ -30,6 +30,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![PK icon](pk/inflation-pk.svg) | پاکستان | https://infl.at/pk/ | ₨ |
 | ![LB icon](lb/inflation-lb.svg) | لبنان | https://infl.at/lb/ | ⁧ل.ل.⁩ |
 | ![CN icon](cn/inflation-cn.svg) | 中国 | https://infl.at/cn/ | 元 |
+| ![BR icon](br/inflation-br.svg) | Brasil | https://infl.at/br/ | R$, e outros no passado |
 
 ## More Countries
 
