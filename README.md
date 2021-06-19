@@ -31,6 +31,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![LB icon](lb/inflation-lb.svg) | لبنان | https://infl.at/lb/ | ⁧ل.ل.⁩ |
 | ![CN icon](cn/inflation-cn.svg) | 中国 | https://infl.at/cn/ | 元 |
 | ![BR icon](br/inflation-br.svg) | Brasil | https://infl.at/br/ | R$, e outros no passado |
+| ![NG icon](ng/inflation-ng.svg) | Nigeria | https://infl.at/ng/ | ₦, preceded by £ |
 
 ## More Countries
 
@@ -45,7 +46,8 @@ You can fork this repository to derive a calculator
 
 - for another country,
 - for a currency and its predecessor,
-- with newer and older data, or
+- with more current data,
+- with further back data, or
 - with a different appearance.
 
 One difficulty level up is to derive a calculator

@@ -1,6 +1,6 @@
 {
   "name": "inflation",
-  "version": "2.7.3",
+  "version": "2.7.4",
   "description": "Inflation calculator",
   "main": "index.html",
   "scripts": {
@@ -10,7 +10,7 @@
     "eslint": "npx eslint --ext .html ."
   },
   "devDependencies": {
-    "eslint": "^7.28.0",
+    "eslint": "^7.29.0",
     "eslint-plugin-html": "^6.1.2",
     "serve": "^12.0.0"
   },
