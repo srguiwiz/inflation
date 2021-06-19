@@ -32,6 +32,7 @@ can be installed from the browser to become an icon on your phone's home screen.
 | ![CN icon](cn/inflation-cn.svg) | 中国 | https://infl.at/cn/ | 元 |
 | ![BR icon](br/inflation-br.svg) | Brasil | https://infl.at/br/ | R$, e outros no passado |
 | ![NG icon](ng/inflation-ng.svg) | Nigeria | https://infl.at/ng/ | ₦, preceded by £ |
+| ![AU icon](au/inflation-au.svg) | Australia | https://infl.at/au/ | $, preceded by £ |
 
 ## More Countries
 
