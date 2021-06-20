@@ -1,6 +1,6 @@
 {
   "name": "inflation",
-  "version": "2.7.5",
+  "version": "2.7.6",
   "description": "Inflation calculator",
   "main": "index.html",
   "scripts": {

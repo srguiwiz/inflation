@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="bn-BD">
+
+<head>
+  <meta charset="utf-8" />
+  <!--
+MIT License
+
+Copyright (c) 2021 Leo Baschy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+  -->
+  <!--
+Initial coding by Leo Baschy at https://github.com/srguiwiz/inflation/ .
+After modifications by others, original author names still w/sh/could be here,
+possibly and plausibly without their knowledge of later modifications.
+A tool morphing may be a phenomenon that is complex to fully grasp.
+We all and each of us should act sensibly, trustworthily, compassionately.
+  -->
+  <!--
+For help with internationalization and localization, for education, training,
+consulting, development, automation, and testing, write to i18n at infl dot at.
+  -->
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+  <link rel="icon" type="image/svg+xml" href="inflation-bd.svg">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="512x512" href="inflation-bd-512x512.png">
+  <link rel="apple-touch-icon" sizes="256x256" href="inflation-bd-256x256.png">
+  <link rel="apple-touch-icon" sizes="128x128" href="inflation-bd-128x128.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="inflation-bd-96x96.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="inflation-bd-72x72.png">
+  <link rel="apple-touch-icon" sizes="48x48" href="inflation-bd-48x48.png">
+  <style>
+    html {
+      width: 100%;
+      height: 100%;
+      height: -webkit-fill-available;
+      overflow: hidden;
+      position: fixed;
+      left: 0px;
+    }
+
+    body {
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+      overflow: hidden;
+      position: fixed;
+      --container-max-width: 35rem;
+      --container-padding-x: 5rem;
+      --container-width: calc(var(--container-max-width) + 2 * var(--container-padding-x));
+      --container-lesser-width: min(var(--container-width), var(--container-max-width));
+      --container-padding: 0.75em;
+      --sidebar-width: auto;
+      --page-overflow-x: hidden;
+    }
+
+    @media (max-width: 60rem) {
+      body {
+        --container-width: 100vw;
+        --container-padding-x: max(var(--container-padding), calc((100vw - var(--container-lesser-width)) / 2));
+        --sidebar-width: 100vw;
+        --page-overflow-x: auto;
+      }
+
+      div.page>div.sidebar {
+        flex-grow: 0;
+        flex-shrink: 0;
+        /* */
+        width: 0px;
+        min-width: 0px;
+        padding: 0px;
+      }
+    }
+
+    div.page {
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      overflow-y: hidden;
+      overflow-x: hidden;
+      /* */
+      display: flex;
+      justify-content: flex-start;
+      align-items: stretch;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: auto;
+    }
+
+    div.container {
+      box-sizing: border-box;
+      width: var(--container-width);
+      max-width: 100%;
+      min-width: 12rem;
+      margin: 0px;
+      flex-grow: 0;
+      flex-shrink: 0;
+      height: 100%;
+      overflow: hidden;
+      /* */
+      display: grid;
+      grid-template-columns: repeat(4, auto) 1fr;
+      grid-template-rows: repeat(8, auto) 1fr repeat(1, auto);
+      --column-gap: 1rem;
+      --row-gap: 1rem;
+      column-gap: var(--column-gap);
+      row-gap: var(--row-gap);
+      padding: var(--container-padding) var(--container-padding-x);
+      --padding-start: 0.5em;
+    }
+
+    @media (max-width: 500px) {
+      div.container {
+        --column-gap: 0.5rem;
+        --padding-start: 0.25em;
+      }
+    }
+
+    @media (max-width: 320px) {
+      div.container {
+        --column-gap: 0.25rem;
+      }
+    }
+
+    div.sidebar {
+      box-sizing: border-box;
+      width: var(--sidebar-width);
+      max-width: 100%;
+      min-width: 7rem;
+      margin: 0px;
+      flex-grow: 1;
+      flex-shrink: 1;
+      height: 100%;
+      overflow: hidden;
+      /* */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 1rem;
+      padding: var(--container-padding);
+    }
+
+    .symbol {
+      transform: translateX(calc(0.5 * var(--column-gap)));
+    }
+
+    [dir='rtl'] .symbol {
+      transform: translateX(calc(-0.5 * var(--column-gap)));
+    }
+
+    @media (max-height: 600px) {
+      div.container {
+        --row-gap: 0.75rem;
+      }
+    }
+
+    @media (max-height: 500px) {
+      div.container {
+        --row-gap: 0.5rem;
+      }
+    }
+
+    @media (max-height: 400px) {
+      div.container {
+        --row-gap: 0.25rem;
+      }
+    }
+
+    div.heading {
+      grid-column: 1 / 6;
+      font-family: sans-serif;
+      font-size: larger;
+      /* */
+      display: flex;
+      justify-content: space-between;
+    }
+
+    div.heading .annotation {
+      font-size: small;
+    }
+
+    div.first-column {
+      grid-column: 1 / 2;
+    }
+
+    @media (max-height: 360px) {
+      .label {
+        font-size: smaller;
+      }
+    }
+
+    div.container * {
+      align-self: baseline;
+    }
+
+    div.amount {
+      min-width: max-content;
+    }
+
+    @media (max-device-width: 500px),
+    (max-device-height: 500px) {
+
+      .year select,
+      .amount input {
+        font-size: 130%;
+      }
+    }
+
+    @media only screen and (hover: none) and (pointer: coarse) {
+
+      .year select,
+      .amount input {
+        font-size: 130%;
+      }
+    }
+
+    input[type='number'] {
+      max-width: 8em;
+    }
+
+    @media (max-width: 500px) {
+      input[type='number'] {
+        max-width: 7em;
+      }
+    }
+
+    @media (max-width: 400px) {
+      input[type='number'] {
+        max-width: 6em;
+      }
+    }
+
+    @media (max-width: 320px) {
+      input[type='number'] {
+        max-width: 5em;
+      }
+    }
+
+    .padding-start {
+      padding-inline-start: var(--padding-start);
+    }
+
+    .symbol {
+      justify-self: end;
+      text-align: end;
+    }
+
+    div.button-right {
+      grid-column: 5 / 6;
+    }
+
+    button.clear,
+    svg.toggle-chart {
+      min-width: 1.5rem;
+    }
+
+    svg.toggle-chart {
+      height: 1em;
+      vertical-align: text-bottom;
+    }
+
+    div.buttons {
+      grid-column: 2 / 6;
+      align-self: end;
+      /* */
+      display: flex;
+      justify-content: space-between;
+      column-gap: calc(1em + 3 * var(--column-gap));
+      max-width: calc(0.8 * var(--container-lesser-width));
+      white-space: nowrap;
+    }
+
+    div.explanation {
+      grid-column: 1 / 6;
+      font-size: smaller;
+      max-width: 50rem;
+    }
+
+    div.explanation-right {
+      grid-column: 4 / 6;
+      font-size: smaller;
+      max-width: 30rem;
+    }
+
+    div.explanation-left {
+      grid-column: 1 / 4;
+      font-size: smaller;
+      max-width: 15rem;
+    }
+
+    div.preview {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: sans-serif;
+    }
+
+    @media (max-width: 300px) {
+      div.preview {
+        display: none;
+      }
+    }
+
+    @media (max-height: 360px) {
+
+      div.explanation-left,
+      div.explanation-right,
+      div.label.time-direction,
+      div.container div:empty,
+      button.memorize,
+      div.memorized,
+      div.explanation.editing {
+        max-height: 0px;
+        align-self: unset;
+        visibility: hidden;
+      }
+    }
+
+    div.memorized {
+      grid-column: 1 / 6;
+      box-sizing: border-box;
+      height: 100%;
+      min-height: 3em;
+      overflow: hidden;
+      /* */
+      position: relative;
+    }
+
+    div.memorized textarea {
+      font-family: sans-serif;
+      resize: none;
+      box-sizing: border-box;
+      overflow: auto;
+      width: 100%;
+      height: 100%;
+    }
+
+    div.memorized.hide {
+      min-height: 1em;
+    }
+
+    div.memorized.hide textarea {
+      visibility: hidden;
+    }
+
+    div.memorized~div.explanation.hide {
+      display: none;
+    }
+
+    textarea.flash-warning {
+      animation: flash-red 6s step-end;
+    }
+
+    @keyframes flash-red {
+      0% {
+        background-color: pink;
+        color: maroon;
+        text-decoration: line-through;
+      }
+
+      100% {}
+    }
+
+    textarea~div.full-warning {
+      height: 0px;
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    textarea.flash-warning~div.full-warning {
+      box-sizing: border-box;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      font-size: 200%;
+      font-family: sans-serif;
+      text-align: center;
+      padding: var(--row-gap) var(--column-gap);
+      background-color: mistyrose;
+      color: maroon;
+      z-index: 2;
+      opacity: 0.75;
+      overflow: visible;
+    }
+
+    button svg {
+      width: 1em;
+      height: 1em;
+    }
+
+    @media (min-width: 500px) {
+      button.copy-url svg {
+        padding-inline-start: 0.5em;
+      }
+    }
+
+    @media (max-width: 400px) {
+      button.copy-url svg {
+        display: none;
+      }
+    }
+
+    button label * {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 400px) {
+      button.copy-url {
+        max-width: 10em;
+      }
+    }
+
+    @media (max-width: 300px) {
+      button .optional {
+        display: none;
+      }
+    }
+
+    @media (display-mode: standalone) {
+      .installable {
+        display: none;
+      }
+    }
+
+    @media not screen and (hover: none) and (pointer: coarse) {
+      .installable {
+        display: none;
+      }
+    }
+
+    div.symbols {
+      visibility: hidden;
+      max-height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      transform: scaleY(0.01);
+      min-width: 1em;
+    }
+
+    .abbreviated {
+      display: none;
+    }
+
+    @media (max-width: 500px) {
+      .unabbreviated {
+        display: none;
+      }
+
+      .abbreviated {
+        display: unset;
+      }
+    }
+
+    .label.time-direction {
+      margin-inline-start: 0.5em;
+    }
+
+    .label .forward :not(.forward) {
+      display: none;
+    }
+
+    .label .same :not(.same) {
+      display: none;
+    }
+
+    .label .backward :not(.backward) {
+      display: none;
+    }
+
+    .rtl {
+      display: none;
+    }
+
+    [dir='rtl'] .ltr {
+      display: none;
+    }
+
+    [dir='rtl'] .rtl {
+      display: unset;
+    }
+
+    * {
+      user-select: none;
+    }
+
+    input[type='number'],
+    input[type='text'],
+    textarea {
+      user-select: text;
+    }
+
+    div.chart {
+      width: 100%;
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+
+    svg.chart {
+      width: 100%;
+      height: max(10rem, min(calc(100vw - var(--container-width)), 100%));
+      font-family: sans-serif;
+      touch-action: manipulation;
+    }
+
+    html.safari svg.chart {
+      height: max(10rem, min(calc(100vw - var(--container-width)), calc(100vh - 5rem)));
+    }
+
+    svg.chart * {
+      pointer-events: none;
+    }
+
+    svg.chart rect.chart-area,
+    svg .clickable {
+      pointer-events: visible;
+    }
+
+    div.chart.maximize-chart {
+      box-sizing: border-box;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      z-index: 899;
+      background-color: white;
+    }
+
+    div.chart.maximize-chart svg.chart {
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      z-index: 900;
+    }
+
+    div.chart:not(.maximize-chart) .pale {
+      opacity: 0.25;
+    }
+
+    div.chart:not(.maximize-chart) svg.chart .close-chart {
+      display: none;
+    }
+
+    select,
+    button:enabled,
+    button:enabled *,
+    .lang-carousel,
+    svg.chart,
+    svg.toggle-chart {
+      cursor: pointer;
+    }
+
+    div.too-old {
+      box-sizing: border-box;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100vw;
+      height: 100vh;
+      text-align: center;
+      padding: 2rem;
+      z-index: 999;
+      background-color: white;
+      animation: delayed-fade-in 6s;
+    }
+
+    @keyframes delayed-fade-in {
+      0% {
+        opacity: 0;
+      }
+
+      50% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .heading .lang-carousel {
+      font-size: small;
+      padding-inline-start: var(--column-gap);
+      min-width: 2em;
+      text-align: end;
+    }
+
+    .lang-carousel:hover {
+      outline: lightblue solid 1px;
+    }
+
+    .lang-carousel:active {
+      background-color: lightblue;
+    }
+
+    /* forks per country should adjust language codes, if needed at all */
+  </style>
+  <!-- forks per country should adjust this title -->
+  <!-- Inflation Calculator – BD -->
+  <title>মূল্যস্ফীতি ক্যালকুলেটর – বিডি</title>
+</head>
+
+<body>
+  <div class="page" style="opacity: 0;">
+    <div class="container">
+      <!-- forks per country should adjust this heading -->
+      <div class="heading">
+        <!-- Past Inflation – BD -->
+        <span>অতীত মূল্যস্ফীতি <span class="annotation">– বিডি</span></span>
+      </div>
+      <!-- forks per country should adjust this explanation -->
+      <!-- Approximated from the Consumer Price Index in Bangladesh. -->
+      <div class="explanation">বাংলাদেশের
+        <span class="unabbreviated">ভোক্তা মূল্য সূচক</span> <span class="abbreviated">CPI</span>
+        থেকে আনুমানিক।
+      </div>
+      <div class="first-column"></div>
+      <!-- Year -->
+      <div class="label">বছর</div>
+      <div class="symbols symbol"></div>
+      <!-- Amount -->
+      <div class="label">পরিমাণ</div>
+      <div class="first-column"></div>
+      <div class="year">
+        <select class="padding-start" name="fromYear">
+        </select>
+      </div>
+      <div class="from-symbol symbol">৳</div>
+      <div class="amount">
+        <input class="padding-start" name="fromAmount" type="number" min="0" />
+      </div>
+      <div class="button-right">
+        <button class="clear" tabindex="-1">
+          <label>
+            <svg viewBox="0 0 24 24">
+              <path d="M4,4 L20,20 M4,20 L20,4" stroke="#444" stroke-width="1" stroke-linecap="round" />
+            </svg>
+          </label>
+        </button>
+      </div>
+      <div class="first-column"></div>
+      <div class="label time-direction">
+        <span class="forward">
+          <span class="forward">↓</span>
+          <span class="same">=</span>
+          <span class="backward">↑</span>
+        </span>
+      </div>
+      <div></div>
+      <!-- Write one of the two. -->
+      <div class="explanation-right">দুজনের একটি লিখুন।</div>
+      <div class="first-column"></div>
+      <div class="year">
+        <select class="padding-start" name="toYear">
+        </select>
+      </div>
+      <div class="to-symbol symbol">৳</div>
+      <div class="amount">
+        <input class="padding-start" name="toAmount" type="number" min="0" />
+      </div>
+      <div class="button-right">
+        <svg class="toggle-chart" viewBox="0 0 24 24">
+          <rect x="0" y="0" width="24" height="24" rx="2" ry="2" stroke="none" fill="ghostwhite" />
+          <line x1="0" y1="24" x2="24" y2="24" stroke="#444" stroke-width="1" />
+          <path d="M0,23 2,23 4,22 8,21 10,20 12,18 14,15 16,11 18,9 20,6 22,4 24,3" stroke="#444" stroke-width="2"
+            fill="none" />
+        </svg>
+      </div>
+      <!-- This amount: -->
+      <div class="explanation-left">এই পরিমাণ:</div>
+      <div class="explanation-right preview"></div>
+      <div class="buttons">
+        <button class="copy-numbers">
+          <!-- Copy -->
+          <label>অনুলিপি</label>
+        </button>
+        <button class="copy-url">
+          <label>
+            <!-- Link -->
+            <span>লিংক</span>
+            <!-- Copy -->
+            <span class="optional">অনুলিপি</span>
+            <svg viewBox="0 0 24 24">
+              <path d="M8,12 3,12 3,22 21,22 21,12 16,12 M12,16 12,2 M8,6 12,2 16,6" stroke="black" stroke-width="2"
+                fill="none" stroke-linejoin="round" stroke-linecap="round" />
+            </svg>
+          </label>
+        </button>
+        <button class="memorize">
+          <!-- Make Note -->
+          <label>নোট করা</label>
+        </button>
+      </div>
+      <div class="memorized hide">
+        <textarea class="padding-start"></textarea>
+        <div class="full-warning">Memo Full</div>
+      </div>
+      <!-- You can type, edit, copy or delete anything. -->
+      <div class="explanation editing hide">
+        আপনি যে কোনও কিছু টাইপ, সম্পাদনা, অনুলিপি বা মুছতে পারেন।
+      </div>
+      <!-- Data is only on this device. Nothing is sent online. -->
+      <div class="explanation privacy">
+        ডেটা কেবলমাত্র এই ডিভাইসে রয়েছে। অনলাইনে কিছুই পাঠানো হয় না।
+      </div>
+      <!-- This calculator can be installed on the home screen from the browser. -->
+      <div class="explanation installable">
+        এই ক্যালকুলেটরটি ব্রাউজার থেকে হোম স্ক্রিনে ইনস্টল করা যেতে পারে।
+      </div>
+      <div class="explanation personal" style="display: none;">
+        <!-- forks if hosted elsewhere automatically w/should not display this personal note -->
+        <!-- if you maintain a fork, for a specific country, it makes sense you put your short note here;
+          be considerate of limited space on phone screens, hence replace an existing note, for example:
+          This version by Your Name. -->
+        <!-- This application was created as a practice. -->
+        এই অ্যাপ্লিকেশনটি অনুশীলন হিসাবে তৈরি করা হয়েছিল।
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="heading">
+        &emsp;
+      </div>
+      <div class="chart">
+        <svg class="chart pale">
+          <rect class="chart-background" x="0" y="0" width="0" height="0" fill="white" />
+          <rect class="chart-area" x="0" y="0" width="0" height="0" fill="none" />
+          <path class="baseline" d="M0,0" fill="none" stroke="#444" stroke-width="0.25" />
+          <text class="first-year">&numsp;&numsp;&numsp;&numsp;</text>
+          <text class="last-year">&numsp;&numsp;&numsp;&numsp;</text>
+          <path class="cpi" d="M0,0" fill="none" stroke="#444" stroke-width="1" />
+          <path class="selected" d="M0,0" fill="none" stroke="#444" stroke-width="3" stroke-linecap="round" />
+          <g class="year-line-group" display="none">
+            <path class="year-line" d="M0,0" fill="none" stroke="lightblue" stroke-width="1" />
+            <text class="line-year">&numsp;&numsp;&numsp;&numsp;</text>
+            <text class="line-amount">&numsp;&numsp;&numsp;&numsp;</text>
+          </g>
+          <g class="close-chart">
+            <path class="clickable" d="M0,0" stroke="none" fill="ghostwhite" opacity="0" />
+            <path d="M0,0" stroke="#444" stroke-width="0" stroke-linejoin="round" fill="ghostwhite" />
+            <path d="M0,0" stroke="#444" stroke-width="1" stroke-linecap="round" fill="none" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
+  <script>
+    // data from https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
+    // from https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv
+    // which at the time of writing (2021-05) only has been available up to 2020;
+    // formula used: 1987 number = 1986 number * (1 + 1987 percentage / 100), etc.;
+    // full accuracy used before finally rounding
+    const cpi = {
+      "1986": 1000,
+      "1987": 1099,
+      "1988": 1180,
+      "1989": 1252,
+      "1990": 1328,
+      "1991": 1413,
+      "1992": 1464,
+      "1993": 1508,
+      "1994": 1588,
+      "1995": 1752,
+      "1996": 1793,
+      "1997": 1889,
+      "1998": 2047,
+      "1999": 2172,
+      "2000": 2220,
+      "2001": 2265,
+      "2002": 2340,
+      "2003": 2473,
+      "2004": 2661,
+      "2005": 2848,
+      "2006": 3041,
+      "2007": 3318,
+      "2008": 3613,
+      "2009": 3809,
+      "2010": 4119,
+      "2011": 4588,
+      "2012": 4873,
+      "2013": 5240,
+      "2014": 5607,
+      "2015": 5954,
+      "2016": 6282,
+      "2017": 6640,
+      "2018": 7008,
+      "2019": 7400,
+      "2020": 7821,
+    };
+    const currencies = [
+      { symbol: "৳" },
+    ];
+    //
+    const years = Object.keys(cpi).sort();
+    const mostRecentYear = years[years.length - 1];
+    //
+    const currenciesByYear = {};
+    const indexesByYear = {}; // accommodate gaps
+    //
+    let lang = alpha2(document.documentElement.getAttribute("lang"));
+    let dir = document.documentElement.getAttribute("dir");
+    let rtl = isRtl(dir);
+    //
+    const langs = new Map(Array.from(document.querySelectorAll(".lang-carousel [lang]"))
+      .map(element => [element.getAttribute("lang"), element.getAttribute("dir")]));
+    if (!langs.size) langs.set(lang, dir);
+    const dirs = new Set(Array.from(langs.values()).filter(dir => dir));
+    //
+    class ByLang {
+      constructor(data) {
+        if ("object" === typeof data) {
+          if (!(data instanceof Array)) data = Object.entries(data);
+          (this._map = new Map(data)).set(undefined, this._map.values().next().value);
+        } else {
+          (this._map = new Map()).set(undefined, data);
+        }
+      }
+      forLang(langFor = lang) {
+        return this._map.get(langFor) ?? this._map.get(undefined);
+      }
+      mapBL(func) {
+        return new ByLang(Array.from(this._map.entries()).map(entry => [entry[0], func.call(this, entry[1], entry[0])]));
+      }
+      langs() {
+        return this._map.keys();
+      }
+    }
+    //
+    {
+      if (!currencies.length) currencies.push({});
+      let formatBL = new ByLang("symbol amount"); // default $ 15
+      currencies.forEach(currency => {
+        currency.symbolBL = new ByLang(currency.symbol ?? "$");
+        if (currency.starting === undefined) currency.starting = "";
+        if (currency.conversion === undefined) currency.conversion = 1;
+        if (currency.format === undefined) currency.formatBL = formatBL; // keep using
+        else currency.formatBL = new ByLang(currency.format);
+        formatBL = currency.formatBL;
+        currency.amountFirstBL = currency.formatBL.mapBL(format => format.indexOf("amount") < format.indexOf("symbol"));
+        currency.dirBL = new ByLang(currency.dir ?? "ltr"); // default ltr
+        if (dirs.size > 1) {
+          currency.symbolBL = currency.symbolBL.mapBL((symbol, lang) =>
+            symbol.length > 1 ?
+              currency.dirBL.forLang(lang) === "rtl" ? `\u2067${symbol}\u2069` : `\u2066${symbol}\u2069` :
+              symbol);
+        }
+        currency.formatBL = new ByLang(Array.from(new Set([...currency.formatBL.langs(), ...currency.symbolBL.langs()]))
+          .map(lang => [lang, currency.formatBL.forLang(lang).replace("symbol", currency.symbolBL.forLang(lang))]));
+      });
+      const sortedCurrencies = currencies.map(currency => currency.starting).sort()
+        .map(startingYear => currencies.find(currency => currency.starting === startingYear));
+      for (let yi = 0, ci = 0; yi < years.length; yi++) {
+        const year = years[yi];
+        let currency = sortedCurrencies[ci];
+        if (ci + 1 < sortedCurrencies.length) {
+          const nextCurrency = sortedCurrencies[ci + 1];
+          if (year >= nextCurrency.starting) {
+            nextCurrency.conversion *= currency.conversion; // accumulate
+            ci++;
+            currency = nextCurrency;
+          }
+        }
+        currenciesByYear[year] = {
+          symbolBL: currency.symbolBL, conversion: currency.conversion,
+          formatBL: currency.formatBL, amountFirstBL: currency.amountFirstBL,
+          definition: currency,
+        };
+        indexesByYear[year] = yi;
+      }
+    }
+    //
+    const maxMemorized = 2e4; // 20,000 bytes
+    //
+    const fromYearElement = document.querySelector("[name='fromYear']");
+    const toYearElement = document.querySelector("[name='toYear']");
+    const fromAmountElement = document.querySelector("[name='fromAmount']");
+    const toAmountElement = document.querySelector("[name='toAmount']");
+    const fromSymbolElements = Array.from(document.querySelectorAll(".from-symbol"));
+    const toSymbolElements = Array.from(document.querySelectorAll(".to-symbol"));
+    const timeDirectionElements = document.querySelectorAll(".time-direction > *");
+    //
+    const memorizedElement = document.querySelector("div.memorized");
+    const memorizedTextarea = memorizedElement.querySelector("textarea");
+    const memorizeButton = document.querySelector("button.memorize");
+    const memorizedExplained = document.querySelector("div.memorized~div.explanation");
+    //
+    const firstTwoDigitYear = Math.max(mostRecentYear, new Date().toLocaleDateString("en-US", { year: "numeric" })) - 99;
+    for (const year of years) {
+      const optionElement = document.createElement("option");
+      optionElement.value = year;
+      optionElement.textContent = year >= firstTwoDigitYear ? year.substring(2) : year;
+      fromYearElement.append(optionElement);
+      toYearElement.append(optionElement.cloneNode(true));
+    }
+    //
+    // forks should have a distinct prefix, for example including the country code for which it is,
+    // see https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
+    const prefix = "inflation-bd-annual";
+    function localStorageGetItem(keyName) {
+      try {
+        return localStorage.getItem(`${prefix}.${keyName}`); // a string or null
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
+    }
+    function localStorageSetItem(keyName, keyValue) {
+      try {
+        localStorage.setItem(`${prefix}.${keyName}`, keyValue);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    //
+    let fromYear;
+    let toYear;
+    let fromAmount;
+    let toAmount;
+    let moreRecentlyHasEnteredToAmount; // boolean
+    //
+    let memorized;
+    //
+    let showHashOnce;
+    //
+    function selectFromYear() {
+      for (const option of fromYearElement.selectedOptions) option.selected = false;
+      fromYearElement.querySelector(`option[value='${fromYear}']`).selected = true;
+    }
+    function selectToYear() {
+      for (const option of toYearElement.selectedOptions) option.selected = false;
+      toYearElement.querySelector(`option[value='${toYear}']`).selected = true;
+    }
+    function showTimeDirection() {
+      if (fromYear < toYear) {
+        for (const element of timeDirectionElements) element.className = "forward";
+      } else if (fromYear > toYear) {
+        for (const element of timeDirectionElements) element.className = "backward";
+      } else {
+        for (const element of timeDirectionElements) element.className = "same";
+      }
+    }
+    //
+    function yearBeforeToYear() {
+      const resultIndex = years.indexOf(toYear) - 1;
+      return years[resultIndex >= 0 ? resultIndex : 0];
+    }
+    //
+    function clearHash() {
+      const idleHash = langs.size > 1 ? `#l=${lang}` : "";
+      if (document.location.hash !== idleHash) {
+        history.replaceState(null, "", `${document.location.pathname}${idleHash}`); // clear
+      }
+      showHashOnce = false;
+    }
+    function setFromURLAndMemoryAndStorage() {
+      // use what is given in the URL's hash, if anything,
+      // reuse from memory if not first invocation,
+      // else use from localStorage, if anything,
+      // else use defaults
+      let hash = document.location.hash; // if any
+      let newLang;
+      if (hash) {
+        try {
+          hash = Object.fromEntries(hash.replace(/^#/, "").split(",").map(entry => entry.split("=")));
+          ({ fy: fromYear = fromYear, ty: toYear = toYear, fa: fromAmount = fromAmount, ta: toAmount = toAmount, l: newLang = lang } = hash);
+          moreRecentlyHasEnteredToAmount = !!toAmount && !fromAmount;
+        } catch {
+        }
+      }
+      //
+      newLang = newLang ?? (localStorageGetItem("lang") || lang || alpha2(navigator.language));
+      setLang(newLang);
+      //
+      toYear = toYear ?? (localStorageGetItem("toYear") || mostRecentYear);
+      if (!cpi[toYear]) toYear = mostRecentYear; // if not known
+      selectToYear(toYear);
+      //
+      fromYear = fromYear ?? localStorageGetItem("fromYear");
+      if (!cpi[fromYear]) fromYear = yearBeforeToYear(); // if not known
+      selectFromYear(fromYear);
+      //
+      showTimeDirection();
+      //
+      fromAmount = fromAmount ?? (Number(localStorageGetItem("fromAmount")) || 0);
+      toAmount = toAmount ?? (Number(localStorageGetItem("toAmount")) || 0);
+      moreRecentlyHasEnteredToAmount = moreRecentlyHasEnteredToAmount ??
+        localStorageGetItem("moreRecentlyHasEnteredToAmount") === "true";
+      //
+      fromToOrToFrom();
+    }
+    //
+    function round(number, whileEditing) {
+      if (whileEditing || Math.abs(number) < 10) number = Math.round(number * 100) / 100; // allow 1/100ths
+      else if (whileEditing || Math.abs(number) < 100) number = Math.round(number * 10) / 10; // allow 1/10ths
+      else number = Math.round(number); // force integer
+      return number;
+    }
+    const zeroThenDigitRegExp = /^0[0-9]/;
+    function showAmounts() {
+      const editingFromAmount = fromAmountElement === document.activeElement;
+      const editingToAmount = toAmountElement === document.activeElement;
+      fromAmount = round(fromAmount, editingFromAmount);
+      toAmount = round(toAmount, editingToAmount);
+      const fromAmountElementValue = fromAmountElement.value;
+      if (!editingFromAmount // not editing
+        || fromAmountElementValue != fromAmount // not just a decimal point or trailing zeros
+        || zeroThenDigitRegExp.test(fromAmountElementValue)) // an extraneous leading zero
+        fromAmountElement.value = fromAmount; // else while editing allow decimal point entry
+      const toAmountElementValue = toAmountElement.value;
+      if (!editingToAmount
+        || toAmountElementValue != toAmount
+        || zeroThenDigitRegExp.test(toAmountElementValue))
+        toAmountElement.value = toAmount;
+      const fromSymbol = currenciesByYear[fromYear].symbolBL.forLang();
+      for (const element of fromSymbolElements) element.textContent = fromSymbol;
+      const toSymbol = currenciesByYear[toYear].symbolBL.forLang();
+      for (const element of toSymbolElements) element.textContent = toSymbol;
+      localStorageSetAll();
+      updateMemorizedButton();
+      clearHash();
+      drawChart();
+    }
+    function fromTo() {
+      toAmount = fromAmount
+        * cpi[toYear] * currenciesByYear[fromYear].conversion
+        / cpi[fromYear] / currenciesByYear[toYear].conversion;
+      showAmounts();
+    }
+    function toFrom() {
+      fromAmount = toAmount
+        * cpi[fromYear] * currenciesByYear[toYear].conversion
+        / cpi[toYear] / currenciesByYear[fromYear].conversion;
+      showAmounts();
+    }
+    function fromToOrToFrom() {
+      if (!moreRecentlyHasEnteredToAmount) {
+        fromTo();
+      } else {
+        toFrom();
+      }
+    }
+    //
+    memorized = localStorageGetItem("memorized") || ""; // first time
+    //
+    function showMemorized() {
+      if (memorized) {
+        memorizedTextarea.value = memorized;
+        memorizedElement.classList.remove("hide");
+        memorizedExplained.classList.remove("hide");
+      } else {
+        memorizedExplained.classList.add("hide");
+        memorizedElement.classList.add("hide");
+        memorizedTextarea.value = "";
+      }
+    }
+    //
+    fromYearElement.addEventListener("input", () => {
+      fromYear = fromYearElement.selectedOptions[0].value;
+      fromToOrToFrom();
+      showTimeDirection();
+    });
+    toYearElement.addEventListener("input", () => {
+      toYear = toYearElement.selectedOptions[0].value;
+      fromTo();
+      showTimeDirection();
+    });
+    //
+    function localStorageSetAll() {
+      localStorageSetItem("fromYear", fromYear);
+      localStorageSetItem("toYear", toYear);
+      localStorageSetItem("fromAmount", fromAmount);
+      localStorageSetItem("toAmount", toAmount);
+      localStorageSetItem("moreRecentlyHasEnteredToAmount", !!moreRecentlyHasEnteredToAmount);
+    }
+    //
+    fromAmountElement.addEventListener("input", () => {
+      fromAmount = Number(fromAmountElement.value);
+      moreRecentlyHasEnteredToAmount = false;
+      fromTo();
+    });
+    toAmountElement.addEventListener("input", () => {
+      toAmount = Number(toAmountElement.value);
+      moreRecentlyHasEnteredToAmount = true;
+      toFrom();
+    });
+    //
+    fromAmountElement.addEventListener("click", () => {
+      moreRecentlyHasEnteredToAmount = false;
+      fromTo();
+    });
+    toAmountElement.addEventListener("click", () => {
+      moreRecentlyHasEnteredToAmount = true;
+      toFrom();
+    });
+    fromAmountElement.addEventListener("blur", () => {
+      fromToOrToFrom(); // force rounding
+    });
+    toAmountElement.addEventListener("blur", () => {
+      fromToOrToFrom();
+    });
+    //
+    document.querySelector("button.clear").addEventListener("click", function clearAmounts() {
+      fromAmount = 0;
+      fromTo();
+      if (!moreRecentlyHasEnteredToAmount) fromAmountElement.focus();
+      else toAmountElement.focus();
+    });
+    //
+    function hashchangeHandler() {
+      let hash = document.location.hash; // if any
+      if (hash) {
+        if (hash !== showHashOnce) {
+          setFromURLAndMemoryAndStorage();
+        } // else not this one time
+      } // else ignore
+      showHashOnce = false;
+    }
+    window.addEventListener("hashchange", hashchangeHandler);
+    //
+    function equivalentHash() {
+      return `#fy=${fromYear},ty=${toYear},${moreRecentlyHasEnteredToAmount ? `ta=${toAmount}` : `fa=${fromAmount}`}${langs.size > 1 ? `,l=${lang}` : ""}`;
+    }
+    function showHash(newHash) {
+      const url = `${document.location.pathname}${newHash}`;
+      showHashOnce = newHash;
+      history.replaceState(null, "", url);
+    }
+    function equivalentURL() {
+      const newHash = equivalentHash();
+      const location = document.location;
+      return `${location.origin ?? `${location.protocol}//`}${location.pathname}${newHash}`;
+    }
+    const copyURLButton = document.querySelector("button.copy-url");
+    copyURLButton.addEventListener("click", function copyURL() {
+      navigator.clipboard.writeText(equivalentURL());
+      showHash(equivalentHash());
+      clearPreview();
+    });
+    //
+    document.querySelector("div.full-warning").textContent = `> ${maxMemorized} char`;
+    document.querySelector("div.full-warning").addEventListener("click", () => {
+      memorizedTextarea.classList.remove("flash-warning")
+    });
+    function localStorageSetMemorized() {
+      if (memorized.length <= maxMemorized) {
+        localStorageSetItem("memorized", memorized);
+        memorizedTextarea.classList.remove("flash-warning");
+      } else {
+        memorizedTextarea.classList.add("flash-warning");
+        memorizedTextarea.addEventListener("animationend", () => { memorizedTextarea.classList.remove("flash-warning") });
+        memorized = localStorageGetItem("memorized") || "";
+        showMemorized();
+      }
+    }
+    function getUserChangesToMemorized() {
+      let newMemorized = memorizedTextarea.value;
+      if (!newMemorized.trim().length) newMemorized = ""; // simply empty
+      if (newMemorized !== memorized) {
+        memorized = newMemorized;
+        localStorageSetMemorized();
+        if (!memorized.length) showMemorized(); // hide
+        updateMemorizedButton();
+      }
+    }
+    //
+    memorizedTextarea.addEventListener("blur", getUserChangesToMemorized);
+    window.addEventListener("beforeunload", getUserChangesToMemorized);
+    window.addEventListener("pagehide", getUserChangesToMemorized);
+    document.addEventListener("visibilitychange", getUserChangesToMemorized);
+    //
+    function memoKeyListener(event) {
+      let blur;
+      switch (event.key) {
+        case "Escape": blur = true; break; // Esc key
+        case "Enter": { // Enter key
+          const newMemorized = memorizedTextarea.value;
+          const newLength = newMemorized.length;
+          if (memorizedTextarea.selectionStart === newLength) { // at the end
+            if (!newLength // empty
+              || /\n$/.test(newMemorized)) { // already an \n
+              blur = true;
+            }
+          }
+          break;
+        }
+        default: {
+          if (event.ctrlKey || event.metaKey) {
+            switch (String.fromCharCode(event.which).toLowerCase()) {
+              case "s": blur = true; break; // ctrl-S
+            }
+          }
+        }
+      }
+      if (blur) {
+        event.preventDefault();
+        memorizedTextarea.blur();
+      }
+    }
+    memorizedTextarea.addEventListener("keydown", memoKeyListener);
+    memorizedTextarea.addEventListener("keypress", memoKeyListener);
+    //
+    function isRtl(dir) {
+      return dir === "rtl";
+    }
+    function horizontalArrow() {
+      if (fromYear < toYear) {
+        return !rtl ? "→" : "←";
+      } else if (fromYear > toYear) {
+        return !rtl ? "←" : "→";
+      } else {
+        return "=";
+      }
+    }
+    function memo() {
+      const fromCurrency = currenciesByYear[fromYear];
+      const toCurrency = currenciesByYear[toYear];
+      const twoCurrencies = fromCurrency.definition !== toCurrency.definition;
+      let fromFormatted, toFormatted;
+      if (!twoCurrencies) {
+        if (!fromCurrency.amountFirstBL.forLang()) {
+          toFormatted = toAmount;
+        } else {
+          fromFormatted = fromAmount;
+        }
+      }
+      fromFormatted = fromFormatted ?? fromCurrency.formatBL.forLang().replace("amount", fromAmount);
+      toFormatted = toFormatted ?? toCurrency.formatBL.forLang().replace("amount", toAmount);
+      const arrow = horizontalArrow();
+      let memo = `${fromYear} ${arrow} ${toYear}  ≈  ${fromFormatted} ${arrow} ${toFormatted}`;
+      if (!rtl)
+        return dirs.size <= 1 ? memo : `\u2066${memo}\u2069`;
+      else
+        return `\u2067${memo}\u2069`;
+    }
+    memorizeButton.addEventListener("click", function memorize() {
+      const newMemo = memo();
+      if (!memorized.includes(newMemo)) {
+        memorized = memorized.replace(/([^\n])$/, "$1\n") + newMemo;
+        showMemorized();
+        localStorageSetMemorized();
+        updateMemorizedButton();
+      }
+      clearPreview();
+    });
+    function updateMemorizedButton() {
+      memorizeButton.disabled =
+        memorized.length >= maxMemorized // prevent excessive length
+        || memorized.includes(memo()); // avoid duplicates
+    }
+    //
+    const copyNumbersButton = document.querySelector("button.copy-numbers");
+    copyNumbersButton.addEventListener("click", function copyNumbers() {
+      navigator.clipboard.writeText(memo());
+      clearPreview();
+    });
+    //
+    const personal =
+      // to show a personal note, optionally, a developer of a fork may want to adjust this
+      ({ "srguiwiz.github.io": 1, "inflation.cmprh.com": 1, "infl.at": 1 })[document.location.hostname];
+    document.querySelectorAll(".personal").forEach(element => {
+      if (personal) element.style.display = "";
+      else element.remove(); // avoid forks showing another developer's personal note
+    });
+    //
+    Array.from(document.querySelectorAll(".padding-start")).filter(element => {
+      const computedStyle = window.getComputedStyle(element);
+      return (parseFloat(computedStyle.paddingInlineStart) < parseFloat(computedStyle.paddingInlineEnd));
+    })
+      .forEach(element => element.classList.remove("padding-start"));
+    //
+    function alpha2(lang) {
+      return lang?.substring(0, 2);
+    }
+    function setLang(newLang) {
+      if (!langs.has(newLang)) newLang = langs.keys().next().value;
+      lang = newLang;
+      const newDir = langs.get(newLang);
+      if (newLang !== alpha2(document.documentElement.getAttribute("lang"))) {
+        document.documentElement.setAttribute("lang", newLang);
+        if (newDir && newDir !== document.documentElement.getAttribute("dir")) {
+          dir = newDir;
+          rtl = isRtl(dir);
+          document.documentElement.setAttribute("dir", newDir);
+        }
+        document.title = document.querySelector("div.heading *").innerText;
+      }
+      if (currencies.length > 1) {
+        document.querySelectorAll(".symbols").forEach(element => {
+          element.innerHTML = Object.values(currencies).map(currency => currency.symbolBL.forLang()).join("<br/>");
+        });
+      }
+    }
+    document.querySelectorAll(".lang-carousel").forEach(element => {
+      element.addEventListener("click", event => {
+        const carousel = event.target.closest(".lang-carousel") || event.target;
+        const newLangElement = (carousel.querySelector(`[lang|='${lang}'] ~ [lang]`)
+          || carousel.querySelector("[lang]"));
+        const newLang = newLangElement.getAttribute("lang");
+        setLang(newLang);
+        localStorageSetItem("lang", newLang);
+        showAmounts();
+      });
+    });
+    //
+    const { userAgent } = navigator;
+    const probablySafari = /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
+    const multiTouch = navigator.maxTouchPoints > 1;
+    const probablyMobileSafari = probablySafari && multiTouch;
+    if (probablySafari) document.documentElement.classList.toggle("safari", true);
+    //
+    const firstYear = Number(years[0]);
+    const lastYear = Number(mostRecentYear);
+    const maxCpi = Math.max(...Object.values(cpi));
+    const rootFontSize = Math.round(parseFloat(window.getComputedStyle(document.body).fontSize));
+    const chartPadding = Math.round(rootFontSize * 0.75);
+    const svgX = 0, chartX = chartPadding, chartY = chartPadding;
+    let chartWidth = 0, chartHeight = 0, chartDir, svgX2, chartX2, chartSlotHeight;
+    let chartXScale, chartYScale;
+    let baselineY;
+    const coords = new Array(years.length);
+    const coordStrings = new Array(years.length);
+    const chartDiv = document.querySelector("div.chart");
+    const chartSvg = chartDiv.querySelector("svg.chart");
+    const chartBackgroundElement = chartSvg.querySelector("rect.chart-background");
+    const chartAreaElement = chartSvg.querySelector("rect.chart-area");
+    chartBackgroundElement.setAttribute("x", 0);
+    chartBackgroundElement.setAttribute("y", 0);
+    chartAreaElement.setAttribute("x", chartX);
+    chartAreaElement.setAttribute("y", chartY);
+    const chartFontSize = Math.round(rootFontSize * 0.75);
+    chartSvg.setAttribute("font-size", chartFontSize);
+    const firstYearElement = chartSvg.querySelector("text.first-year");
+    const lastYearElement = chartSvg.querySelector("text.last-year");
+    firstYearElement.textContent = firstYear;
+    lastYearElement.textContent = lastYear;
+    let yearTextWidth;
+    let yearTextWidth5;
+    let yearTextHeight;
+    let yearTextHeight5;
+    const chartHeightSlots = 3;
+    let chartFromYear, chartToYear;
+    function drawChart(eventOrRepeat = 0) {
+      try {
+        const bcr = chartSvg.getBoundingClientRect?.();
+        if (!bcr) return;
+        let { width, height } = bcr;
+        if (!width || !height) return;
+        svgX2 = Math.floor(width);
+        width = Math.floor(width - 2 * chartPadding);
+        height = Math.floor(height - 2 * chartPadding - chartFontSize);
+        const dimensionsChanged = width != chartWidth || height != chartHeight || dir !== chartDir;
+        if (dimensionsChanged) {
+          chartWidth = width;
+          chartHeight = height;
+          chartDir = dir;
+          chartX2 = chartX + chartWidth;
+          chartSlotHeight = chartHeight / chartHeightSlots; // don't round here
+          chartBackgroundElement.setAttribute("width", bcr.width);
+          chartBackgroundElement.setAttribute("height", bcr.height);
+          chartAreaElement.setAttribute("width", width);
+          chartAreaElement.setAttribute("height", height);
+          chartXScale = width / (lastYear - firstYear);
+          chartYScale = height / maxCpi;
+          years.forEach((year, i) => {
+            coords[i] = {
+              x: chartX + Math.round(chartXScale * (year - firstYear)),
+              y: chartY + Math.round(height - chartYScale * cpi[year])
+            };
+            coordStrings[i] = `${coords[i].x},${coords[i].y}`;
+          });
+          baselineY = chartY + height;
+          const baselineD = `M${coords[0].x},${baselineY} L${coords[years.length - 1].x},${baselineY}`;
+          const yearTextRect = firstYearElement.getBBox();
+          yearTextWidth = Math.ceil(yearTextRect.width);
+          yearTextWidth5 = Math.ceil(yearTextRect.width / 2);
+          yearTextHeight = Math.ceil(yearTextRect.height);
+          yearTextHeight5 = Math.ceil(yearTextRect.height / 2);
+          firstYearElement.setAttribute("x", coords[0].x + rtl * yearTextWidth);
+          firstYearElement.setAttribute("y", baselineY + yearTextHeight);
+          lastYearElement.setAttribute("x", coords[years.length - 1].x - !rtl * yearTextWidth);
+          lastYearElement.setAttribute("y", baselineY + yearTextHeight);
+          const cpiD = `M${coordStrings[0]} L${coordStrings.slice(1).join(" ")}`;
+          chartSvg.querySelector("path.baseline").setAttribute("d", baselineD);
+          chartSvg.querySelector("path.cpi").setAttribute("d", cpiD);
+        }
+        const yearsChanged = fromYear != chartFromYear || toYear != chartToYear;
+        if (yearsChanged || dimensionsChanged) {
+          chartFromYear = fromYear;
+          chartToYear = toYear;
+          let earlierYear, laterYear;
+          if (fromYear <= toYear) { earlierYear = fromYear; laterYear = toYear; }
+          else { earlierYear = toYear; laterYear = fromYear; }
+          const earlierIndex = years.indexOf(earlierYear);
+          const laterIndex = years.indexOf(laterYear, earlierIndex);
+          const selectedD = `M${coordStrings[earlierIndex]} L${coordStrings.slice(earlierIndex, laterIndex + 1).join(" ")}`;
+          chartSvg.querySelector("path.selected").setAttribute("d", selectedD);
+        }
+      } finally {
+        if (probablyMobileSafari && eventOrRepeat) { // in case size was nonsensical after switch to landscape
+          if ("number" !== typeof eventOrRepeat) eventOrRepeat = 3;
+          else eventOrRepeat--;
+          if (eventOrRepeat) window.setTimeout(drawChart, 300, eventOrRepeat);
+        }
+      }
+    }
+    window.addEventListener("resize", drawChart);
+    let chartPale = localStorageGetItem("chartPale") === "true" ?? chartSvg.classList.contains("pale");
+    function setChartPale(newChartPale) {
+      chartPale = newChartPale ?? chartPale;
+      chartSvg.classList.toggle("pale", chartPale);
+      if (newChartPale !== undefined) localStorageSetItem("chartPale", chartPale);
+    }
+    setChartPale(); // first time
+    chartSvg.addEventListener("click", event => {
+      if (!chartDiv.classList.contains("maximize-chart")) {
+        hideYearLine(event);
+        setChartPale(!chartPale);
+      }
+    });
+    function closeChartEventHandler() {
+      if (chartDiv.classList.contains("maximize-chart")) {
+        toggleChart(false);
+        event.stopPropagation();
+      }
+    }
+    chartSvg.addEventListener("dblclick", closeChartEventHandler);
+    {
+      const closeChartElement = chartSvg.querySelector("g.close-chart");
+      const c1 = 0, c2 = chartPadding, c3 = c2 + 2, c4 = chartPadding + rootFontSize, c5 = c4 + 2, c6 = c5 + chartPadding;
+      closeChartElement.querySelector("path:nth-child(1)").setAttribute("d", `M${c1},${c1} L${c6},${c1} ${c6},${c6} L${c1},${c6} z`);
+      closeChartElement.querySelector("path:nth-child(2)").setAttribute("d", `M${c2},${c2} L${c5},${c2} ${c5},${c5} L${c2},${c5} z`);
+      closeChartElement.querySelector("path:nth-child(3)").setAttribute("d", `M${c3},${c3} L${c4},${c4} M${c4},${c3} L${c3},${c4}`);
+      closeChartElement.addEventListener("click", closeChartEventHandler);
+    }
+    //
+    const yearLineGroup = chartSvg.querySelector("g.year-line-group");
+    const yearLineElement = chartSvg.querySelector("path.year-line");
+    const lineYearElement = chartSvg.querySelector("text.line-year");
+    const lineAmountElement = chartSvg.querySelector("text.line-amount");
+    let chartHeightSlot;
+    let chartYearLine = false;
+    let hideYearLineEvent;
+    const hideYearLineTolerance = 2 * rootFontSize;
+    function hideYearLine(event = null) {
+      yearLineGroup.setAttribute("display", "none");
+      chartYearLine = false;
+      hideYearLineEvent = event;
+    }
+    function forYear(year) {
+      return fromAmount
+        * cpi[year] * currenciesByYear[fromYear].conversion
+        / cpi[fromYear] / currenciesByYear[year].conversion;
+    }
+    function forYearText(year) {
+      return currenciesByYear[year].formatBL.forLang().replace("amount", round(forYear(year)));
+    }
+    function updateYearLine(event) {
+      const eventType = event.type;
+      switch (eventType) {
+        case "mouseleave":
+        case "touchend":
+        case "touchcancel":
+          hideYearLine();
+          setChartPale();
+          return;
+        case "mouseenter":
+        case "touchstart":
+          chartYearLine = true;
+          if (probablySafari) drawChart(); // in case size was nonsensical after switch to landscape
+          break;
+        case "mousemove":
+          if (!chartYearLine && hideYearLineEvent)
+            if (((hideYearLineEvent.clientX - event.clientX) ** 2 + (hideYearLineEvent.clientY - event.clientY) ** 2) ** 0.5 > hideYearLineTolerance) {
+              chartYearLine = true;
+              hideYearLineEvent = null;
+            }
+      }
+      if (!chartYearLine) return;
+      const bcr = chartSvg.getBoundingClientRect?.();
+      if (!bcr) return;
+      const clientX = event.clientX ?? event.touches?.[0]?.clientX;
+      const clientY = event.clientY ?? event.touches?.[0]?.clientY;
+      if (clientX === undefined || clientY === undefined) return;
+      const eventX = Math.min(Math.max(chartX, Math.round(clientX - bcr.left)), chartX2);
+      const eventY = clientY - bcr.top;
+      let eventYear = Math.round((eventX - chartX) / chartXScale + firstYear);
+      if (!(eventYear in cpi)) eventYear = // if in a gap then find closest
+        years.reduce((acc, cur) => (Math.abs(cur - eventYear) <= Math.abs(acc - eventYear) ? cur : acc), Infinity);
+      const eventIndex = indexesByYear[eventYear];
+      const eventYearCoordY = coords[eventIndex].y;
+      const avoid = new Array(chartHeightSlots).fill(0);
+      [eventY, eventYearCoordY].forEach(avoidY => {
+        const heightSlot = Math.floor((avoidY - chartY) / chartSlotHeight);
+        if (heightSlot in avoid) avoid[heightSlot]++;
+      });
+      if (avoid[chartHeightSlot] !== 0) chartHeightSlot = avoid.indexOf(0); // only change if necessary
+      const eventAmount = forYearText(eventYear);
+      lineYearElement.textContent = eventYear;
+      lineAmountElement.textContent = eventAmount;
+      const amountTextWidth = Math.ceil(lineAmountElement.getBBox()?.width || yearTextWidth);
+      const lineYearElementX = Math.min(Math.max(
+        svgX + rtl * yearTextWidth, coords[eventIndex].x - (-1) ** rtl * yearTextWidth5), svgX2 - !rtl * yearTextWidth);
+      const lineAmountElementX = Math.min(Math.max(
+        svgX + rtl * amountTextWidth, lineYearElementX), svgX2 - !rtl * amountTextWidth);
+      const lineAmountElementY = Math.round(chartY + (chartHeightSlot + 0.5) * chartSlotHeight - yearTextHeight5);
+      const lineYearElementY = lineAmountElementY + 3 * yearTextHeight5;
+      lineYearElement.setAttribute("x", lineYearElementX);
+      lineYearElement.setAttribute("y", lineYearElementY);
+      lineAmountElement.setAttribute("x", lineAmountElementX);
+      lineAmountElement.setAttribute("y", lineAmountElementY);
+      yearLineElement.setAttribute("d",
+        `M${eventX},${chartY} L${eventX},${lineAmountElementY - yearTextHeight} M${eventX},${lineYearElementY + yearTextHeight5} L${eventX},${baselineY}`);
+      if (chartYearLine && yearLineGroup.getAttribute("display")) {
+        chartSvg.classList.remove("pale");
+        yearLineGroup.removeAttribute("display");
+      }
+    }
+    ["mouseenter", "mousemove", "mouseleave",
+      "touchstart", "touchmove", "touchend", "touchcancel"].forEach(eventType =>
+        chartAreaElement.addEventListener(eventType, event => { updateYearLine(event); }, { passive: true }));
+    //
+    function toggleChart(force) {
+      const prev = chartDiv.classList.contains("maximize-chart");
+      const max = chartDiv.classList.toggle("maximize-chart", force);
+      if (max !== prev) drawChart();
+    }
+    document.querySelector("svg.toggle-chart").addEventListener("click", toggleChart);
+    //
+    function keyListener(event) {
+      let escape;
+      switch (event.key) {
+        case "Escape": escape = true; break; // Esc key
+      }
+      if (escape) toggleChart(false);
+    }
+    document.body.addEventListener("keydown", keyListener);
+    document.body.addEventListener("keypress", keyListener);
+    //
+    const previewElement = document.querySelector("div.preview");
+    function clearPreview() {
+      previewElement.textContent = "";
+    }
+    [copyNumbersButton, memorizeButton].forEach(button =>
+      ["mouseenter", "touchstart"].forEach(eventType =>
+        button.addEventListener(eventType, () => {
+          previewElement.textContent = memo();
+        }, { passive: true })));
+    ["mouseenter", "touchstart"].forEach(eventType =>
+      copyURLButton.addEventListener(eventType, () => {
+        previewElement.textContent = equivalentURL();
+      }, { passive: true }));
+    [copyNumbersButton, copyURLButton, memorizeButton].forEach(button =>
+      ["mouseleave", "touchend", "touchcancel"].forEach(eventType =>
+        button.addEventListener(eventType, clearPreview, { passive: true })));
+    //
+    setFromURLAndMemoryAndStorage(); // first time
+    showMemorized(); // first time
+    //
+    null ?? document.querySelector?.("div.too-old").remove(); // feature test
+    document.querySelector("div.page").removeAttribute("style"); // show
+    //
+    try {
+      navigator.serviceWorker.register("./sw.js");
+    } catch { } // ignore
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+{
+  "name": "Inflation Calculator – BD",
+  "short_name": "Inflation-BD",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "An inflation calculator for Bangladeshi takas.",
+  "icons": [
+    {
+      "src": "./inflation-bd-512x512.png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "./inflation-bd-256x256.png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "./inflation-bd-128x128.png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "./inflation-bd-96x96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./inflation-bd-72x72.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "./inflation-bd-48x48.png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "./inflation-bd.svg",
+      "sizes": "48x48 72x72 96x96 128x128 256x256 512x512"
+    }
+  ]
+}
