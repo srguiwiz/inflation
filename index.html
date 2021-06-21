@@ -116,7 +116,7 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       /* */
       display: grid;
       grid-template-columns: repeat(1, auto);
-      grid-template-rows: repeat(3, auto) 1fr;
+      grid-template-rows: repeat(3, auto) minmax(2rem, 1fr);
       --column-gap: 1rem;
       --row-gap: 1rem;
       column-gap: var(--column-gap);
@@ -152,7 +152,7 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      align-items: center;
+      align-items: stretch;
       gap: 1rem;
       padding: var(--container-padding);
     }
@@ -229,7 +229,7 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       }
     }
 
-    div.explanation.list {
+    div.explanation.list.list-of-calculators {
       height: 100%;
       overflow-y: auto;
     }
@@ -333,6 +333,46 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
 
     svg.search-icon {
       cursor: pointer;
+    }
+
+    .privacy {
+      font-size: smaller;
+    }
+
+    .abbreviated {
+      display: none;
+    }
+
+    @media (max-width: 500px) {
+      .unabbreviated {
+        display: none;
+      }
+
+      .abbreviated {
+        display: unset;
+      }
+    }
+
+    p.purpose {
+      line-height: 120%;
+      padding-inline-start: 20%;
+      padding-inline-end: 20%;
+      padding-bottom: 1em;
+      text-align: justify;
+    }
+
+    div.purpose {
+      padding-bottom: max(5em, 20%);
+    }
+
+    div.pale {
+      opacity: 0.25;
+    }
+
+    @media (min-width: 60rem) {
+      div.heading+div.explanation p {
+        text-align: justify;
+      }
     }
 
     div.too-old {
@@ -487,8 +527,22 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
           <span class="link">https://github.com/srguiwiz/inflation</span> .
         </p>
       </div>
+      <div class="explanation privacy normal-tall pale" style="display: none;">
+        <!-- forks if hosted elsewhere automatically would not display this privacy note -->
+        No cookies<span class="unabbreviated"> here</span>.
+        This site <span class="abbreviated">was</span>
+        <span class="unabbreviated">has been</span> made as an exercise.
+      </div>
     </div>
     <div class="sidebar">
+      <div class="heading">
+        &emsp;
+      </div>
+      <div class="purpose pale">
+        <p class="purpose">Help make sense of each other's stories across generations.</p>
+        <p class="purpose">What does it mean grandpa worked for so little pay?</p>
+        <p class="purpose">Do kids really spend more now?</p>
+      </div>
     </div>
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
@@ -542,6 +596,36 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
     }
     searchElement.addEventListener("keydown", searchKeyListener);
     searchElement.addEventListener("keypress", searchKeyListener);
+    //
+    const privacy =
+      // to show a privacy note, optionally, a developer of a fork may want to adjust this
+      ({ "srguiwiz.github.io": 1, "inflation.cmprh.com": 1, "infl.at": 1 })[document.location.hostname];
+    document.querySelectorAll(".privacy").forEach(element => {
+      if (privacy) element.style.display = "";
+      else element.remove(); // avoid forks showing another developer's privacy note
+    });
+    //
+    const purposeDiv = document.querySelector("div.purpose");
+    const privacyDiv = document.querySelector("div.privacy");
+    function updatePaleness(event) {
+      const eventType = event.type;
+      const currentTarget = event.currentTarget;
+      switch (eventType) {
+        case "mouseleave":
+        case "touchend":
+        case "touchcancel":
+          currentTarget.classList.toggle("pale", true);
+          break;
+        case "mouseenter":
+        case "touchstart":
+          currentTarget.classList.toggle("pale", false);
+          break;
+      }
+    }
+    [purposeDiv, privacyDiv].forEach(div =>
+      ["mouseenter", "mouseleave",
+        "touchstart", "touchend", "touchcancel"].forEach(eventType =>
+          div?.addEventListener(eventType, updatePaleness, { passive: true })));
     //
     null ?? document.querySelector?.("div.too-old").remove(); // feature test
     document.querySelector("div.page").removeAttribute("style"); // show

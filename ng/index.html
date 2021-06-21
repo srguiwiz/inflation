@@ -120,7 +120,7 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       /* */
       display: grid;
       grid-template-columns: repeat(4, auto) 1fr;
-      grid-template-rows: repeat(8, auto) 1fr repeat(1, auto);
+      grid-template-rows: repeat(8, auto) 1fr;
       --column-gap: 1rem;
       --row-gap: 1rem;
       column-gap: var(--column-gap);
@@ -156,7 +156,7 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      align-items: center;
+      align-items: stretch;
       gap: 1rem;
       padding: var(--container-padding);
     }
@@ -329,11 +329,14 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       div.label.time-direction,
       div.container div:empty,
       button.memorize,
-      div.memorized,
-      div.explanation.editing {
+      div.memorized {
         max-height: 0px;
         align-self: unset;
         visibility: hidden;
+      }
+
+      div.explanation.editing {
+        display: none;
       }
     }
 
@@ -1445,10 +1448,10 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       }
     }
     window.addEventListener("resize", drawChart);
-    let chartPale = localStorageGetItem("chartPale") === "true" ?? chartSvg.classList.contains("pale");
+    let chartPale = /^true$/.test(localStorageGetItem("chartPale") ?? chartSvg.classList.contains("pale"));
     function setChartPale(newChartPale) {
       chartPale = newChartPale ?? chartPale;
-      chartSvg.classList.toggle("pale", chartPale);
+      chartPale = chartSvg.classList.toggle("pale", chartPale);
       if (newChartPale !== undefined) localStorageSetItem("chartPale", chartPale);
     }
     setChartPale(); // first time
