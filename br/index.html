@@ -766,6 +766,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
+    if (document.location.pathname.match(/\/[a-z][a-z]$/)) { document.location.pathname += "/"; throw "correction"; }
+    //
     // data found via the official https://www.ibge.gov.br/explica/inflacao.php ,
     // which discloses it uses data from https://sidra.ibge.gov.br/tabela/1737 ;
     // from there using January of each year,

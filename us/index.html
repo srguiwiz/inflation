@@ -764,6 +764,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
+    if (document.location.pathname.match(/\/[a-z][a-z]$/)) { document.location.pathname += "/"; throw "correction"; }
+    //
     // data from https://www.bls.gov/data/inflation_calculator.htm
     // took January of each year
     // that site mentions it got its data from https://data.bls.gov/timeseries/CUUR0000SA0

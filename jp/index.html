@@ -777,6 +777,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
+    if (document.location.pathname.match(/\/[a-z][a-z]$/)) { document.location.pathname += "/"; throw "correction"; }
+    //
     // data from https://www.e-stat.go.jp/en/statistics/00200573
     // https://www.e-stat.go.jp/en/stat-search/files?page=1&layout=datalist&toukei=00200573&tstat=000001084976&cycle=0&tclass1=000001085995&tclass2=000001085936&tclass3=000001085996&tclass4=000001085997&tclass5val=0
     // which is Filtered by: File   Consumer Price Index   2015-Base Consumer Price Index   -   Time Series   Indices of Items   Japan   Annual Average

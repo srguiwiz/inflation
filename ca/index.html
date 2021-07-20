@@ -838,6 +838,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
+    if (document.location.pathname.match(/\/[a-z][a-z]$/)) { document.location.pathname += "/"; throw "correction"; }
+    //
     // data from https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810000401
     // took January of each year,
     // Statistics Canada. Table 18-10-0004-01 Consumer Price Index, monthly, not seasonally adjusted

@@ -774,6 +774,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
+    if (document.location.pathname.match(/\/[a-z][a-z]$/)) { document.location.pathname += "/"; throw "correction"; }
+    //
     // data from https://www.imf.org/en/Countries/CHN
     // from https://www.imf.org/external/datamapper/api/?values=PCPIPCH
     // formula used: 1981 number = 1980 number * (1 + 1981 percentage / 100), etc.;

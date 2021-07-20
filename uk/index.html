@@ -765,6 +765,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
+    if (document.location.pathname.match(/\/[a-z][a-z]$/)) { document.location.pathname += "/"; throw "correction"; }
+    //
     // data from https://www.ons.gov.uk/timeseriestool?topic=/economy/inflationandpriceindices
     // from https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7bt/mm23
     // Home > Economy > Inflation and price indices > CPI INDEX 00: ALL ITEMS 2015=100

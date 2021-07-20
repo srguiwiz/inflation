@@ -854,6 +854,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
   </div>
   <div class="too-old">incompatible with older browser<br />—<br />no budget to maintain that too</div>
   <script>
+    if (document.location.pathname.match(/\/[a-z][a-z]$/)) { document.location.pathname += "/"; throw "correction"; }
+    //
     // data from https://www.bfs.admin.ch/asset/de/cc-d-05.02.08
     // there https://www.bfs.admin.ch/bfsstatic/dam/assets/16664764/master
     // took January of each year,
