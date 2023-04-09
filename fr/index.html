@@ -771,14 +771,14 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
     if (document.location.pathname.match(/\/[a-z][a-z]$/)) { document.location.pathname += "/"; throw "correction"; }
     // data from https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
     // from https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv
-    // which at the time of writing (2022-04) only has been available up to 2020;
+    // which at the time of writing (2023-04) only has been available up to 2021;
     // formula used: 1960 number = 1959 number * (1 + 1960 percentage / 100), etc.;
     // full accuracy used before finally rounding;
-    // for 2021 approximated based on numbers
+    // for 2022 approximated based on numbers
     // from https://www.insee.fr/en/statistiques/serie/001761313
     // Consumer price index - Base 2015 - Year-on-year change - All households - France - Overall,
     // which apparently is consistent with other data source;
-    // formula used: 2021 number = 2020 number * average of numbers for each of the months of 2021;
+    // formula used: 2022 number = 2021 number * average of numbers for each of the months of 2022;
     // full accuracy used before finally rounding;
     // from 1959 backwards approximated 1958 to 1914 based on numbers
     // from indice des prix à la consommation (IPC),
@@ -891,7 +891,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       "2018": 108638,
       "2019": 109842,
       "2020": 110365,
-      "2021": 112195,
+      "2021": 112178,
+      "2022": 118039,
     };
     const currencies = [
       { symbol: "F" }, // ancien franc
