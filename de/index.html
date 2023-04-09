@@ -772,6 +772,11 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
     // Verbraucherpreisindex from 1999 on, then before that
     // Früheres Bundesgebiet, Preisindex für die Lebenshaltung,
     // 4-Personen-Haushalte von Arbeitern und Angestellten mit mittlerem Einkommen
+    //
+    // new since 2023
+    // data from https://www.destatis.de/EN/Themes/Economy/Prices/Consumer-Price-Index/Tables/Consumer-prices-12-divisions.html
+    // use monthly levels, consumer price index overall, January of each year,
+    // 2023 value is here 2020 1052 / month 2020-01 99.8 * month 2023-01 114.3 = 1205
     const cpi = {
       "1949": 219,
       "1950": 203,
@@ -847,6 +852,7 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       "2020": 1052,
       "2021": 1063,
       "2022": 1115,
+      "2023": 1205,
     };
     const currencies = [
       { symbol: "DM" },
