@@ -785,6 +785,17 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
     // line Index of All items, less imputed rent (1947 - the Recent Year)
     // Update date 2022-01-21
     // file https://www.e-stat.go.jp/en/stat-search/file-download?statInfId=000031431771&fileKind=1
+    //
+    // new since 2023
+    // data from https://www.e-stat.go.jp/en/statistics/00200573
+    // https://www.stat.go.jp/english/data/cpi/index.htm
+    // https://www.stat.go.jp/english/data/cpi/158c.html
+    // https://www.e-stat.go.jp/en/stat-search/files?page=1&layout=datalist&toukei=00200573&tstat=000001150147&cycle=7&year=20220&month=0&tclass1=000001150150
+    // which is Filtered by: File / Consumer Price Index / 2020-Base Consumer Price Index / Yearly / 2022 / - / Annual Report
+    // line Long-Term Index for Japan / All items, less imputed rent
+    // Update date 2023-03-31
+    // file https://www.e-stat.go.jp/en/stat-search/file-download?statInfId=000040028333&fileKind=0
+    // there for row year 2020 column C.Y.Ave. is the new 100
     const cpi = {
       "1947": 54,
       "1948": 99,
@@ -860,7 +871,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       "2018": 1017,
       "2019": 1023,
       "2020": 1023,
-      "2021": 1026,
+      "2021": 1020,
+      "2022": 1051,
     };
     const currencies = [
       { symbol: "円", format: "amount\u2009symbol" }, // ¥
