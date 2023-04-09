@@ -769,12 +769,12 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
     //
     // data from https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
     // from https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv
-    // which at the time of writing (2022-04) only has been available up to 2020;
+    // which at the time of writing (2023-04) only has been available up to 2021;
     // formula used: 1960 number = 1959 number * (1 + 1960 percentage / 100), etc.;
     // full accuracy used before finally rounding;
     // further data from https://www.imf.org/en/Countries/PHL
     // from https://www.imf.org/external/datamapper/api/?values=PCPIPCH
-    // formula used: 2021 number = 2020 number * (1 + 2021 percentage / 100), etc.;
+    // formula used: 2022 number = 2021 number * (1 + 2022 percentage / 100), etc.;
     // full accuracy used before finally rounding
     const cpi = {
       "1959": 100,
@@ -836,10 +836,11 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       "2015": 10649,
       "2016": 10783,
       "2017": 11090,
-      "2018": 11668,
-      "2019": 11958,
-      "2020": 12273,
-      "2021": 12800,
+      "2018": 11679,
+      "2019": 11959,
+      "2020": 12245,
+      "2021": 12726,
+      "2022": 13400,
     };
     const currencies = [
       { symbol: "₱" },
