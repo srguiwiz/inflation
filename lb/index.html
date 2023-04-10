@@ -864,6 +864,14 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
     // which at the time of writing (2022-04) only has been available up to 2020;
     // formula used: 1980 number = 1979 number * (1 + 1980 percentage / 100), etc.;
     // full accuracy used before finally rounding
+    //
+    // new since 2023
+    // there seems to be a new series of data starting from 2009;
+    // data from https://www.imf.org/en/Countries/LBN
+    // from https://www.imf.org/external/datamapper/api/?values=PCPIPCH
+    // which at the time of writing (2023-04) only has been available up to 2021;
+    // formula used: 2009 number = 2008 number * (1 + 2009 percentage / 100), etc.;
+    // full accuracy used before finally rounding
     const cpi = {
       "1979": 100,
       "1980": 124,
@@ -895,18 +903,19 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       "2006": 186476,
       "2007": 194122,
       "2008": 214893,
-      "2009": 216612,
-      "2010": 225276,
-      "2011": 236540,
-      "2012": 252152,
-      "2013": 264255,
-      "2014": 269011,
-      "2015": 259058,
-      "2016": 256986,
-      "2017": 268550,
-      "2018": 280903,
-      "2019": 289049,
-      "2020": 543991,
+      "2009": 217461,
+      "2010": 226124,
+      "2011": 237365,
+      "2012": 252988,
+      "2013": 265184,
+      "2014": 270102,
+      "2015": 259976,
+      "2016": 257939,
+      "2017": 269086,
+      "2018": 285438,
+      "2019": 294016,
+      "2020": 543532,
+      "2021": 1384680,
     };
     const currencies = [
       { symbol: { ar: "ل.ل.", fr: "L.L." }, dir: { ar: "rtl", fr: "ltr" }, format: "amount\u2009symbol" },
