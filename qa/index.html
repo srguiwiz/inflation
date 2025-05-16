@@ -785,12 +785,7 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
     //
     // data from https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG
     // from https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv
-    // which at the time of writing (2023-04) only has been available up to 2021;
     // formula used: 1980 number = 1979 number * (1 + 1980 percentage / 100), etc.;
-    // full accuracy used before finally rounding;
-    // further data from https://www.imf.org/en/Countries/QAT
-    // from https://www.imf.org/external/datamapper/api/?values=PCPIPCH
-    // formula used: 2022 number = 2021 number * (1 + 2022 percentage / 100), etc.;
     // full accuracy used before finally rounding
     const cpi = {
       "1979": 1000,
@@ -836,7 +831,9 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       "2019": 3704,
       "2020": 3610,
       "2021": 3693,
-      "2022": 3859,
+      "2022": 3877,
+      "2023": 3995,
+      "2024": 4045,
     };
     const currencies = [
       { symbol: "ر.ق" },
