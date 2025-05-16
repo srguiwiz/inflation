@@ -869,7 +869,6 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
     // there seems to be a new series of data starting from 2009;
     // data from https://www.imf.org/en/Countries/LBN
     // from https://www.imf.org/external/datamapper/api/?values=PCPIPCH
-    // which at the time of writing (2023-04) only has been available up to 2021;
     // formula used: 2009 number = 2008 number * (1 + 2009 percentage / 100), etc.;
     // full accuracy used before finally rounding
     const cpi = {
@@ -916,6 +915,8 @@ consulting, development, automation, and testing, write to i18n at infl dot at.
       "2019": 294016,
       "2020": 543532,
       "2021": 1384680,
+      "2022": 3755328,
+      "2023": 12067432,
     };
     const currencies = [
       { symbol: { ar: "ل.ل.", fr: "L.L." }, dir: { ar: "rtl", fr: "ltr" }, format: "amount\u2009symbol" },
